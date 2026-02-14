@@ -1,0 +1,8 @@
+2026-02-15 00:56:02,982 INFO MainThread: Debug logger initialized
+2026-02-15 00:56:03,057 INFO MainThread: Settings loaded successfully
+2026-02-15 00:56:03,057 INFO MainThread: Calibration loaded with 9 samples
+2026-02-15 00:56:24,451 WARNING Thread-1 (_refresh_worker): Request failed (Request timed out). Retrying in 1s [http://127.0.0.1:11434/api/generate]
+2026-02-15 00:56:35,893 INFO Thread-1 (_refresh_worker): AI fan target generated: 38
+2026-02-15 00:57:05,253 INFO Thread-2 (_refresh_worker): AI fan target generated: 38
+2026-02-15 00:57:49,249 INFO Thread-5 (_refresh_worker): AI fan target generated: 38
+2026-02-15 00:58:43,480 INFO Thread-9 (_refresh_worker): AI fan target generated: 45
