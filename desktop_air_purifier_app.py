@@ -5,6 +5,8 @@ import re
 import threading
 import time
 import tkinter as tk
+import csv
+from datetime import datetime, timezone
 from tkinter import ttk
 from urllib.parse import quote_plus
 from urllib.request import Request, urlopen
@@ -70,9 +72,39 @@ def clamp(v: float, lo: float, hi: float) -> float:
     return max(lo, min(hi, v))
 
 
-# DIY purifier profile: Noctua industrial fan + Xiaomi filter.
-AI_MIN_SPEED = 38
-AI_MAX_SPEED = 100
+LOG_FILE = "air_purifier_timeseries.csv"
+CALIBRATION_FILE = "fan_calibration.json"
+FAN_APP_MAX_RPM = 2200
+
+PROFILE_CONFIG = {
+    "quiet": {
+        "min_speed": 28,
+        "max_speed": 82,
+        "aqi_weight": 0.40,
+        "pm25_weight": 0.30,
+        "pm10_weight": 0.16,
+        "shape": 1.15,
+        "step": 7,
+    },
+    "balanced": {
+        "min_speed": 34,
+        "max_speed": 92,
+        "aqi_weight": 0.48,
+        "pm25_weight": 0.32,
+        "pm10_weight": 0.10,
+        "shape": 0.9,
+        "step": 10,
+    },
+    "aggressive": {
+        "min_speed": 38,
+        "max_speed": 100,
+        "aqi_weight": 0.50,
+        "pm25_weight": 0.32,
+        "pm10_weight": 0.10,
+        "shape": 0.75,
+        "step": 12,
+    },
+}
 
 
 def load_settings() -> dict:
@@ -82,6 +114,7 @@ def load_settings() -> dict:
         "openweather_api_key": DEFAULT_OPENWEATHER_API_KEY,
         "ollama_url": DEFAULT_OLLAMA_URL,
         "ollama_model": DEFAULT_OLLAMA_MODEL,
+        "control_profile": "aggressive",
     }
     if not os.path.exists(SETTINGS_FILE):
         return defaults
@@ -99,6 +132,45 @@ def save_settings(settings: dict):
         json.dump(settings, f, indent=2)
 
 
+def load_calibration() -> dict | None:
+    if not os.path.exists(CALIBRATION_FILE):
+        return None
+    try:
+        with open(CALIBRATION_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        if not isinstance(data, dict):
+            return None
+        if "samples" not in data or not isinstance(data["samples"], list):
+            return None
+        cleaned = []
+        max_seen = 0
+        for s in data["samples"]:
+            try:
+                pwm = int(s.get("pwm", 0))
+                rpm = int(s.get("rpm", 0))
+            except Exception:
+                continue
+            pwm = int(clamp(pwm, 0, 100))
+            rpm = int(clamp(rpm, 0, FAN_APP_MAX_RPM))
+            max_seen = max(max_seen, rpm)
+            cleaned.append({"pwm": pwm, "rpm": max_seen})
+        if not cleaned:
+            return None
+        data["samples"] = cleaned
+        data["max_rpm"] = int(clamp(int(data.get("max_rpm", max_seen)), 0, FAN_APP_MAX_RPM))
+        data["spin_up_rpm"] = int(clamp(int(data.get("spin_up_rpm", cleaned[0]["rpm"])), 0, FAN_APP_MAX_RPM))
+        if data["max_rpm"] < data["spin_up_rpm"]:
+            data["max_rpm"] = data["spin_up_rpm"]
+        return data
+    except Exception:
+        return None
+
+
+def save_calibration(cal: dict):
+    with open(CALIBRATION_FILE, "w", encoding="utf-8") as f:
+        json.dump(cal, f, indent=2)
+
+
 class App:
     def __init__(self, root: tk.Tk):
         self.root = root
@@ -107,11 +179,15 @@ class App:
         self.root.configure(bg="#0b132b")
 
         settings = load_settings()
+        profile_value = settings.get("control_profile", "aggressive").lower()
+        if profile_value not in PROFILE_CONFIG:
+            profile_value = "aggressive"
         self.city_var = tk.StringVar(value=settings["city"])
         self.esp_url_var = tk.StringVar(value=settings["esp_base_url"])
         self.api_key_var = tk.StringVar(value=settings["openweather_api_key"])
         self.ollama_url_var = tk.StringVar(value=settings["ollama_url"])
         self.model_var = tk.StringVar(value=settings["ollama_model"])
+        self.profile_var = tk.StringVar(value=profile_value)
         self.ai_auto_var = tk.BooleanVar(value=True)
         self.status_var = tk.StringVar(value="Ready")
         self.last_advice_ts = 0.0
@@ -123,9 +199,17 @@ class App:
         self.esp_auto_mode = True
         self.ai_target_speed = None
         self.ai_applied_speed = None
+        self.last_esp = None
+        self.last_weather = None
+        self.last_air = None
+        self.fail_safe_mode = False
+        self.refresh_in_progress = False
+        self.refresh_lock = threading.Lock()
+        self.autotune_in_progress = False
+        self.calibration = load_calibration()
 
         self._build_ui()
-        self._schedule_refresh(initial=True)
+        self._schedule_refresh()
 
     def _build_ui(self):
         style = ttk.Style()
@@ -148,7 +232,18 @@ class App:
         ttk.Label(header, text="City:", style="Status.TLabel").pack(side="left", padx=(18, 4))
         city_entry = ttk.Entry(header, textvariable=self.city_var, width=20)
         city_entry.pack(side="left")
+        ttk.Label(header, text="Profile:", style="Status.TLabel").pack(side="left", padx=(12, 4))
+        profile_box = ttk.Combobox(
+            header,
+            textvariable=self.profile_var,
+            values=["quiet", "balanced", "aggressive"],
+            state="readonly",
+            width=10,
+        )
+        profile_box.pack(side="left")
         ttk.Button(header, text="Refresh", command=self.refresh_async).pack(side="left", padx=8)
+        self.autotune_btn = ttk.Button(header, text="Autotune", command=self.start_autotune)
+        self.autotune_btn.pack(side="left", padx=4)
         ttk.Button(header, text="Settings", command=self.open_settings_window).pack(side="left", padx=4)
         ttk.Checkbutton(
             header,
@@ -183,8 +278,17 @@ class App:
         self.mode_label.pack(anchor="w", pady=(8, 2))
         self.rpm_label = ttk.Label(self.fan_card, text="Fan RPM: --", style="Body.TLabel")
         self.rpm_label.pack(anchor="w", pady=2)
-        self.speed_label = ttk.Label(self.fan_card, text="Fan Speed: --%", style="Big.TLabel")
-        self.speed_label.pack(anchor="w", pady=(4, 10))
+        ttk.Label(self.fan_card, text="CURRENT FAN SPEED", style="CardTitle.TLabel").pack(anchor="w", pady=(8, 0))
+        self.current_speed_label = tk.Label(
+            self.fan_card,
+            text="--%",
+            bg="#1c2541",
+            fg="#22c55e",
+            font=("Segoe UI", 34, "bold"),
+        )
+        self.current_speed_label.pack(anchor="w", pady=(2, 8))
+        self.speed_detail_label = ttk.Label(self.fan_card, text="Target: --% | Source: --", style="Muted.TLabel")
+        self.speed_detail_label.pack(anchor="w", pady=(0, 6))
         ttk.Separator(self.fan_card, orient="horizontal").pack(fill="x", pady=8)
         self.aqi_label = ttk.Label(self.fan_card, text="AQI: --", style="Body.TLabel")
         self.aqi_label.pack(anchor="w", pady=2)
@@ -200,8 +304,12 @@ class App:
         self.ai_air_label.pack(anchor="w", pady=(8, 2))
         self.ai_fan_label = ttk.Label(self.fan_card, text="AI fan decision: --", style="Body.TLabel")
         self.ai_fan_label.pack(anchor="w", pady=(10, 2))
+        self.calibration_label = ttk.Label(self.fan_card, text="Calibration: not tuned", style="Muted.TLabel")
+        self.calibration_label.pack(anchor="w", pady=(2, 2))
         self.slider = ttk.Scale(self.fan_card, from_=0, to=100, orient="horizontal", command=self._manual_speed_changed)
         self.slider.pack(fill="x", pady=6)
+        if self.ai_auto_var.get():
+            self.slider.state(["disabled"])
         self.manual_note = ttk.Label(self.fan_card, text="Manual slider works when ESP mode is MANUAL", style="Muted.TLabel")
         self.manual_note.pack(anchor="w")
 
@@ -265,13 +373,24 @@ class App:
             ttk.Label(frame, text=label, style="Body.TLabel").grid(row=i, column=0, sticky="w", pady=6, padx=(0, 10))
             ttk.Entry(frame, textvariable=var).grid(row=i, column=1, sticky="ew", pady=6)
 
+        profile_row = len(fields)
+        ttk.Label(frame, text="Control Profile", style="Body.TLabel").grid(
+            row=profile_row, column=0, sticky="w", pady=6, padx=(0, 10)
+        )
+        ttk.Combobox(
+            frame,
+            textvariable=self.profile_var,
+            values=["quiet", "balanced", "aggressive"],
+            state="readonly",
+        ).grid(row=profile_row, column=1, sticky="ew", pady=6)
+
         def save_and_close():
             self.persist_settings()
             self.status_var.set("Settings saved")
             win.destroy()
 
         buttons = ttk.Frame(frame, style="Card.TFrame")
-        buttons.grid(row=len(fields), column=0, columnspan=2, sticky="e", pady=(14, 0))
+        buttons.grid(row=profile_row + 1, column=0, columnspan=2, sticky="e", pady=(14, 0))
         ttk.Button(buttons, text="Save", command=save_and_close).pack(side="left", padx=6)
         ttk.Button(buttons, text="Cancel", command=win.destroy).pack(side="left", padx=6)
 
@@ -283,34 +402,149 @@ class App:
                 "openweather_api_key": self.api_key_var.get().strip(),
                 "ollama_url": self.ollama_url_var.get().strip(),
                 "ollama_model": self.model_var.get().strip(),
+                "control_profile": self.profile_var.get().strip().lower(),
             }
         )
 
-    def _schedule_refresh(self, initial: bool = False):
-        if initial:
-            self.refresh_async()
+    def _schedule_refresh(self):
+        self.refresh_async()
         self.root.after(12000, self._schedule_refresh)
 
     def refresh_async(self):
+        if self.autotune_in_progress:
+            return
+        with self.refresh_lock:
+            if self.refresh_in_progress:
+                return
+            self.refresh_in_progress = True
         t = threading.Thread(target=self._refresh_worker, daemon=True)
         t.start()
 
+    def _set_status(self, text: str):
+        self.root.after(0, lambda: self.status_var.set(text))
+
+    def start_autotune(self):
+        if self.autotune_in_progress:
+            self._set_status("Autotune already running")
+            return
+        self.autotune_in_progress = True
+        self.autotune_btn.state(["disabled"])
+        threading.Thread(target=self._run_autotune, daemon=True).start()
+
+    def _run_autotune(self):
+        prev_speed = None
+        prev_auto = None
+        try:
+            self._set_status("Autotune: preparing")
+            esp0 = self._read_esp()
+            prev_speed = int(esp0.get("speed", 40))
+            prev_auto = bool(esp0.get("auto", False))
+
+            # Ensure MANUAL for sweep control and disable AI UI mode during tuning.
+            if prev_auto:
+                self._send_esp_command_json("/toggle")
+
+            sweep_points = [20, 30, 40, 50, 60, 70, 80, 90, 100]
+            samples = []
+            for pwm in sweep_points:
+                self._set_status(f"Autotune: testing {pwm}%")
+                self._send_esp_command_json(f"/set?speed={pwm}")
+                time.sleep(3.0)  # settle
+
+                rpms = []
+                for _ in range(6):
+                    st = self._read_esp()
+                    rpm = int(st.get("rpm", 0))
+                    if 0 <= rpm <= FAN_APP_MAX_RPM:
+                        rpms.append(rpm)
+                    time.sleep(0.35)
+                avg_rpm = int(round(sum(rpms) / len(rpms))) if rpms else 0
+                samples.append({"pwm": pwm, "rpm": avg_rpm})
+
+            # Enforce monotonic RPM curve to reduce noise effect.
+            monotonic = []
+            max_seen = 0
+            for s in samples:
+                max_seen = max(max_seen, int(s["rpm"]))
+                monotonic.append({"pwm": int(s["pwm"]), "rpm": int(max_seen)})
+
+            spin_up = next((s for s in monotonic if s["rpm"] >= 250), monotonic[0])
+            max_s = max(monotonic, key=lambda x: x["rpm"])
+            cal = {
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "samples": monotonic,
+                "spin_up_pwm": int(spin_up["pwm"]),
+                "spin_up_rpm": int(spin_up["rpm"]),
+                "max_rpm": int(clamp(int(max_s["rpm"]), 0, FAN_APP_MAX_RPM)),
+            }
+            self.calibration = cal
+            save_calibration(cal)
+
+            self._set_status(
+                f"Autotune done: spin-up {cal['spin_up_pwm']}%, max {cal['max_rpm']} RPM"
+            )
+        except Exception as e:
+            self._set_status(f"Autotune failed: {e}")
+        finally:
+            # Restore previous behavior.
+            try:
+                if prev_speed is not None:
+                    self._send_esp_command_json(f"/set?speed={prev_speed}")
+                if prev_auto:
+                    st = self._read_esp()
+                    if not st.get("auto", False):
+                        self._send_esp_command_json("/toggle")
+                self.last_esp = self._read_esp()
+            except Exception:
+                pass
+
+            self.autotune_in_progress = False
+            self.root.after(0, lambda: self.autotune_btn.state(["!disabled"]))
+            self.refresh_async()
+
     def _refresh_worker(self):
         try:
-            esp = self._read_esp()
-            self.root.after(0, lambda: self._set_esp_indicator(True))
-        except Exception as e:
-            self.root.after(0, lambda: self._set_esp_indicator(False))
-            self.status_var.set(f"ESP connection error: {e}")
-            return
+            try:
+                esp = self._read_esp()
+                self.last_esp = esp
+                self.root.after(0, lambda: self._set_esp_indicator(True))
+            except Exception as e:
+                self.root.after(0, lambda: self._set_esp_indicator(False))
+                self._set_status(f"ESP connection error: {e}")
+                return
 
-        try:
-            weather, air = self._read_openweather(self.city_var.get().strip())
-            fan_ai_speed, advice, pollution_comment = self._ai_actions(esp, weather, air)
-            self.root.after(0, lambda: self._update_ui(esp, weather, air, fan_ai_speed, advice, pollution_comment))
-            self.status_var.set(f"Updated at {time.strftime('%H:%M:%S')}")
-        except Exception as e:
-            self.status_var.set(f"Update error: {e}")
+            weather = None
+            air = None
+            weather_error = None
+            try:
+                weather, air = self._read_openweather(self.city_var.get().strip())
+                self.last_weather = weather
+                self.last_air = air
+                self.fail_safe_mode = False
+            except Exception as e:
+                weather_error = e
+                weather = self.last_weather
+                air = self.last_air
+                self.fail_safe_mode = True
+
+            if weather is None or air is None:
+                self._set_status(f"Update error: {weather_error}")
+                return
+
+            try:
+                fan_ai_speed, advice, pollution_comment = self._ai_actions(esp, weather, air, self.fail_safe_mode)
+                esp_ui = self.last_esp if isinstance(self.last_esp, dict) else esp
+                self._log_row(esp_ui, weather, air, fan_ai_speed)
+                self.root.after(0, lambda: self._update_ui(esp_ui, weather, air, fan_ai_speed, advice, pollution_comment))
+                if self.fail_safe_mode:
+                    self._set_status(f"Fail-safe active (weather): {weather_error}")
+                else:
+                    self._set_status(f"Updated at {time.strftime('%H:%M:%S')}")
+            except Exception as e:
+                self._set_status(f"Control update error: {e}")
+        finally:
+            with self.refresh_lock:
+                self.refresh_in_progress = False
 
     def _set_esp_indicator(self, online: bool):
         if online:
@@ -318,11 +552,48 @@ class App:
         else:
             self.esp_conn_label.configure(text="ESP32: Offline", bg="#7f1d1d", fg="#fecaca")
 
+    def _log_row(self, esp: dict, weather: dict, air: dict, fan_ai_speed):
+        exists = os.path.exists(LOG_FILE)
+        air_info = air["list"][0]
+        comps = air_info["components"]
+        row = {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "profile": self.profile_var.get().strip().lower(),
+            "fail_safe": int(self.fail_safe_mode),
+            "aqi": air_info["main"]["aqi"],
+            "pm2_5": round(float(comps.get("pm2_5", 0.0)), 2),
+            "pm10": round(float(comps.get("pm10", 0.0)), 2),
+            "fan_speed_reported": esp.get("speed"),
+            "fan_speed_ai_applied": fan_ai_speed if fan_ai_speed is not None else "",
+            "fan_speed_ai_target": self.ai_target_speed if self.ai_target_speed is not None else "",
+            "room_temp_c": esp.get("temp"),
+            "room_humidity_pct": esp.get("humidity"),
+            "outside_temp_c": weather["main"].get("temp"),
+            "outside_humidity_pct": weather["main"].get("humidity"),
+            "cmd_seq": esp.get("cmd_seq", ""),
+            "last_cmd_ms": esp.get("last_cmd_ms", ""),
+        }
+        with open(LOG_FILE, "a", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=list(row.keys()))
+            if not exists:
+                writer.writeheader()
+            writer.writerow(row)
+
     def _esp_base_url(self):
         return self.esp_url_var.get().strip().rstrip("/")
 
     def _read_esp(self):
-        return http_get_json(f"{self._esp_base_url()}/data")
+        try:
+            return http_get_json(f"{self._esp_base_url()}/state")
+        except Exception:
+            return http_get_json(f"{self._esp_base_url()}/data")
+
+    def _send_esp_command_json(self, path: str):
+        try:
+            return http_get_json(f"{self._esp_base_url()}{path}")
+        except Exception:
+            http_get_text(f"{self._esp_base_url()}{path}")
+            return self._read_esp()
 
     def _read_openweather(self, city: str):
         api_key = self.api_key_var.get().strip()
@@ -343,7 +614,7 @@ class App:
         )
         return weather, air
 
-    def _ai_actions(self, esp: dict, weather: dict, air: dict):
+    def _ai_actions(self, esp: dict, weather: dict, air: dict, force_fail_safe: bool = False):
         now = time.time()
         advice = None
         pollution_comment = None
@@ -355,15 +626,19 @@ class App:
         outside_humidity = weather["main"]["humidity"]
         air_main = air["list"][0]["main"]["aqi"]
         comps = air["list"][0]["components"]
+        profile_name = self.profile_var.get().strip().lower()
+        profile = PROFILE_CONFIG.get(profile_name, PROFILE_CONFIG["aggressive"])
 
         if self.ai_auto_var.get():
-            baseline = self._curve_baseline_speed(air_main, comps)
+            baseline = self._curve_baseline_speed(air_main, comps, profile)
 
             ai_target = baseline
-            if now - self.last_fan_ai_ts > 45:
+            use_llm_fan = (not force_fail_safe) and (now - self.last_fan_ai_ts > 45)
+            if use_llm_fan:
                 prompt = (
                     "You are controlling a DIY purifier with a strong 12V industrial fan and Xiaomi filter. "
-                    "Be aggressive for pollution spikes. Return one integer only from 38 to 100. "
+                    f"Current control profile is {profile_name}. "
+                    f"Return one integer only from {profile['min_speed']} to {profile['max_speed']}. "
                     f"AQI={air_main} ({aqi_label(air_main)}), PM2.5={comps.get('pm2_5', 0):.1f}, "
                     f"PM10={comps.get('pm10', 0):.1f}, NO2={comps.get('no2', 0):.1f}, O3={comps.get('o3', 0):.1f}, "
                     f"RoomTemp={room_temp}, RoomHumidity={humidity}, OutsideTemp={outside_temp:.1f}. "
@@ -378,13 +653,14 @@ class App:
                     ai_target = extract_speed(raw)
                 except Exception:
                     ai_target = baseline
+                    force_fail_safe = True
                 self.last_fan_ai_ts = now
             elif self.ai_target_speed is not None:
                 ai_target = self.ai_target_speed
 
-            # Blend AI result with deterministic curve so behavior stays stable.
-            blended_target = int(round((baseline * 0.65) + (ai_target * 0.35)))
-            self.ai_target_speed = int(clamp(blended_target, AI_MIN_SPEED, AI_MAX_SPEED))
+            blend_ai = 0.35 if not force_fail_safe else 0.0
+            blended_target = int(round((baseline * (1.0 - blend_ai)) + (ai_target * blend_ai)))
+            self.ai_target_speed = int(clamp(blended_target, profile["min_speed"], profile["max_speed"]))
 
             current_speed = int(esp.get("speed", 0))
             if self.ai_applied_speed is None:
@@ -392,10 +668,10 @@ class App:
 
             # Slew-rate limiter + deadband to avoid random on/off jumps.
             error = self.ai_target_speed - self.ai_applied_speed
-            step = int(clamp(error, -12, 12))
+            step = int(clamp(error, -profile["step"], profile["step"]))
             if abs(error) >= 2:
                 self.ai_applied_speed += step
-            self.ai_applied_speed = int(clamp(self.ai_applied_speed, AI_MIN_SPEED, AI_MAX_SPEED))
+            self.ai_applied_speed = int(clamp(self.ai_applied_speed, profile["min_speed"], profile["max_speed"]))
 
             should_push = (
                 abs(self.ai_applied_speed - current_speed) >= 2
@@ -403,12 +679,16 @@ class App:
             )
             if should_push:
                 self._ensure_esp_manual(esp)
-                http_get_text(f"{self._esp_base_url()}/set?speed={self.ai_applied_speed}")
+                confirm = self._send_esp_command_json(f"/set?speed={self.ai_applied_speed}")
+                self.last_esp = confirm
+                self.esp_auto_mode = bool(confirm.get("auto", False))
+                self.ai_applied_speed = int(confirm.get("speed", self.ai_applied_speed))
                 self.last_ai_push_ts = now
 
             fan_ai_speed = self.ai_applied_speed
 
-        if now - self.last_advice_ts > 45:
+        use_llm_advice = (not force_fail_safe) and (now - self.last_advice_ts > 45)
+        if use_llm_advice:
             temp_prompt = (
                 "Compare room and outside weather and suggest clothing in one short sentence. "
                 f"Room temp {room_temp}C, room humidity {humidity}%, outside temp {outside_temp:.1f}C, "
@@ -429,8 +709,17 @@ class App:
                 else:
                     advice = "Indoor and outdoor temperatures are similar; regular comfortable clothing is fine."
             self.last_advice_ts = now
+        elif advice is None:
+            delta = room_temp - outside_temp if isinstance(room_temp, (int, float)) else 0
+            if delta > 4:
+                advice = "Outside is cooler than your room. Wear a light jacket if going out."
+            elif delta < -4:
+                advice = "Outside is warmer than your room. Light, breathable clothes are best."
+            else:
+                advice = "Indoor and outdoor temperatures are similar; regular comfortable clothing is fine."
 
-        if now - self.last_pollution_comment_ts > 60:
+        use_llm_pollution = (not force_fail_safe) and (now - self.last_pollution_comment_ts > 60)
+        if use_llm_pollution:
             pollution_prompt = (
                 "In one short sentence, explain what this outdoor air quality means for comfort/health "
                 "and whether to keep purifier fan low, medium, or high. "
@@ -446,6 +735,8 @@ class App:
             except Exception:
                 pollution_comment = self._fallback_pollution_comment(air_main, comps)
             self.last_pollution_comment_ts = now
+        elif pollution_comment is None:
+            pollution_comment = self._fallback_pollution_comment(air_main, comps)
 
         return fan_ai_speed, advice, pollution_comment
 
@@ -459,34 +750,68 @@ class App:
             return "Air quality is poor; run medium-high to high fan speed and limit outside air intake."
         return "Air quality is very poor; keep purifier on high and reduce exposure to outdoor air."
 
-    def _curve_baseline_speed(self, aqi: int, comps: dict) -> int:
+    def _curve_baseline_speed(self, aqi: int, comps: dict, profile: dict) -> int:
         pm25 = float(comps.get("pm2_5", 0.0))
         pm10 = float(comps.get("pm10", 0.0))
         no2 = float(comps.get("no2", 0.0))
         o3 = float(comps.get("o3", 0.0))
 
         risk = 0.0
-        risk += (max(1, min(5, int(aqi))) - 1) / 4.0 * 0.50
-        risk += clamp(pm25 / 55.0, 0.0, 1.0) * 0.32
-        risk += clamp(pm10 / 120.0, 0.0, 1.0) * 0.10
+        risk += (max(1, min(5, int(aqi))) - 1) / 4.0 * profile["aqi_weight"]
+        risk += clamp(pm25 / 55.0, 0.0, 1.0) * profile["pm25_weight"]
+        risk += clamp(pm10 / 120.0, 0.0, 1.0) * profile["pm10_weight"]
         risk += clamp(no2 / 200.0, 0.0, 1.0) * 0.05
         risk += clamp(o3 / 180.0, 0.0, 1.0) * 0.05
         risk = clamp(risk, 0.0, 1.0)
 
-        # Aggressive S-curve: faster rise at moderate pollution.
-        shaped = math.pow(risk, 0.75)
+        shaped = math.pow(risk, profile["shape"])
         eased = 0.5 - 0.5 * math.cos(math.pi * shaped)
-        return int(round(AI_MIN_SPEED + (eased * (AI_MAX_SPEED - AI_MIN_SPEED))))
+        if self.calibration and isinstance(self.calibration.get("samples"), list):
+            pwm = self._pwm_from_calibration(eased, profile)
+            if pwm is not None:
+                return int(clamp(pwm, profile["min_speed"], profile["max_speed"]))
+        return int(round(profile["min_speed"] + (eased * (profile["max_speed"] - profile["min_speed"]))))
+
+    def _pwm_from_calibration(self, demand01: float, profile: dict) -> int | None:
+        samples = self.calibration.get("samples") if self.calibration else None
+        if not samples:
+            return None
+        valid = [{"pwm": int(s["pwm"]), "rpm": int(s["rpm"])} for s in samples if "pwm" in s and "rpm" in s]
+        if len(valid) < 2:
+            return None
+        valid.sort(key=lambda x: x["rpm"])
+        spin_rpm = int(self.calibration.get("spin_up_rpm", valid[0]["rpm"]))
+        max_rpm = int(clamp(int(self.calibration.get("max_rpm", valid[-1]["rpm"])), 0, FAN_APP_MAX_RPM))
+        if max_rpm <= spin_rpm:
+            return None
+
+        target_rpm = int(round(spin_rpm + clamp(demand01, 0.0, 1.0) * (max_rpm - spin_rpm)))
+
+        if target_rpm <= valid[0]["rpm"]:
+            return valid[0]["pwm"]
+        if target_rpm >= valid[-1]["rpm"]:
+            return valid[-1]["pwm"]
+
+        for i in range(1, len(valid)):
+            lo = valid[i - 1]
+            hi = valid[i]
+            if lo["rpm"] <= target_rpm <= hi["rpm"]:
+                if hi["rpm"] == lo["rpm"]:
+                    return hi["pwm"]
+                frac = (target_rpm - lo["rpm"]) / float(hi["rpm"] - lo["rpm"])
+                return int(round(lo["pwm"] + frac * (hi["pwm"] - lo["pwm"])))
+        return None
 
     def _ensure_esp_manual(self, esp: dict):
         if esp.get("auto"):
-            http_get_text(f"{self._esp_base_url()}/toggle")
-            self.esp_auto_mode = False
+            confirm = self._send_esp_command_json("/toggle")
+            self.last_esp = confirm
+            self.esp_auto_mode = bool(confirm.get("auto", False))
 
     def _manual_speed_changed(self, value):
         try:
             speed = int(float(value))
-            self.speed_label.configure(text=f"Fan Speed: {speed}%")
+            self.current_speed_label.configure(text=f"{speed}%")
             if self.slider_syncing:
                 return
             if self.ai_auto_var.get():
@@ -502,12 +827,16 @@ class App:
     def _send_manual_speed(self, speed: int):
         try:
             if self.esp_auto_mode:
-                http_get_text(f"{self._esp_base_url()}/toggle")
-                self.esp_auto_mode = False
-            http_get_text(f"{self._esp_base_url()}/set?speed={speed}")
-            self.status_var.set(f"Manual speed set: {speed}%")
+                confirm_toggle = self._send_esp_command_json("/toggle")
+                self.last_esp = confirm_toggle
+                self.esp_auto_mode = bool(confirm_toggle.get("auto", False))
+            confirm = self._send_esp_command_json(f"/set?speed={speed}")
+            self.last_esp = confirm
+            confirmed_speed = confirm.get("speed", speed)
+            seq = confirm.get("cmd_seq", "-")
+            self._set_status(f"Manual speed set: {confirmed_speed}% (seq {seq})")
         except Exception as e:
-            self.status_var.set(f"Manual set error: {e}")
+            self._set_status(f"Manual set error: {e}")
 
     def _on_ai_mode_toggle(self):
         if self.ai_auto_var.get():
@@ -515,20 +844,26 @@ class App:
             self.ai_applied_speed = None
             self.last_fan_ai_ts = 0.0
             self.last_ai_push_ts = 0.0
-            self.status_var.set("AI auto fan mode enabled")
+            self.fail_safe_mode = False
+            self.slider.state(["disabled"])
+            self._set_status("AI auto fan mode enabled")
             self.refresh_async()
             return
+        self.slider.state(["!disabled"])
         threading.Thread(target=self._force_manual_mode, daemon=True).start()
 
     def _force_manual_mode(self):
         try:
             esp = self._read_esp()
             if esp.get("auto"):
-                http_get_text(f"{self._esp_base_url()}/toggle")
-            self.esp_auto_mode = False
-            self.status_var.set("AI mode off: ESP set to MANUAL")
+                confirm = self._send_esp_command_json("/toggle")
+                self.last_esp = confirm
+                self.esp_auto_mode = bool(confirm.get("auto", False))
+            else:
+                self.esp_auto_mode = False
+            self._set_status("AI mode off: ESP set to MANUAL")
         except Exception as e:
-            self.status_var.set(f"Mode switch error: {e}")
+            self._set_status(f"Mode switch error: {e}")
 
     def _update_ui(self, esp: dict, weather: dict, air: dict, fan_ai_speed, advice, pollution_comment):
         outside = weather["main"]
@@ -539,12 +874,18 @@ class App:
 
         mode_text = "AUTO" if esp.get("auto") else "MANUAL"
         self.esp_auto_mode = bool(esp.get("auto"))
-        self.mode_label.configure(text=f"Mode: {mode_text}")
+        seq = esp.get("cmd_seq", "-")
+        self.mode_label.configure(text=f"Mode: {mode_text} | Profile: {self.profile_var.get()} | Seq: {seq}")
         self.rpm_label.configure(text=f"Fan RPM: {esp.get('rpm', '--')}")
-        self.speed_label.configure(text=f"Fan Speed: {esp.get('speed', '--')}%")
+        current_speed = esp.get("speed", "--")
+        self.current_speed_label.configure(text=f"{current_speed}%")
         self.slider_syncing = True
         self.slider.set(esp.get("speed", 0))
         self.slider_syncing = False
+        if self.ai_auto_var.get():
+            self.slider.state(["disabled"])
+        else:
+            self.slider.state(["!disabled"])
         self.aqi_label.configure(text=f"AQI: {aqi} ({aqi_label(aqi)})")
         self.pollutant_label.configure(
             text=(
@@ -554,11 +895,21 @@ class App:
         )
         if fan_ai_speed is not None and self.ai_auto_var.get():
             target_txt = self.ai_target_speed if self.ai_target_speed is not None else fan_ai_speed
-            self.ai_fan_label.configure(text=f"AI fan decision: {fan_ai_speed}% (target {target_txt}%)")
+            fs = "fail-safe" if self.fail_safe_mode else "ai"
+            self.ai_fan_label.configure(text=f"AI fan decision: {fan_ai_speed}% (target {target_txt}%, {fs})")
+            self.speed_detail_label.configure(text=f"Target: {target_txt}% | Source: AI ({fs})")
         elif not self.ai_auto_var.get():
             self.ai_fan_label.configure(text="AI fan decision: off")
+            self.speed_detail_label.configure(text="Target: manual slider | Source: manual")
         if pollution_comment:
             self.ai_air_label.configure(text=f"Air insight: {pollution_comment}")
+
+        if self.calibration and isinstance(self.calibration.get("samples"), list):
+            spin = self.calibration.get("spin_up_pwm", "--")
+            mx = self.calibration.get("max_rpm", "--")
+            self.calibration_label.configure(text=f"Calibration: tuned (spin-up {spin}%, max {mx} RPM)")
+        else:
+            self.calibration_label.configure(text="Calibration: not tuned")
 
         self.room_temp_label.configure(text=f"{esp.get('temp', '--')} C")
         self.room_hum_label.configure(text=f"Humidity: {esp.get('humidity', '--')} %")

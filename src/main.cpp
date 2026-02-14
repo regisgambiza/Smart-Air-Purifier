@@ -21,6 +21,9 @@ const int tachPins[FAN_COUNT] = {34};
 
 #define PWM_FREQ 25000
 #define PWM_RES 8
+#define FAN_TACH_PULSES_PER_REV 2
+#define FAN_MAX_VALID_RPM 2200
+#define TACH_DEBOUNCE_US 1800
 
 // ===== TEMP SENSOR =====
 #define ONE_WIRE_BUS 4
@@ -35,7 +38,9 @@ Adafruit_SHT31 sht30 = Adafruit_SHT31();
 WebServer server(80);
 
 volatile uint32_t tachCount[FAN_COUNT] = {0};
+volatile uint32_t tachLastMicros[FAN_COUNT] = {0};
 uint32_t rpm[FAN_COUNT] = {0};
+float rpmFiltered[FAN_COUNT] = {0.0f};
 uint8_t fanSpeed[FAN_COUNT] = {40};
 
 bool autoMode = true;
@@ -43,9 +48,18 @@ float dsTemperatureC = 0;
 float shtTemperatureC = NAN;
 float humidityRH = NAN;
 bool shtOnline = false;
+uint32_t lastCommandMs = 0;
+uint32_t commandSeq = 0;
+String lastCommand = "boot";
 
 // ===== INTERRUPTS =====
-void IRAM_ATTR tach0() { tachCount[0]++; }
+void IRAM_ATTR tach0() {
+    uint32_t nowUs = micros();
+    if ((uint32_t)(nowUs - tachLastMicros[0]) >= TACH_DEBOUNCE_US) {
+        tachCount[0]++;
+        tachLastMicros[0] = nowUs;
+    }
+}
 
 // ===== SET FAN SPEED =====
 void setFanSpeed(int fan, uint8_t percent) {
@@ -72,7 +86,10 @@ String getJSON() {
     json += "\"sht_ok\":" + String(shtOnline ? "true" : "false") + ",";
     json += "\"auto\":" + String(autoMode ? "true" : "false") + ",";
     json += "\"rpm\":" + String(rpm[0]) + ",";
-    json += "\"speed\":" + String(fanSpeed[0]);
+    json += "\"speed\":" + String(fanSpeed[0]) + ",";
+    json += "\"last_cmd_ms\":" + String(lastCommandMs) + ",";
+    json += "\"cmd_seq\":" + String(commandSeq) + ",";
+    json += "\"last_cmd\":\"" + lastCommand + "\"";
     json += "}";
     return json;
 }
@@ -272,13 +289,23 @@ void handleSet() {
     if (!autoMode && server.hasArg("speed")) {
         int speed = server.arg("speed").toInt();
         setFanSpeed(0, speed);
+        lastCommandMs = millis();
+        commandSeq++;
+        lastCommand = "set";
     }
-    server.send(200, "text/plain", "OK");
+    server.send(200, "application/json", getJSON());
 }
 
 void handleToggle() {
     autoMode = !autoMode;
-    server.send(200, "text/plain", "OK");
+    lastCommandMs = millis();
+    commandSeq++;
+    lastCommand = "toggle";
+    server.send(200, "application/json", getJSON());
+}
+
+void handleState() {
+    server.send(200, "application/json", getJSON());
 }
 
 void setupOTA() {
@@ -332,6 +359,7 @@ void setup() {
 
     server.on("/", handleRoot);
     server.on("/data", handleData);
+    server.on("/state", handleState);
     server.on("/set", handleSet);
     server.on("/toggle", handleToggle);
     server.begin();
@@ -343,7 +371,10 @@ void loop() {
     server.handleClient();
 
     static uint32_t last = 0;
-    if (millis() - last >= 1000) {
+    uint32_t nowMs = millis();
+    if (nowMs - last >= 1000) {
+        uint32_t elapsedMs = nowMs - last;
+        last = nowMs;
 
         sensors.requestTemperatures();
         dsTemperatureC = sensors.getTempCByIndex(0);
@@ -360,7 +391,15 @@ void loop() {
             uint32_t count = tachCount[i];
             tachCount[i] = 0;
             interrupts();
-            rpm[i] = (count / 2) * 60;
+
+            float pulsesPerSecond = (count * 1000.0f) / (float)elapsedMs;
+            float rawRpm = (pulsesPerSecond * 60.0f) / FAN_TACH_PULSES_PER_REV;
+            rawRpm = constrain(rawRpm, 0.0f, (float)FAN_MAX_VALID_RPM);
+
+            // Smooth tach feedback so UI does not jump on occasional pulse jitter.
+            const float alpha = 0.35f;
+            rpmFiltered[i] = (alpha * rawRpm) + ((1.0f - alpha) * rpmFiltered[i]);
+            rpm[i] = (uint32_t)(rpmFiltered[i] + 0.5f);
 
             if (autoMode) {
                 float controlTemp = !isnan(shtTemperatureC) ? shtTemperatureC : dsTemperatureC;
@@ -368,7 +407,5 @@ void loop() {
                 setFanSpeed(i, autoSpeed);
             }
         }
-
-        last = millis();
     }
 }
