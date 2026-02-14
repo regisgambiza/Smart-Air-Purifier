@@ -1,0 +1,2 @@
+# This desktop app currently uses only Python standard library modules.
+# No third-party pip packages are required.
