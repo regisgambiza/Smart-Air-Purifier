@@ -15,12 +15,21 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import parse_qsl, quote_plus, urlencode, urlparse, urlunparse
 from urllib.request import Request, urlopen
 
+try:
+    from PIL import Image, ImageDraw, ImageTk
+except Exception:
+    Image = None
+    ImageDraw = None
+    ImageTk = None
+
 
 SETTINGS_FILE = "desktop_app_settings.json"
 LOG_FILE = "air_purifier_timeseries.csv"
 DEBUG_LOG_FILE = "app_debug.log"
 CALIBRATION_FILE = "fan_calibration.json"
 FILTER_STATE_FILE = "filter_state.json"
+FAN_ICON_FILE = "fan_icon.png"
+FAN_ICON_SIZE_PX = 56
 
 DEFAULT_OPENWEATHER_API_KEY = "56672a7fddd6d20e51a88155f0b4a0f2"
 DEFAULT_ESP_BASE_URL = "http://192.168.1.132"
@@ -37,6 +46,10 @@ MAX_URL_LEN = 200
 MAX_API_KEY_LEN = 64
 MIN_FILTER_HOURS = 100.0
 MAX_FILTER_HOURS = 5000.0
+ESP_REFRESH_INTERVAL_MS = 8000
+WEATHER_REFRESH_INTERVAL_SECONDS = 240
+LLM_MIN_INTERVAL_SECONDS = 120
+LLM_MAX_INTERVAL_SECONDS = 300
 
 CITY_ALLOWED_RE = re.compile(r"[^A-Za-z0-9\s,.'-]+")
 MODEL_ALLOWED_RE = re.compile(r"[^A-Za-z0-9._:-]+")
@@ -71,6 +84,11 @@ PROFILE_CONFIG = {
         "step": 12,
     },
 }
+
+if Image is not None:
+    PIL_BICUBIC = Image.Resampling.BICUBIC if hasattr(Image, "Resampling") else Image.BICUBIC
+else:
+    PIL_BICUBIC = None
 
 
 def configure_debug_logger() -> logging.Logger:
@@ -711,6 +729,8 @@ class FilterTracker:
 class DataManager:
     def __init__(self, logger: logging.Logger):
         self.logger = logger
+        self.geo_cache_lock = threading.Lock()
+        self.geo_cache: dict[str, tuple[float, float]] = {}
 
     def _request(
         self,
@@ -820,16 +840,26 @@ class DataManager:
         if not api_key:
             raise RuntimeError("OpenWeather API key is empty")
 
-        city_q = quote_plus(city)
-        geo = self.request_json(
-            f"http://api.openweathermap.org/geo/1.0/direct?q={city_q}&limit=1&appid={api_key}",
-            timeout=8,
-        )
-        if not geo:
-            raise RuntimeError(f"City not found: {city}")
+        city_key = (city or "").strip().lower()
+        lat = None
+        lon = None
+        with self.geo_cache_lock:
+            cached = self.geo_cache.get(city_key)
+        if cached is not None:
+            lat, lon = cached
+        else:
+            city_q = quote_plus(city)
+            geo = self.request_json(
+                f"http://api.openweathermap.org/geo/1.0/direct?q={city_q}&limit=1&appid={api_key}",
+                timeout=8,
+            )
+            if not geo:
+                raise RuntimeError(f"City not found: {city}")
+            lat = float(geo[0]["lat"])
+            lon = float(geo[0]["lon"])
+            with self.geo_cache_lock:
+                self.geo_cache[city_key] = (lat, lon)
 
-        lat = geo[0]["lat"]
-        lon = geo[0]["lon"]
         weather = self.request_json(
             f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={api_key}&units=metric",
             timeout=8,
@@ -872,6 +902,9 @@ class AIController:
         self.cached_fan_speed: int | None = None
         self.cached_advice: str | None = None
         self.cached_pollution_comment: str | None = None
+        self.last_fan_context: dict | None = None
+        self.last_weather_context: dict | None = None
+        self.last_pollution_context: dict | None = None
 
     @staticmethod
     def extract_speed(text: str, min_speed: int, max_speed: int, default_speed: int) -> int:
@@ -904,6 +937,43 @@ class AIController:
 
         return int(round(profile["min_speed"] + (eased * (profile["max_speed"] - profile["min_speed"]))))
 
+    def _should_query_llm(
+        self,
+        now: float,
+        last_ts: float,
+        last_context: dict | None,
+        current_context: dict,
+    ) -> bool:
+        elapsed = now - last_ts
+        if elapsed >= LLM_MAX_INTERVAL_SECONDS:
+            return True
+        if elapsed < LLM_MIN_INTERVAL_SECONDS:
+            return False
+        if last_context is None:
+            return True
+        return self._context_changed(last_context, current_context)
+
+    @staticmethod
+    def _context_changed(previous: dict, current: dict) -> bool:
+        for key, current_value in current.items():
+            previous_value = previous.get(key)
+            if isinstance(current_value, (int, float)) and isinstance(previous_value, (int, float)):
+                threshold = 0.5
+                if key in {"aqi"}:
+                    threshold = 1.0
+                elif key in {"pm2_5", "pm10"}:
+                    threshold = 6.0
+                elif key in {"room_temp", "outside_temp"}:
+                    threshold = 1.2
+                elif key in {"room_humidity", "outside_humidity"}:
+                    threshold = 8.0
+                if abs(float(current_value) - float(previous_value)) >= threshold:
+                    return True
+            else:
+                if str(previous_value) != str(current_value):
+                    return True
+        return False
+
     def decide_fan_target(
         self,
         config: AppConfig,
@@ -923,14 +993,29 @@ class AIController:
 
         ai_target = baseline
         llm_failed = False
+        room_temp = safe_float(esp.get("temp"), 0.0)
+        humidity = safe_float(esp.get("humidity"), 0.0)
+        outside_temp = safe_float(weather.get("main", {}).get("temp"), 0.0)
+        air_main = safe_int(air.get("list", [{}])[0].get("main", {}).get("aqi"), 3)
+        components = air.get("list", [{}])[0].get("components", {})
+        fan_context = {
+            "aqi": air_main,
+            "pm2_5": safe_float(components.get("pm2_5"), 0.0),
+            "pm10": safe_float(components.get("pm10"), 0.0),
+            "no2": safe_float(components.get("no2"), 0.0),
+            "o3": safe_float(components.get("o3"), 0.0),
+            "room_temp": room_temp,
+            "outside_temp": outside_temp,
+            "room_humidity": humidity,
+        }
 
-        should_query_llm = (now - self.last_fan_ai_ts > 45) or self.cached_fan_speed is None
+        should_query_llm = self.cached_fan_speed is None or self._should_query_llm(
+            now=now,
+            last_ts=self.last_fan_ai_ts,
+            last_context=self.last_fan_context,
+            current_context=fan_context,
+        )
         if should_query_llm:
-            room_temp = esp.get("temp")
-            humidity = esp.get("humidity")
-            outside_temp = weather.get("main", {}).get("temp")
-            air_main = safe_int(air.get("list", [{}])[0].get("main", {}).get("aqi"), 3)
-            components = air.get("list", [{}])[0].get("components", {})
 
             prompt = (
                 "You are controlling a DIY purifier with a strong 12V industrial fan and Xiaomi filter. "
@@ -962,6 +1047,7 @@ class AIController:
                 llm_failed = True
 
             self.last_fan_ai_ts = now
+            self.last_fan_context = fan_context
         else:
             ai_target = safe_int(self.cached_fan_speed, baseline)
 
@@ -975,22 +1061,43 @@ class AIController:
         outside_temp = safe_float(weather.get("main", {}).get("temp"), 0.0)
         room_humidity = safe_float(esp.get("humidity"), 0.0)
         outside_humidity = safe_float(weather.get("main", {}).get("humidity"), 0.0)
+        weather_desc = str(weather.get("weather", [{}])[0].get("description", "--")).lower()
+        weather_context = {
+            "room_temp": room_temp,
+            "outside_temp": outside_temp,
+            "room_humidity": room_humidity,
+            "outside_humidity": outside_humidity,
+            "weather_desc": weather_desc,
+            "wind_speed": safe_float(weather.get("wind", {}).get("speed"), 0.0),
+        }
 
         if force_fail_safe:
-            advice = self._fallback_temperature_advice(room_temp, outside_temp)
+            advice = self._fallback_weather_comment(room_temp, outside_temp, outside_humidity, weather_desc)
             self.cached_advice = advice
             return advice
 
         now = time.time()
-        should_query_llm = (now - self.last_advice_ts > 45) or not self.cached_advice
+        should_query_llm = not self.cached_advice or self._should_query_llm(
+            now=now,
+            last_ts=self.last_advice_ts,
+            last_context=self.last_weather_context,
+            current_context=weather_context,
+        )
         if not should_query_llm:
-            return self.cached_advice or self._fallback_temperature_advice(room_temp, outside_temp)
+            return self.cached_advice or self._fallback_weather_comment(
+                room_temp,
+                outside_temp,
+                outside_humidity,
+                weather_desc,
+            )
 
         prompt = (
-            "Compare room and outside weather and suggest clothing in one short sentence. "
+            "Provide one short practical weather note for the next few hours. "
+            "Focus on comfort, ventilation, rain/wind, and air freshness; do not focus on clothing. "
             f"Room temp {room_temp:.1f}C, room humidity {room_humidity:.0f}%, "
             f"outside temp {outside_temp:.1f}C, outside humidity {outside_humidity:.0f}%, "
-            f"conditions {weather.get('weather', [{}])[0].get('description', '--')}"
+            f"conditions {weather.get('weather', [{}])[0].get('description', '--')}, "
+            f"wind {safe_float(weather.get('wind', {}).get('speed'), 0.0):.1f} m/s."
         )
 
         try:
@@ -1005,17 +1112,30 @@ class AIController:
             self.cached_advice = advice
             self.health_monitor.record_ai_success()
         except Exception as error:
-            self.logger.warning("Temperature advice fallback: %s", error)
+            self.logger.warning("Weather comment fallback: %s", error)
             self.health_monitor.record_ai_failure(str(error))
-            self.cached_advice = self._fallback_temperature_advice(room_temp, outside_temp)
+            self.cached_advice = self._fallback_weather_comment(
+                room_temp,
+                outside_temp,
+                outside_humidity,
+                weather_desc,
+            )
 
         self.last_advice_ts = now
+        self.last_weather_context = weather_context
         return self.cached_advice
 
     def pollution_comment(self, config: AppConfig, air: dict, force_fail_safe: bool = False) -> str:
         air_info = (air.get("list") or [{}])[0]
         aqi = safe_int((air_info.get("main") or {}).get("aqi"), 3)
         components = air_info.get("components") or {}
+        pollution_context = {
+            "aqi": aqi,
+            "pm2_5": safe_float(components.get("pm2_5"), 0.0),
+            "pm10": safe_float(components.get("pm10"), 0.0),
+            "no2": safe_float(components.get("no2"), 0.0),
+            "o3": safe_float(components.get("o3"), 0.0),
+        }
 
         if force_fail_safe:
             comment = self._fallback_pollution_comment(aqi, components)
@@ -1023,7 +1143,12 @@ class AIController:
             return comment
 
         now = time.time()
-        should_query_llm = (now - self.last_pollution_comment_ts > 60) or not self.cached_pollution_comment
+        should_query_llm = not self.cached_pollution_comment or self._should_query_llm(
+            now=now,
+            last_ts=self.last_pollution_comment_ts,
+            last_context=self.last_pollution_context,
+            current_context=pollution_context,
+        )
         if not should_query_llm:
             return self.cached_pollution_comment or self._fallback_pollution_comment(aqi, components)
 
@@ -1052,16 +1177,29 @@ class AIController:
             self.cached_pollution_comment = self._fallback_pollution_comment(aqi, components)
 
         self.last_pollution_comment_ts = now
+        self.last_pollution_context = pollution_context
         return self.cached_pollution_comment
 
     @staticmethod
-    def _fallback_temperature_advice(room_temp: float, outside_temp: float) -> str:
+    def _fallback_weather_comment(
+        room_temp: float,
+        outside_temp: float,
+        outside_humidity: float,
+        weather_desc: str,
+    ) -> str:
+        if "rain" in weather_desc or "storm" in weather_desc or "drizzle" in weather_desc:
+            return "Rain is likely outside; keep windows mostly closed and run steady purifier airflow."
+        if "fog" in weather_desc or "mist" in weather_desc:
+            return "Outdoor air is misty; short ventilation bursts are better than long open-window periods."
+        if outside_humidity >= 78:
+            return "Outside humidity is high right now; limit long ventilation and keep indoor airflow consistent."
+
         delta = room_temp - outside_temp
-        if delta > 4:
-            return "Outside is cooler than your room. Wear a light jacket if going out."
-        if delta < -4:
-            return "Outside is warmer than your room. Light, breathable clothes are best."
-        return "Indoor and outdoor temperatures are similar; regular comfortable clothing is fine."
+        if delta > 5:
+            return "Outside is noticeably cooler than indoors; brief ventilation can help cool the room."
+        if delta < -5:
+            return "Outside is warmer than indoors; keep windows limited during peak heat hours."
+        return "Weather is fairly stable; keep moderate airflow and ventilate briefly as needed."
 
     @staticmethod
     def _fallback_pollution_comment(aqi: int, components: dict) -> str:
@@ -1159,10 +1297,15 @@ class App:
         self.refresh_in_progress = False
         self.autotune_in_progress = False
         self.slider_syncing = False
+        self.manual_state_lock = threading.Lock()
+        self.manual_pending_speed: int | None = None
+        self.manual_sender_running = False
+        self.manual_override_until = 0.0
 
         self.last_esp: dict | None = None
         self.last_weather: dict | None = None
         self.last_air: dict | None = None
+        self.last_weather_fetch_ts = 0.0
         self.fail_safe_mode = False
 
         self.esp_auto_mode = True
@@ -1170,10 +1313,14 @@ class App:
 
         self.fan_anim_frames = ["|", "/", "-", "\\"]
         self.fan_anim_index = 0
+        self.fan_icon_base = None
+        self.fan_icon_frame = None
+        self.fan_icon_angle = 0.0
 
         self.root.title("Smart Air Purifier Desktop")
         self.root.geometry("960x560")
         self.root.configure(bg="#0b132b")
+        self._init_fan_icon()
 
         self._build_ui()
         self._bind_shortcuts()
@@ -1185,6 +1332,57 @@ class App:
 
         self._schedule_refresh()
         self._tick_fan_animation()
+
+    def _create_default_fan_icon(self, output_path: str) -> None:
+        if Image is None or ImageDraw is None:
+            return
+
+        size = 300
+        center = size // 2
+        blade_layer = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+        blade_draw = ImageDraw.Draw(blade_layer)
+
+        # Build a single rounded blade, then rotate it for 4-blade propeller layout.
+        blade_draw.ellipse((center - 40, 18, center + 40, center + 120), fill=(0, 0, 0, 255))
+        blade_draw.ellipse((center - 30, center - 6, center + 30, center + 62), fill=(0, 0, 0, 255))
+        blade_draw.polygon(
+            [
+                (center - 34, center + 30),
+                (center + 34, center + 30),
+                (center + 20, center + 138),
+                (center - 20, center + 138),
+            ],
+            fill=(0, 0, 0, 255),
+        )
+
+        icon = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+        for angle in (0, 90, 180, 270):
+            rotated_blade = blade_layer.rotate(angle, resample=PIL_BICUBIC, expand=False)
+            icon.alpha_composite(rotated_blade)
+
+        hub_draw = ImageDraw.Draw(icon)
+        hub_draw.ellipse((center - 34, center - 34, center + 34, center + 34), fill=(0, 0, 0, 255))
+        hub_draw.ellipse((center - 10, center - 10, center + 10, center + 10), fill=(0, 0, 0, 0))
+        icon.save(output_path, format="PNG")
+
+    def _init_fan_icon(self) -> None:
+        if Image is None or ImageTk is None:
+            self.logger.warning("Pillow is not installed. Falling back to text fan spinner.")
+            return
+
+        try:
+            if not os.path.exists(FAN_ICON_FILE):
+                self._create_default_fan_icon(FAN_ICON_FILE)
+
+            image = Image.open(FAN_ICON_FILE).convert("RGBA")
+            image = image.resize((FAN_ICON_SIZE_PX, FAN_ICON_SIZE_PX), resample=PIL_BICUBIC)
+            self.fan_icon_base = image
+            self.fan_icon_frame = ImageTk.PhotoImage(image)
+            self.logger.info("Fan icon loaded from %s", FAN_ICON_FILE)
+        except Exception:
+            self.logger.exception("Failed to load fan icon image. Falling back to text spinner.")
+            self.fan_icon_base = None
+            self.fan_icon_frame = None
 
     def _build_ui(self) -> None:
         style = ttk.Style()
@@ -1261,9 +1459,9 @@ class App:
         cards.columnconfigure(1, weight=1)
         cards.rowconfigure(0, weight=1, minsize=430)
 
-        self.fan_card = ttk.Frame(cards, style="PrimaryCard.TFrame", padding=16, relief="solid", borderwidth=1)
+        self.fan_card = ttk.Frame(cards, style="PrimaryCard.TFrame", padding=16)
         self.fan_card.grid(row=0, column=0, sticky="nsew", padx=(0, 8))
-        self.temp_card = ttk.Frame(cards, style="PrimaryCard.TFrame", padding=16, relief="solid", borderwidth=1)
+        self.temp_card = ttk.Frame(cards, style="PrimaryCard.TFrame", padding=16)
         self.temp_card.grid(row=0, column=1, sticky="nsew", padx=(8, 0))
         self.fan_card.grid_propagate(False)
         self.temp_card.grid_propagate(False)
@@ -1295,6 +1493,8 @@ class App:
             font=("Consolas", 26, "bold"),
             padx=12,
         )
+        if self.fan_icon_frame is not None:
+            self.fan_anim_label.configure(image=self.fan_icon_frame, text="")
         self.fan_anim_label.pack(side="left", pady=(6, 0))
 
         self.speed_detail_label = ttk.Label(self.fan_card, text="Target: --% | Source: --", style="Muted.TLabel")
@@ -1346,7 +1546,7 @@ class App:
         climate_grid.columnconfigure(0, weight=1)
         climate_grid.columnconfigure(1, weight=1)
 
-        indoor = ttk.Frame(climate_grid, style="SubCard.TFrame", padding=8, relief="solid", borderwidth=1)
+        indoor = ttk.Frame(climate_grid, style="SubCard.TFrame", padding=8)
         indoor.grid(row=0, column=0, sticky="nsew", padx=(0, 8))
         ttk.Label(indoor, text="Indoor", style="SubCardTitle.TLabel").pack(anchor="w")
         self.room_temp_label = ttk.Label(indoor, text="-- C", style="SubBig.TLabel")
@@ -1354,7 +1554,7 @@ class App:
         self.room_hum_label = ttk.Label(indoor, text="Humidity: -- %", style="SubBody.TLabel")
         self.room_hum_label.pack(anchor="w", pady=2)
 
-        outdoor = ttk.Frame(climate_grid, style="SubCard.TFrame", padding=8, relief="solid", borderwidth=1)
+        outdoor = ttk.Frame(climate_grid, style="SubCard.TFrame", padding=8)
         outdoor.grid(row=0, column=1, sticky="nsew", padx=(8, 0))
         ttk.Label(outdoor, text="Outdoor", style="SubCardTitle.TLabel").pack(anchor="w")
         self.out_temp_label = ttk.Label(outdoor, text="-- C", style="SubBig.TLabel")
@@ -1365,16 +1565,16 @@ class App:
         self.out_desc_label = ttk.Label(self.temp_card, text="Conditions: --", style="Muted.TLabel")
         self.out_desc_label.pack(anchor="w", pady=(8, 2))
 
-        footers = ttk.Frame(self.root, style="Card.TFrame")
-        footers.pack(fill="x", padx=18, pady=(4, 6))
-        footers.columnconfigure(0, weight=1)
-        footers.columnconfigure(1, weight=1)
+        self.footer_card = ttk.Frame(self.root, style="FooterCard.TFrame", padding=12)
+        self.footer_card.pack(fill="x", padx=18, pady=(4, 6))
+        self.footer_card.columnconfigure(0, weight=1)
+        self.footer_card.columnconfigure(1, weight=1)
 
-        self.air_footer_card = ttk.Frame(footers, style="FooterCard.TFrame", padding=12, relief="solid", borderwidth=1)
-        self.air_footer_card.grid(row=0, column=0, sticky="nsew", padx=(0, 8))
-        ttk.Label(self.air_footer_card, text="Air Quality", style="CardTitle.TLabel").pack(anchor="w")
+        air_section = ttk.Frame(self.footer_card, style="FooterCard.TFrame")
+        air_section.grid(row=0, column=0, sticky="nsew", padx=(0, 8))
+        ttk.Label(air_section, text="Air Quality", style="CardTitle.TLabel").pack(anchor="w")
         self.ai_air_footer_label = ttk.Label(
-            self.air_footer_card,
+            air_section,
             text="--",
             style="Body.TLabel",
             wraplength=420,
@@ -1382,11 +1582,11 @@ class App:
         )
         self.ai_air_footer_label.pack(anchor="w", pady=(6, 0))
 
-        self.advice_footer_card = ttk.Frame(footers, style="FooterCard.TFrame", padding=12, relief="solid", borderwidth=1)
-        self.advice_footer_card.grid(row=0, column=1, sticky="nsew", padx=(8, 0))
-        ttk.Label(self.advice_footer_card, text="Temperature", style="CardTitle.TLabel").pack(anchor="w")
+        advice_section = ttk.Frame(self.footer_card, style="FooterCard.TFrame")
+        advice_section.grid(row=0, column=1, sticky="nsew", padx=(8, 0))
+        ttk.Label(advice_section, text="Weather Notes", style="CardTitle.TLabel").pack(anchor="w")
         self.ai_advice_footer_label = ttk.Label(
-            self.advice_footer_card,
+            advice_section,
             text="--",
             style="Body.TLabel",
             wraplength=420,
@@ -1435,8 +1635,18 @@ class App:
     def _tick_fan_animation(self):
         if self.shutdown_event.is_set() or not self.root.winfo_exists():
             return
-        self.fan_anim_index = (self.fan_anim_index + 1) % len(self.fan_anim_frames)
-        self.fan_anim_label.configure(text=self.fan_anim_frames[self.fan_anim_index])
+
+        if self.fan_icon_base is not None and ImageTk is not None:
+            if self.current_speed_pct > 0:
+                degrees_per_tick = clamp(4.0 + (self.current_speed_pct * 0.22), 4.0, 26.0)
+                self.fan_icon_angle = (self.fan_icon_angle + degrees_per_tick) % 360.0
+            rotated = self.fan_icon_base.rotate(-self.fan_icon_angle, resample=PIL_BICUBIC, expand=False)
+            self.fan_icon_frame = ImageTk.PhotoImage(rotated)
+            self.fan_anim_label.configure(image=self.fan_icon_frame, text="")
+        else:
+            self.fan_anim_index = (self.fan_anim_index + 1) % len(self.fan_anim_frames)
+            self.fan_anim_label.configure(text=self.fan_anim_frames[self.fan_anim_index])
+
         delay_ms = int(clamp(520 - (self.current_speed_pct * 4), 90, 520))
         self.root.after(delay_ms, self._tick_fan_animation)
 
@@ -1533,7 +1743,7 @@ class App:
         if self.shutdown_event.is_set():
             return
         self.refresh_async()
-        self.root.after(12000, self._schedule_refresh)
+        self.root.after(ESP_REFRESH_INTERVAL_MS, self._schedule_refresh)
 
     def refresh_async(self):
         if self.autotune_in_progress:
@@ -1640,6 +1850,7 @@ class App:
         config = self._current_config(strict=False)
         local_fail_safe = False
         weather_error = None
+        used_cached_weather = False
 
         try:
             try:
@@ -1653,21 +1864,33 @@ class App:
                 self._set_status("ESP32 is unreachable. Check power/network.")
                 return
 
-            weather = None
-            air = None
-            try:
-                weather, air = self.data_manager.read_openweather(config.city, config.openweather_api_key)
-                self.last_weather = weather
-                self.last_air = air
-                self.health_monitor.record_api_success()
-                self.fail_safe_mode = False
-            except Exception as error:
-                weather_error = error
-                weather = self.last_weather
-                air = self.last_air
-                local_fail_safe = True
-                self.fail_safe_mode = True
-                self.health_monitor.record_api_failure(str(error))
+            now_ts = time.time()
+            weather = self.last_weather
+            air = self.last_air
+            should_fetch_weather = (
+                weather is None
+                or air is None
+                or (now_ts - self.last_weather_fetch_ts) >= WEATHER_REFRESH_INTERVAL_SECONDS
+            )
+
+            if should_fetch_weather:
+                try:
+                    weather, air = self.data_manager.read_openweather(config.city, config.openweather_api_key)
+                    self.last_weather = weather
+                    self.last_air = air
+                    self.last_weather_fetch_ts = now_ts
+                    self.health_monitor.record_api_success()
+                    self.fail_safe_mode = False
+                except Exception as error:
+                    weather_error = error
+                    weather = self.last_weather
+                    air = self.last_air
+                    local_fail_safe = True
+                    self.fail_safe_mode = True
+                    self.health_monitor.record_api_failure(str(error))
+                    used_cached_weather = weather is not None and air is not None
+            else:
+                used_cached_weather = True
 
             if weather is None or air is None:
                 self._set_status("Weather service unavailable and no cached data yet.")
@@ -1751,6 +1974,8 @@ class App:
 
             if local_fail_safe and weather_error is not None:
                 self._set_status("Fail-safe mode: using cached weather data")
+            elif used_cached_weather:
+                self._set_status(f"Updated at {time.strftime('%H:%M:%S')} (cached weather)")
             else:
                 self._set_status(f"Updated at {time.strftime('%H:%M:%S')}")
         except Exception as error:
@@ -1798,12 +2023,35 @@ class App:
                 return
             if self.ai_auto_var.get():
                 return
-            if not self.fan_controller.manual_send_allowed():
-                return
 
-            threading.Thread(target=self._send_manual_speed, args=(speed,), daemon=True).start()
+            should_start_worker = False
+            with self.manual_state_lock:
+                self.manual_pending_speed = speed
+                # Hold slider/UI briefly to avoid refresh using stale ESP speed.
+                self.manual_override_until = time.time() + 1.5
+                if not self.manual_sender_running:
+                    self.manual_sender_running = True
+                    should_start_worker = True
+
+            if should_start_worker:
+                threading.Thread(target=self._manual_send_worker, daemon=True).start()
         except Exception:
             self.logger.exception("Manual speed change failed")
+
+    def _manual_send_worker(self):
+        while True:
+            with self.manual_state_lock:
+                speed = self.manual_pending_speed
+                self.manual_pending_speed = None
+
+            if speed is None:
+                with self.manual_state_lock:
+                    if self.manual_pending_speed is None:
+                        self.manual_sender_running = False
+                        return
+                    continue
+
+            self._send_manual_speed(speed)
 
     def _send_manual_speed(self, speed: int):
         config = self._current_config(strict=False)
@@ -1814,17 +2062,37 @@ class App:
             confirm = self.data_manager.send_esp_command(config.esp_base_url, f"/set?speed={speed}")
             self.last_esp = confirm
             self.health_monitor.record_esp_success()
-            confirmed_speed = safe_int(confirm.get("speed"), speed)
+
+            confirmed_speed = int(clamp(safe_int(confirm.get("speed"), speed), 0, 100))
             sequence = confirm.get("cmd_seq", "-")
+
+            with self.manual_state_lock:
+                if self.manual_pending_speed is None:
+                    self.manual_override_until = time.time() + 1.0
+
+            self.root.after(0, lambda s=confirmed_speed: self._apply_manual_speed_to_ui(s))
             self._set_status(f"Manual speed set: {confirmed_speed}% (seq {sequence})")
         except Exception as error:
             self.health_monitor.record_esp_failure(str(error))
             self._set_status("Manual speed update failed. Check ESP32 connection.")
 
+    def _apply_manual_speed_to_ui(self, speed: int):
+        if self.ai_auto_var.get():
+            return
+        speed = int(clamp(speed, 0, 100))
+        self.current_speed_pct = speed
+        self.current_speed_label.configure(text=f"{speed}%")
+        self.slider_syncing = True
+        self.slider.set(speed)
+        self.slider_syncing = False
+
     def _on_ai_mode_toggle(self):
         if self.ai_auto_var.get():
             self.fan_controller.reset_ai_state()
             self.fail_safe_mode = False
+            with self.manual_state_lock:
+                self.manual_pending_speed = None
+                self.manual_override_until = 0.0
             self.slider.state(["disabled"])
             self._set_status("AI auto fan mode enabled")
             self.refresh_async()
@@ -1869,11 +2137,23 @@ class App:
         self.rpm_label.configure(text=f"Fan RPM: {esp.get('rpm', '--')}")
 
         current_speed = safe_int(esp.get("speed"), 0)
-        self.current_speed_pct = int(clamp(current_speed, 0, 100))
-        self.current_speed_label.configure(text=f"{self.current_speed_pct}%")
+        display_speed = int(clamp(current_speed, 0, 100))
+
+        if not self.ai_auto_var.get():
+            with self.manual_state_lock:
+                pending_speed = self.manual_pending_speed
+                override_until = self.manual_override_until
+            if time.time() < override_until:
+                if pending_speed is not None:
+                    display_speed = int(clamp(pending_speed, 0, 100))
+                else:
+                    display_speed = int(clamp(self.current_speed_pct, 0, 100))
+
+        self.current_speed_pct = display_speed
+        self.current_speed_label.configure(text=f"{display_speed}%")
 
         self.slider_syncing = True
-        self.slider.set(self.current_speed_pct)
+        self.slider.set(display_speed)
         self.slider_syncing = False
 
         if self.ai_auto_var.get():
