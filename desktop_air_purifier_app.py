@@ -8,6 +8,7 @@ import re
 import threading
 import time
 import tkinter as tk
+from collections import deque
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from tkinter import messagebox, ttk
@@ -50,6 +51,7 @@ ESP_REFRESH_INTERVAL_MS = 8000
 WEATHER_REFRESH_INTERVAL_SECONDS = 240
 LLM_MIN_INTERVAL_SECONDS = 120
 LLM_MAX_INTERVAL_SECONDS = 300
+GRAPH_HISTORY_POINTS = 90
 
 CITY_ALLOWED_RE = re.compile(r"[^A-Za-z0-9\s,.'-]+")
 MODEL_ALLOWED_RE = re.compile(r"[^A-Za-z0-9._:-]+")
@@ -84,6 +86,25 @@ PROFILE_CONFIG = {
         "step": 12,
     },
 }
+
+GRAPH_METRICS = [
+    {"key": "aqi", "label": "AQI", "color": "#f59e0b", "unit": "", "precision": 0},
+    {"key": "pm2_5", "label": "PM2.5", "color": "#f97316", "unit": " ug/m3", "precision": 1},
+    {"key": "pm10", "label": "PM10", "color": "#fb7185", "unit": " ug/m3", "precision": 1},
+    {"key": "room_temp", "label": "Room Temp", "color": "#f43f5e", "unit": " C", "precision": 1},
+    {"key": "outside_temp", "label": "Outside Temp", "color": "#eab308", "unit": " C", "precision": 1},
+    {"key": "room_humidity", "label": "Room Humidity", "color": "#14b8a6", "unit": "%", "precision": 0},
+    {"key": "outside_humidity", "label": "Outside Humidity", "color": "#22d3ee", "unit": "%", "precision": 0},
+]
+
+GRAPH_METRICS_BY_KEY = {spec["key"]: spec for spec in GRAPH_METRICS}
+
+GRAPH_GROUPS = [
+    {"key": "temperature", "title": "Temperatures", "metrics": ["room_temp", "outside_temp"]},
+    {"key": "humidity", "title": "Humidity", "metrics": ["room_humidity", "outside_humidity"]},
+]
+
+GRAPH_GROUPS_BY_KEY = {group["key"]: group for group in GRAPH_GROUPS}
 
 if Image is not None:
     PIL_BICUBIC = Image.Resampling.BICUBIC if hasattr(Image, "Resampling") else Image.BICUBIC
@@ -1316,9 +1337,16 @@ class App:
         self.fan_icon_base = None
         self.fan_icon_frame = None
         self.fan_icon_angle = 0.0
+        self.graph_history = {spec["key"]: deque(maxlen=GRAPH_HISTORY_POINTS) for spec in GRAPH_METRICS}
+        self.graph_canvases: dict[str, tk.Canvas] = {}
+        self.graph_legend_labels: dict[str, tk.Label] = {}
+        self.filter_life_canvas: tk.Canvas | None = None
+        self.filter_left_label: ttk.Label | None = None
+        self.filter_left_pct = 100.0
+        self.filter_life_color = "#22c55e"
 
         self.root.title("Smart Air Purifier Desktop")
-        self.root.geometry("960x560")
+        self.root.geometry("1040x650")
         self.root.configure(bg="#0b132b")
         self._init_fan_icon()
 
@@ -1329,6 +1357,7 @@ class App:
         self._update_filter_labels(self.filter_tracker.get_state())
         self._update_calibration_label()
         self._update_health_indicator()
+        self.root.after(250, self._draw_metric_graphs)
 
         self._schedule_refresh()
         self._tick_fan_animation()
@@ -1527,6 +1556,20 @@ class App:
         self.filter_usage_label = ttk.Label(self.fan_card, text="Filter usage: --", style="Body.TLabel")
         self.filter_usage_label.pack(anchor="w", pady=(4, 2))
 
+        self.filter_left_label = ttk.Label(self.fan_card, text="Filter left: --", style="Muted.TLabel")
+        self.filter_left_label.pack(anchor="w", pady=(0, 3))
+
+        self.filter_life_canvas = tk.Canvas(
+            self.fan_card,
+            height=34,
+            bg="#1c2541",
+            highlightthickness=1,
+            highlightbackground="#2f3e64",
+            borderwidth=0,
+        )
+        self.filter_life_canvas.pack(fill="x", pady=(0, 6))
+        self.filter_life_canvas.bind("<Configure>", self._on_filter_life_canvas_configure)
+
         self.filter_warning_label = tk.Label(
             self.fan_card,
             text="",
@@ -1564,6 +1607,53 @@ class App:
 
         self.out_desc_label = ttk.Label(self.temp_card, text="Conditions: --", style="Muted.TLabel")
         self.out_desc_label.pack(anchor="w", pady=(8, 2))
+
+        ttk.Separator(self.temp_card, orient="horizontal").pack(fill="x", pady=(10, 8))
+        ttk.Label(self.temp_card, text="Metric Trends", style="CardTitle.TLabel").pack(anchor="w")
+        ttk.Label(
+            self.temp_card,
+            text="Grouped trends for temperature and humidity",
+            style="Muted.TLabel",
+        ).pack(anchor="w", pady=(2, 6))
+
+        graph_groups = ttk.Frame(self.temp_card, style="Card.TFrame")
+        graph_groups.pack(fill="both", expand=True, pady=(0, 2))
+
+        for idx, group in enumerate(GRAPH_GROUPS):
+            group_card = ttk.Frame(graph_groups, style="SubCard.TFrame", padding=8)
+            group_card.pack(fill="x", pady=(0, 6 if idx < len(GRAPH_GROUPS) - 1 else 0))
+
+            ttk.Label(group_card, text=group["title"], style="SubCardTitle.TLabel").pack(anchor="w")
+
+            canvas = tk.Canvas(
+                group_card,
+                height=82,
+                bg="#16213e",
+                highlightthickness=1,
+                highlightbackground="#2f3e64",
+                borderwidth=0,
+            )
+            canvas.pack(fill="x", pady=(4, 4))
+            canvas.bind("<Configure>", lambda _event, group_key=group["key"]: self._on_graph_canvas_configure(group_key))
+            self.graph_canvases[group["key"]] = canvas
+
+            legend = ttk.Frame(group_card, style="SubCard.TFrame")
+            legend.pack(fill="x")
+            for col in range(max(1, len(group["metrics"]))):
+                legend.columnconfigure(col, weight=1)
+
+            for col, metric_key in enumerate(group["metrics"]):
+                spec = GRAPH_METRICS_BY_KEY[metric_key]
+                legend_label = tk.Label(
+                    legend,
+                    text=f"{spec['label']}: --",
+                    bg="#1f2a52",
+                    fg=spec["color"],
+                    font=("Segoe UI", 8, "bold"),
+                    anchor="w",
+                )
+                legend_label.grid(row=0, column=col, sticky="w", padx=(0, 10), pady=(0, 1))
+                self.graph_legend_labels[metric_key] = legend_label
 
         self.footer_card = ttk.Frame(self.root, style="FooterCard.TFrame", padding=12)
         self.footer_card.pack(fill="x", padx=18, pady=(4, 6))
@@ -1649,6 +1739,177 @@ class App:
 
         delay_ms = int(clamp(520 - (self.current_speed_pct * 4), 90, 520))
         self.root.after(delay_ms, self._tick_fan_animation)
+
+    def _on_graph_canvas_configure(self, group_key: str, _event=None):
+        self._draw_metric_graph(group_key)
+
+    def _on_filter_life_canvas_configure(self, _event=None):
+        self._draw_filter_life_meter()
+
+    def _draw_filter_life_meter(self):
+        canvas = self.filter_life_canvas
+        if canvas is None:
+            return
+
+        width = max(200, canvas.winfo_width())
+        height = max(28, canvas.winfo_height())
+        canvas.delete("all")
+
+        left_pct = clamp(self.filter_left_pct, 0.0, 100.0)
+        fill_fraction = left_pct / 100.0
+
+        pad_x = 7
+        pad_y = 6
+        body_h = max(12, height - (2 * pad_y))
+        cap_w = max(8, int(body_h * 0.55))
+        body_x1 = pad_x
+        body_y1 = pad_y
+        body_x2 = max(body_x1 + 30, width - pad_x - cap_w - 3)
+        body_y2 = body_y1 + body_h
+
+        canvas.create_rectangle(
+            body_x1,
+            body_y1,
+            body_x2,
+            body_y2,
+            fill="#122038",
+            outline="#4b5d86",
+            width=1,
+        )
+
+        inner_pad = 2
+        fill_x1 = body_x1 + inner_pad
+        fill_y1 = body_y1 + inner_pad
+        fill_y2 = body_y2 - inner_pad
+        usable_fill_w = max(0, (body_x2 - body_x1) - (2 * inner_pad))
+        fill_w = int(round(usable_fill_w * fill_fraction))
+        fill_x2 = fill_x1 + fill_w
+
+        if fill_w > 0:
+            canvas.create_rectangle(fill_x1, fill_y1, fill_x2, fill_y2, fill=self.filter_life_color, outline="")
+
+        cap_x1 = body_x2 + 2
+        cap_y1 = body_y1 + int(body_h * 0.27)
+        cap_x2 = cap_x1 + cap_w
+        cap_y2 = body_y2 - int(body_h * 0.27)
+        canvas.create_rectangle(cap_x1, cap_y1, cap_x2, cap_y2, fill="#2f3e64", outline="#4b5d86", width=1)
+
+        text_color = "#cbd5e1" if left_pct > 8 else "#f8fafc"
+        canvas.create_text(
+            (body_x1 + body_x2) / 2,
+            (body_y1 + body_y2) / 2,
+            text=f"{left_pct:.0f}% left",
+            fill=text_color,
+            font=("Segoe UI", 9, "bold"),
+        )
+
+    def _extract_metric_values(self, esp: dict, weather: dict, air: dict) -> dict[str, float]:
+        weather_main = weather.get("main") or {}
+        air_info = (air.get("list") or [{}])[0]
+        air_main = air_info.get("main") or {}
+        comps = air_info.get("components") or {}
+        return {
+            "fan_speed": safe_float(esp.get("speed"), 0.0),
+            "fan_rpm": safe_float(esp.get("rpm"), 0.0),
+            "aqi": float(safe_int(air_main.get("aqi"), 0)),
+            "pm2_5": safe_float(comps.get("pm2_5"), 0.0),
+            "pm10": safe_float(comps.get("pm10"), 0.0),
+            "no2": safe_float(comps.get("no2"), 0.0),
+            "o3": safe_float(comps.get("o3"), 0.0),
+            "room_temp": safe_float(esp.get("temp"), 0.0),
+            "room_humidity": safe_float(esp.get("humidity"), 0.0),
+            "outside_temp": safe_float(weather_main.get("temp"), 0.0),
+            "outside_humidity": safe_float(weather_main.get("humidity"), 0.0),
+        }
+
+    def _update_metric_history(self, esp: dict, weather: dict, air: dict):
+        values = self._extract_metric_values(esp, weather, air)
+        for spec in GRAPH_METRICS:
+            key = spec["key"]
+            val = values.get(key)
+            if val is None or (isinstance(val, float) and math.isnan(val)):
+                history = self.graph_history[key]
+                if history:
+                    history.append(history[-1])
+                continue
+            self.graph_history[key].append(float(val))
+
+    def _draw_metric_graphs(self):
+        for group in GRAPH_GROUPS:
+            self._draw_metric_graph(group["key"])
+
+    def _draw_metric_graph(self, group_key: str):
+        canvas = self.graph_canvases.get(group_key)
+        group = GRAPH_GROUPS_BY_KEY.get(group_key)
+        if canvas is None or group is None:
+            return
+
+        metric_keys = group["metrics"]
+
+        width = max(260, canvas.winfo_width())
+        height = max(70, canvas.winfo_height())
+        canvas.delete("all")
+
+        pad_x = 10
+        pad_y = 8
+        usable_w = max(1, width - (2 * pad_x))
+        usable_h = max(1, height - (2 * pad_y))
+
+        # Reference guide lines for normalized range.
+        for step in range(5):
+            y = pad_y + (step * (usable_h / 4.0))
+            canvas.create_line(pad_x, y, width - pad_x, y, fill="#253559", width=1)
+
+        any_data = False
+        for key in metric_keys:
+            spec = GRAPH_METRICS_BY_KEY[key]
+            values = list(self.graph_history.get(key, []))
+            legend_label = self.graph_legend_labels.get(key)
+
+            if not values:
+                if legend_label is not None:
+                    legend_label.configure(text=f"{spec['label']}: --")
+                continue
+
+            any_data = True
+            vmin = min(values)
+            vmax = max(values)
+            if abs(vmax - vmin) < 1e-6:
+                delta = max(1.0, abs(vmax) * 0.05)
+                vmin -= delta
+                vmax += delta
+
+            denom = max(1, len(values) - 1)
+            points: list[float] = []
+            for idx, value in enumerate(values):
+                x = pad_x + ((idx / denom) * usable_w)
+                norm = (value - vmin) / (vmax - vmin)
+                y = (height - pad_y) - (norm * usable_h)
+                points.extend([x, y])
+
+            if len(points) >= 4:
+                canvas.create_line(points, fill=spec["color"], width=2, smooth=True)
+
+            current_value = values[-1]
+            if legend_label is not None:
+                legend_label.configure(
+                    text=f"{spec['label']}: {self._format_metric_value(current_value, spec)}{spec['unit']}"
+                )
+
+        if not any_data:
+            canvas.create_text(
+                width / 2,
+                height / 2,
+                text="Waiting for metric history...",
+                anchor="center",
+                fill="#9fb0ca",
+                font=("Segoe UI", 10),
+            )
+
+    @staticmethod
+    def _format_metric_value(value: float, spec: dict) -> str:
+        precision = int(spec.get("precision", 1))
+        return f"{value:.{precision}f}"
 
     def _current_config(self, strict: bool = False) -> AppConfig:
         return self.config_manager.create_config(
@@ -2189,16 +2450,31 @@ class App:
         self.out_hum_label.configure(text=f"Humidity: {outside.get('humidity', '--')} %")
         self.out_desc_label.configure(text=f"Conditions: {weather_desc}")
 
+        self._update_metric_history(esp, weather, air)
+        self._draw_metric_graphs()
         self._update_filter_labels(filter_state)
         self._update_calibration_label()
 
     def _update_filter_labels(self, filter_state: FilterState):
         usage_pct = self.filter_tracker.usage_percent(filter_state)
+        left_pct = clamp(100.0 - usage_pct, 0.0, 100.0)
+        hours_left = max(0.0, filter_state.replacement_interval_hours - filter_state.runtime_hours)
         usage_text = (
             f"Filter usage: {filter_state.runtime_hours:.1f}h / "
             f"{filter_state.replacement_interval_hours:.0f}h ({usage_pct:.0f}%)"
         )
         self.filter_usage_label.configure(text=usage_text)
+        if self.filter_left_label is not None:
+            self.filter_left_label.configure(text=f"Filter left: {left_pct:.0f}% ({hours_left:.0f}h)")
+
+        if left_pct <= 5:
+            self.filter_life_color = "#ef4444"
+        elif left_pct <= 20:
+            self.filter_life_color = "#facc15"
+        else:
+            self.filter_life_color = "#22c55e"
+        self.filter_left_pct = left_pct
+        self._draw_filter_life_meter()
 
         if usage_pct >= 100:
             self.filter_warning_label.configure(
