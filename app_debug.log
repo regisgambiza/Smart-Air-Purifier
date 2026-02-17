@@ -2508,3 +2508,47 @@
 2026-02-17 20:51:28,289 INFO Thread-31 (_refresh_worker): AI fan target generated: 38
 2026-02-17 20:52:04,903 WARNING Thread-35 (_refresh_worker): Request failed (Network error: timed out). Retrying in 1s [http://192.168.1.132/state]
 2026-02-17 20:56:26,527 INFO Thread-68 (_refresh_worker): AI fan target generated: 38
+2026-02-17 20:57:03,890 INFO MainThread: Debug logger initialized
+2026-02-17 20:57:03,948 INFO MainThread: Settings loaded successfully
+2026-02-17 20:57:03,948 INFO MainThread: Calibration loaded with 9 samples
+2026-02-17 20:57:03,967 INFO MainThread: Fan icon loaded from fan_icon.png
+2026-02-17 20:57:10,139 INFO Thread-1 (_refresh_worker): AI fan target generated: 38
+2026-02-17 21:02:12,604 INFO Thread-39 (_refresh_worker): AI fan target generated: 38
+2026-02-17 21:05:58,405 INFO Thread-67 (_refresh_worker): AI fan target generated: 38
+2026-02-17 21:11:04,909 INFO Thread-105 (_refresh_worker): AI fan target generated: 38
+2026-02-17 21:12:22,954 WARNING Thread-114 (_refresh_worker): Request failed (Network error: timed out). Retrying in 1s [http://192.168.1.132/state]
+2026-02-17 21:16:05,725 INFO Thread-141 (_refresh_worker): AI fan target generated: 38
+2026-02-17 21:21:13,136 INFO Thread-179 (_refresh_worker): AI fan target generated: 38
+2026-02-17 21:22:39,441 WARNING Thread-190 (_refresh_worker): Request failed (Network error: timed out). Retrying in 1s [http://192.168.1.132/state]
+2026-02-17 21:23:27,462 WARNING Thread-195 (_refresh_worker): Request failed (Network error: timed out). Retrying in 1s [http://192.168.1.132/state]
+2026-02-17 21:23:59,499 WARNING Thread-199 (_refresh_worker): Request failed (Network error: timed out). Retrying in 1s [http://192.168.1.132/state]
+2026-02-17 21:26:15,117 INFO Thread-216 (_refresh_worker): AI fan target generated: 38
+2026-02-17 21:31:21,124 INFO Thread-254 (_refresh_worker): AI fan target generated: 38
+2026-02-17 21:35:36,061 WARNING Thread-286 (_refresh_worker): Request failed (Network error: timed out). Retrying in 1s [http://192.168.1.132/state]
+2026-02-17 21:35:45,355 INFO Thread-286 (_refresh_worker): AI fan target generated: 38
+2026-02-17 21:37:53,541 INFO Thread-301 (_refresh_worker): AI fan target generated: 38
+2026-02-17 21:39:04,256 WARNING Thread-309 (_refresh_worker): Request failed (Network error: timed out). Retrying in 1s [http://192.168.1.132/state]
+2026-02-17 21:42:08,432 INFO Thread-332 (_refresh_worker): AI fan target generated: 38
+2026-02-17 21:47:12,754 INFO Thread-370 (_refresh_worker): AI fan target generated: 38
+2026-02-17 21:52:18,087 INFO Thread-408 (_refresh_worker): AI fan target generated: 38
+2026-02-17 21:56:41,142 WARNING Thread-441 (_refresh_worker): Request failed (Network error: timed out). Retrying in 1s [http://192.168.1.132/state]
+2026-02-17 21:57:22,915 INFO Thread-446 (_refresh_worker): AI fan target generated: 38
+2026-02-17 22:01:45,415 WARNING Thread-478 (_refresh_worker): Request failed (Network error: timed out). Retrying in 1s [http://192.168.1.132/state]
+2026-02-17 22:02:24,161 INFO Thread-483 (_refresh_worker): AI fan target generated: 38
+2026-02-17 22:07:28,992 INFO Thread-521 (_refresh_worker): AI fan target generated: 38
+2026-02-17 22:12:35,609 INFO Thread-559 (_refresh_worker): AI fan target generated: 38
+2026-02-17 22:17:38,156 INFO Thread-596 (_refresh_worker): AI fan target generated: 38
+2026-02-17 22:20:02,615 INFO Thread-614 (_refresh_worker): AI fan target generated: 38
+2026-02-17 22:22:26,472 WARNING Thread-632 (_refresh_worker): Request failed (Network error: timed out). Retrying in 1s [http://192.168.1.132/state]
+2026-02-17 22:25:09,292 INFO Thread-652 (_refresh_worker): AI fan target generated: 38
+2026-02-17 22:35:04,866 INFO MainThread: Debug logger initialized
+2026-02-17 22:35:04,931 INFO MainThread: Settings loaded successfully
+2026-02-17 22:35:04,932 INFO MainThread: Calibration loaded with 9 samples
+2026-02-17 22:35:04,951 INFO MainThread: Fan icon loaded from fan_icon.png
+2026-02-17 22:35:14,301 INFO Thread-1 (_refresh_worker): AI fan target generated: 38
+2026-02-17 22:36:55,092 WARNING Thread-13 (_refresh_worker): Request failed (Network error: timed out). Retrying in 1s [http://192.168.1.132/state]
+2026-02-17 22:40:06,931 INFO MainThread: Debug logger initialized
+2026-02-17 22:40:06,990 INFO MainThread: Settings loaded successfully
+2026-02-17 22:40:06,990 INFO MainThread: Calibration loaded with 9 samples
+2026-02-17 22:40:07,009 INFO MainThread: Fan icon loaded from fan_icon.png
+2026-02-17 22:40:16,383 INFO Thread-1 (_refresh_worker): AI fan target generated: 38

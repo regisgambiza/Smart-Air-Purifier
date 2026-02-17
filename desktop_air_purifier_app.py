@@ -51,7 +51,8 @@ ESP_REFRESH_INTERVAL_MS = 8000
 WEATHER_REFRESH_INTERVAL_SECONDS = 240
 LLM_MIN_INTERVAL_SECONDS = 120
 LLM_MAX_INTERVAL_SECONDS = 300
-GRAPH_HISTORY_POINTS = 90
+GRAPH_HISTORY_POINTS = 10800
+RESPONSIVE_STACK_WIDTH = 980
 
 CITY_ALLOWED_RE = re.compile(r"[^A-Za-z0-9\s,.'-]+")
 MODEL_ALLOWED_RE = re.compile(r"[^A-Za-z0-9._:-]+")
@@ -100,11 +101,12 @@ GRAPH_METRICS = [
 GRAPH_METRICS_BY_KEY = {spec["key"]: spec for spec in GRAPH_METRICS}
 
 GRAPH_GROUPS = [
-    {"key": "temperature", "title": "Temperatures", "metrics": ["room_temp", "outside_temp"]},
-    {"key": "humidity", "title": "Humidity", "metrics": ["room_humidity", "outside_humidity"]},
+    {"key": "temperature", "title": "Temperatures (C)", "metrics": ["room_temp", "outside_temp"]},
+    {"key": "humidity", "title": "Humidity (%)", "metrics": ["room_humidity", "outside_humidity"]},
 ]
 
 GRAPH_GROUPS_BY_KEY = {group["key"]: group for group in GRAPH_GROUPS}
+GRAPH_WINDOW_SECONDS = {"15m": 15 * 60, "1h": 60 * 60, "24h": 24 * 60 * 60}
 
 if Image is not None:
     PIL_BICUBIC = Image.Resampling.BICUBIC if hasattr(Image, "Resampling") else Image.BICUBIC
@@ -1290,6 +1292,7 @@ class App:
         self.root = root
         self.logger = LOGGER
 
+        self.first_run = not os.path.exists(SETTINGS_FILE)
         self.config_manager = ConfigManager(SETTINGS_FILE, self.logger)
         self.config = self.config_manager.load()
 
@@ -1312,6 +1315,8 @@ class App:
         self.ai_auto_var = tk.BooleanVar(value=True)
         self.status_var = tk.StringVar(value="Ready")
         self.health_summary_var = tk.StringVar(value="Health counters: ESP:0 API:0 AI:0")
+        self.freshness_var = tk.StringVar(value="Data freshness: ESP -- | Weather --")
+        self.alert_var = tk.StringVar(value="System status: Initializing...")
 
         self.shutdown_event = threading.Event()
         self.refresh_lock = threading.Lock()
@@ -1328,6 +1333,9 @@ class App:
         self.last_air: dict | None = None
         self.last_weather_fetch_ts = 0.0
         self.fail_safe_mode = False
+        self.last_esp_success_ts = 0.0
+        self.last_weather_success_ts = 0.0
+        self.last_refresh_finish_ts = 0.0
 
         self.esp_auto_mode = True
         self.current_speed_pct = 0
@@ -1338,12 +1346,28 @@ class App:
         self.fan_icon_frame = None
         self.fan_icon_angle = 0.0
         self.graph_history = {spec["key"]: deque(maxlen=GRAPH_HISTORY_POINTS) for spec in GRAPH_METRICS}
+        self.graph_time_history: deque[float] = deque(maxlen=GRAPH_HISTORY_POINTS)
+        self.graph_window_var = tk.StringVar(value="1h")
         self.graph_canvases: dict[str, tk.Canvas] = {}
         self.graph_legend_labels: dict[str, tk.Label] = {}
+        self.graph_hover_labels: dict[str, ttk.Label] = {}
+        self.graph_hover_data: dict[str, dict] = {}
         self.filter_life_canvas: tk.Canvas | None = None
         self.filter_left_label: ttk.Label | None = None
         self.filter_left_pct = 100.0
         self.filter_life_color = "#22c55e"
+        self.filter_cta_label: tk.Label | None = None
+        self.reset_filter_btn: ttk.Button | None = None
+        self.settings_menu_button: ttk.Menubutton | None = None
+        self.settings_menu: tk.Menu | None = None
+        self.alert_banner_label: tk.Label | None = None
+        self.cards_container: ttk.Frame | None = None
+        self.is_stacked_layout = False
+        self.system_alert_message = ""
+        self.system_alert_level = "success"
+        self.filter_alert_message = ""
+        self.filter_alert_level = "success"
+        self.onboarding_window: tk.Toplevel | None = None
 
         self.root.title("Smart Air Purifier Desktop")
         self.root.geometry("1040x650")
@@ -1358,9 +1382,15 @@ class App:
         self._update_calibration_label()
         self._update_health_indicator()
         self.root.after(250, self._draw_metric_graphs)
+        self._update_action_states()
+        self._refresh_alert_banner()
+        self._start_freshness_ticker()
 
         self._schedule_refresh()
         self._tick_fan_animation()
+        self.root.after(120, self._apply_responsive_layout)
+        if self.first_run:
+            self.root.after(700, self.open_onboarding_window)
 
     def _create_default_fan_icon(self, output_path: str) -> None:
         if Image is None or ImageDraw is None:
@@ -1427,41 +1457,18 @@ class App:
         style.configure("SubBig.TLabel", background="#1f2a52", foreground="#f7f9fc", font=("Segoe UI", 20, "bold"))
         style.configure("Body.TLabel", background="#1c2541", foreground="#f7f9fc", font=("Segoe UI", 11))
         style.configure("SubBody.TLabel", background="#1f2a52", foreground="#f7f9fc", font=("Segoe UI", 11))
-        style.configure("Muted.TLabel", background="#1c2541", foreground="#9fb0ca", font=("Segoe UI", 10))
+        style.configure("Muted.TLabel", background="#1c2541", foreground="#c3d2e8", font=("Segoe UI", 10))
         style.configure("Status.TLabel", background="#0b132b", foreground="#b6c2d9", font=("Segoe UI", 10))
 
         header = ttk.Frame(self.root, style="Card.TFrame")
         header.pack(fill="x", padx=18, pady=(14, 12))
 
         ttk.Label(header, text="Smart Air Purifier", style="Title.TLabel").pack(side="left")
-        ttk.Label(header, text="City:", style="Status.TLabel").pack(side="left", padx=(18, 4))
-        ttk.Entry(header, textvariable=self.city_var, width=20).pack(side="left")
-        ttk.Label(header, text="Profile:", style="Status.TLabel").pack(side="left", padx=(12, 4))
-
-        profile_box = ttk.Combobox(
-            header,
-            textvariable=self.profile_var,
-            values=["quiet", "balanced", "aggressive"],
-            state="readonly",
-            width=10,
-        )
-        profile_box.pack(side="left")
-
-        ttk.Button(header, text="Refresh", command=self.refresh_async).pack(side="left", padx=8)
-        self.autotune_btn = ttk.Button(header, text="Autotune", command=self.start_autotune)
-        self.autotune_btn.pack(side="left", padx=4)
-        ttk.Button(header, text="Settings", command=self.open_settings_window).pack(side="left", padx=4)
-        ttk.Button(header, text="Help", command=self.show_help_dialog).pack(side="left", padx=4)
-
-        ttk.Checkbutton(
-            header,
-            text="AI Auto Fan Mode",
-            variable=self.ai_auto_var,
-            command=self._on_ai_mode_toggle,
-        ).pack(side="left", padx=10)
+        header_right = ttk.Frame(header, style="Card.TFrame")
+        header_right.pack(side="right")
 
         self.health_label = tk.Label(
-            header,
+            header_right,
             text="Health: Unknown",
             bg="#374151",
             fg="#e5e7eb",
@@ -1472,7 +1479,7 @@ class App:
         self.health_label.pack(side="right", padx=(8, 0))
 
         self.esp_conn_label = tk.Label(
-            header,
+            header_right,
             text="ESP32: Unknown",
             bg="#2c3e67",
             fg="#dbeafe",
@@ -1480,13 +1487,44 @@ class App:
             padx=10,
             pady=4,
         )
-        self.esp_conn_label.pack(side="right")
+        self.esp_conn_label.pack(side="right", padx=(0, 8))
+
+        self.settings_menu_button = ttk.Menubutton(header_right, text="⚙", width=3)
+        self.settings_menu = tk.Menu(self.settings_menu_button, tearoff=False)
+        self.settings_menu.add_command(label="Refresh Now", command=self.refresh_async)
+        self.settings_menu.add_checkbutton(
+            label="Automatic Fan Control",
+            variable=self.ai_auto_var,
+            command=self._on_ai_mode_toggle,
+        )
+        self.settings_menu.add_command(label="Run Autotune", command=self.start_autotune)
+        self.settings_menu.add_separator()
+        self.settings_menu.add_command(label="Open Setup Wizard", command=self.open_onboarding_window)
+        self.settings_menu.add_command(label="Open Settings", command=self.open_settings_window)
+        self.settings_menu.add_command(label="Help", command=self.show_help_dialog)
+        self.settings_menu_button["menu"] = self.settings_menu
+        self.settings_menu_button.pack(side="right")
+
+        self.alert_banner_label = tk.Label(
+            self.root,
+            textvariable=self.alert_var,
+            bg="#14532d",
+            fg="#dcfce7",
+            font=("Segoe UI", 10, "bold"),
+            padx=10,
+            pady=6,
+            anchor="w",
+            justify="left",
+        )
+        self.alert_banner_label.pack(fill="x", padx=18, pady=(0, 6))
 
         cards = ttk.Frame(self.root, style="Card.TFrame")
         cards.pack(fill="both", expand=True, padx=18, pady=(2, 6))
         cards.columnconfigure(0, weight=1)
         cards.columnconfigure(1, weight=1)
         cards.rowconfigure(0, weight=1, minsize=430)
+        cards.rowconfigure(1, weight=0)
+        self.cards_container = cards
 
         self.fan_card = ttk.Frame(cards, style="PrimaryCard.TFrame", padding=16)
         self.fan_card.grid(row=0, column=0, sticky="nsew", padx=(0, 8))
@@ -1496,8 +1534,39 @@ class App:
         self.temp_card.grid_propagate(False)
 
         ttk.Label(self.fan_card, text="Air Purifier", style="CardTitle.TLabel").pack(anchor="w")
+        summary_row = ttk.Frame(self.fan_card, style="Card.TFrame")
+        summary_row.pack(fill="x", pady=(8, 8))
+        for col in range(3):
+            summary_row.columnconfigure(col, weight=1)
+
+        air_summary = ttk.Frame(summary_row, style="SubCard.TFrame", padding=(8, 6))
+        air_summary.grid(row=0, column=0, sticky="nsew", padx=(0, 6))
+        ttk.Label(air_summary, text="Air Quality", style="SubCardTitle.TLabel").pack(anchor="w")
+        self.summary_air_label = ttk.Label(air_summary, text="AQI --", style="SubBig.TLabel")
+        self.summary_air_label.pack(anchor="w", pady=(2, 0))
+
+        speed_summary = ttk.Frame(summary_row, style="SubCard.TFrame", padding=(8, 6))
+        speed_summary.grid(row=0, column=1, sticky="nsew", padx=3)
+        ttk.Label(speed_summary, text="Fan Speed", style="SubCardTitle.TLabel").pack(anchor="w")
+        self.summary_speed_label = ttk.Label(speed_summary, text="--%", style="SubBig.TLabel")
+        self.summary_speed_label.pack(anchor="w", pady=(2, 0))
+
+        mode_summary = ttk.Frame(summary_row, style="SubCard.TFrame", padding=(8, 6))
+        mode_summary.grid(row=0, column=2, sticky="nsew", padx=(6, 0))
+        ttk.Label(mode_summary, text="Operation Mode", style="SubCardTitle.TLabel").pack(anchor="w")
+        self.summary_mode_label = tk.Label(
+            mode_summary,
+            text="AUTO",
+            bg="#14532d",
+            fg="#dcfce7",
+            font=("Segoe UI", 11, "bold"),
+            padx=8,
+            pady=4,
+        )
+        self.summary_mode_label.pack(anchor="w", pady=(3, 0))
+
         self.mode_label = ttk.Label(self.fan_card, text="Mode: --", style="Body.TLabel")
-        self.mode_label.pack(anchor="w", pady=(8, 2))
+        self.mode_label.pack(anchor="w", pady=(0, 2))
         self.rpm_label = ttk.Label(self.fan_card, text="Fan RPM: --", style="Body.TLabel")
         self.rpm_label.pack(anchor="w", pady=2)
 
@@ -1526,6 +1595,17 @@ class App:
             self.fan_anim_label.configure(image=self.fan_icon_frame, text="")
         self.fan_anim_label.pack(side="left", pady=(6, 0))
 
+        self.mode_badge_label = tk.Label(
+            speed_row,
+            text="AUTO",
+            bg="#14532d",
+            fg="#dcfce7",
+            font=("Segoe UI", 10, "bold"),
+            padx=8,
+            pady=4,
+        )
+        self.mode_badge_label.pack(side="left", padx=(4, 0), pady=(6, 0))
+
         self.speed_detail_label = ttk.Label(self.fan_card, text="Target: --% | Source: --", style="Muted.TLabel")
         self.speed_detail_label.pack(anchor="w", pady=(0, 6))
 
@@ -1547,7 +1627,11 @@ class App:
         if self.ai_auto_var.get():
             self.slider.state(["disabled"])
 
-        self.manual_note = ttk.Label(self.fan_card, text="Manual slider works when ESP mode is MANUAL", style="Muted.TLabel")
+        self.manual_note = ttk.Label(
+            self.fan_card,
+            text="Manual slider disabled while Automatic Fan Control is ON",
+            style="Muted.TLabel",
+        )
         self.manual_note.pack(anchor="w")
 
         ttk.Separator(self.fan_card, orient="horizontal").pack(fill="x", pady=8)
@@ -1581,7 +1665,18 @@ class App:
         )
         self.filter_warning_label.pack(anchor="w", pady=(0, 4))
 
-        ttk.Button(self.fan_card, text="Reset Filter Usage", command=self.reset_filter_usage).pack(anchor="w", pady=(0, 2))
+        self.filter_cta_label = tk.Label(
+            self.fan_card,
+            text="Action: No action needed.",
+            bg="#1c2541",
+            fg="#86efac",
+            font=("Segoe UI", 10, "bold"),
+            justify="left",
+        )
+        self.filter_cta_label.pack(anchor="w", pady=(0, 6))
+
+        self.reset_filter_btn = ttk.Button(self.fan_card, text="Reset After Filter Replacement", command=self.reset_filter_usage)
+        self.reset_filter_btn.pack(anchor="w", pady=(0, 2))
 
         ttk.Label(self.temp_card, text="Room Climate", style="CardTitle.TLabel").pack(anchor="w")
         climate_grid = ttk.Frame(self.temp_card, style="Card.TFrame")
@@ -1616,6 +1711,18 @@ class App:
             style="Muted.TLabel",
         ).pack(anchor="w", pady=(2, 6))
 
+        graph_window_row = ttk.Frame(self.temp_card, style="Card.TFrame")
+        graph_window_row.pack(fill="x", pady=(0, 6))
+        ttk.Label(graph_window_row, text="Window:", style="Muted.TLabel").pack(side="left")
+        for option in ("15m", "1h", "24h"):
+            ttk.Radiobutton(
+                graph_window_row,
+                text=option,
+                value=option,
+                variable=self.graph_window_var,
+                command=self._draw_metric_graphs,
+            ).pack(side="left", padx=(8, 0))
+
         graph_groups = ttk.Frame(self.temp_card, style="Card.TFrame")
         graph_groups.pack(fill="both", expand=True, pady=(0, 2))
 
@@ -1627,7 +1734,7 @@ class App:
 
             canvas = tk.Canvas(
                 group_card,
-                height=82,
+                height=90,
                 bg="#16213e",
                 highlightthickness=1,
                 highlightbackground="#2f3e64",
@@ -1635,6 +1742,8 @@ class App:
             )
             canvas.pack(fill="x", pady=(4, 4))
             canvas.bind("<Configure>", lambda _event, group_key=group["key"]: self._on_graph_canvas_configure(group_key))
+            canvas.bind("<Motion>", lambda event, group_key=group["key"]: self._on_graph_motion(group_key, event))
+            canvas.bind("<Leave>", lambda event, group_key=group["key"]: self._on_graph_leave(group_key, event))
             self.graph_canvases[group["key"]] = canvas
 
             legend = ttk.Frame(group_card, style="SubCard.TFrame")
@@ -1654,6 +1763,10 @@ class App:
                 )
                 legend_label.grid(row=0, column=col, sticky="w", padx=(0, 10), pady=(0, 1))
                 self.graph_legend_labels[metric_key] = legend_label
+
+            hover_label = ttk.Label(group_card, text="Hover chart for exact values", style="Muted.TLabel")
+            hover_label.pack(anchor="w", pady=(2, 0))
+            self.graph_hover_labels[group["key"]] = hover_label
 
         self.footer_card = ttk.Frame(self.root, style="FooterCard.TFrame", padding=12)
         self.footer_card.pack(fill="x", padx=18, pady=(4, 6))
@@ -1686,13 +1799,18 @@ class App:
 
         status = ttk.Frame(self.root, style="Card.TFrame")
         status.pack(fill="x", padx=18, pady=(4, 10))
-        ttk.Label(status, textvariable=self.status_var, style="Status.TLabel").pack(side="left")
-        ttk.Label(status, textvariable=self.health_summary_var, style="Status.TLabel").pack(side="right")
+        status.columnconfigure(0, weight=3)
+        status.columnconfigure(1, weight=2)
+        status.columnconfigure(2, weight=3)
+        ttk.Label(status, textvariable=self.status_var, style="Status.TLabel").grid(row=0, column=0, sticky="w")
+        ttk.Label(status, textvariable=self.freshness_var, style="Status.TLabel").grid(row=0, column=1)
+        ttk.Label(status, textvariable=self.health_summary_var, style="Status.TLabel").grid(row=0, column=2, sticky="e")
 
     def _bind_shortcuts(self) -> None:
         self.root.bind_all("<Control-r>", self._shortcut_refresh)
         self.root.bind_all("<Control-s>", self._shortcut_settings)
         self.root.bind_all("<F1>", self._shortcut_help)
+        self.root.bind("<Configure>", self._on_root_configure)
 
     def _shortcut_refresh(self, _event=None):
         self.refresh_async()
@@ -1710,9 +1828,39 @@ class App:
     def show_help_dialog(self):
         messagebox.showinfo(
             "Keyboard Shortcuts",
-            "Ctrl+R: Refresh now\nCtrl+S: Open settings\nF1: Show this help dialog",
+            "Ctrl+R: Refresh now\nCtrl+S: Open settings\nF1: Show this help dialog\nGear menu: refresh, mode toggle, autotune, setup, settings, help",
             parent=self.root,
         )
+
+    def _on_root_configure(self, event):
+        if event.widget is self.root:
+            self._apply_responsive_layout(event.width)
+
+    def _apply_responsive_layout(self, width: int | None = None):
+        cards = self.cards_container
+        if cards is None:
+            return
+
+        current_width = int(width if width is not None else self.root.winfo_width())
+        stack = current_width < RESPONSIVE_STACK_WIDTH
+        if stack == self.is_stacked_layout:
+            return
+
+        self.is_stacked_layout = stack
+        if stack:
+            cards.columnconfigure(0, weight=1)
+            cards.columnconfigure(1, weight=0)
+            cards.rowconfigure(0, weight=1, minsize=360)
+            cards.rowconfigure(1, weight=1, minsize=360)
+            self.fan_card.grid_configure(row=0, column=0, padx=0, pady=(0, 8), sticky="nsew")
+            self.temp_card.grid_configure(row=1, column=0, padx=0, pady=(0, 0), sticky="nsew")
+        else:
+            cards.columnconfigure(0, weight=1)
+            cards.columnconfigure(1, weight=1)
+            cards.rowconfigure(0, weight=1, minsize=430)
+            cards.rowconfigure(1, weight=0, minsize=0)
+            self.fan_card.grid_configure(row=0, column=0, padx=(0, 8), pady=(0, 0), sticky="nsew")
+            self.temp_card.grid_configure(row=0, column=1, padx=(8, 0), pady=(0, 0), sticky="nsew")
 
     def _on_close(self) -> None:
         self.shutdown_event.set()
@@ -1824,13 +1972,13 @@ class App:
 
     def _update_metric_history(self, esp: dict, weather: dict, air: dict):
         values = self._extract_metric_values(esp, weather, air)
+        self.graph_time_history.append(time.time())
         for spec in GRAPH_METRICS:
             key = spec["key"]
             val = values.get(key)
             if val is None or (isinstance(val, float) and math.isnan(val)):
                 history = self.graph_history[key]
-                if history:
-                    history.append(history[-1])
+                history.append(history[-1] if history else 0.0)
                 continue
             self.graph_history[key].append(float(val))
 
@@ -1845,7 +1993,6 @@ class App:
             return
 
         metric_keys = group["metrics"]
-
         width = max(260, canvas.winfo_width())
         height = max(70, canvas.winfo_height())
         canvas.delete("all")
@@ -1854,13 +2001,54 @@ class App:
         pad_y = 8
         usable_w = max(1, width - (2 * pad_x))
         usable_h = max(1, height - (2 * pad_y))
+        max_samples = int(max(35, usable_w))
 
         # Reference guide lines for normalized range.
         for step in range(5):
             y = pad_y + (step * (usable_h / 4.0))
             canvas.create_line(pad_x, y, width - pad_x, y, fill="#253559", width=1)
 
+        time_values = list(self.graph_time_history)
+        if not time_values:
+            for key in metric_keys:
+                legend_label = self.graph_legend_labels.get(key)
+                spec = GRAPH_METRICS_BY_KEY.get(key)
+                if legend_label is not None and spec is not None:
+                    legend_label.configure(text=f"{spec['label']}: --")
+            canvas.create_text(
+                width / 2,
+                height / 2,
+                text="Waiting for metric history...",
+                anchor="center",
+                fill="#9fb0ca",
+                font=("Segoe UI", 10),
+            )
+            self.graph_hover_data[group_key] = {}
+            return
+
+        window_seconds = GRAPH_WINDOW_SECONDS.get(self.graph_window_var.get(), 60 * 60)
+        window_start = time_values[-1] - float(window_seconds)
+        start_idx = 0
+        for idx in range(len(time_values) - 1, -1, -1):
+            if time_values[idx] < window_start:
+                start_idx = idx + 1
+                break
+
+        view_times = time_values[start_idx:]
+        if not view_times:
+            start_idx = max(0, len(time_values) - 1)
+            view_times = time_values[start_idx:]
+
+        sample_indices = list(range(len(view_times)))
+        if len(sample_indices) > max_samples:
+            step = max(1, int(math.ceil(len(sample_indices) / max_samples)))
+            sample_indices = list(range(0, len(view_times), step))
+            if sample_indices[-1] != len(view_times) - 1:
+                sample_indices.append(len(view_times) - 1)
+        sampled_times = [view_times[idx] for idx in sample_indices]
+
         any_data = False
+        hover_series: dict[str, list[float]] = {}
         for key in metric_keys:
             spec = GRAPH_METRICS_BY_KEY[key]
             values = list(self.graph_history.get(key, []))
@@ -1871,17 +2059,30 @@ class App:
                     legend_label.configure(text=f"{spec['label']}: --")
                 continue
 
+            values = values[start_idx:]
+            if not values:
+                if legend_label is not None:
+                    legend_label.configure(text=f"{spec['label']}: --")
+                continue
+
+            sampled_values = [values[idx] for idx in sample_indices if idx < len(values)]
+            if not sampled_values:
+                if legend_label is not None:
+                    legend_label.configure(text=f"{spec['label']}: --")
+                continue
+
+            hover_series[key] = sampled_values
             any_data = True
-            vmin = min(values)
-            vmax = max(values)
+            vmin = min(sampled_values)
+            vmax = max(sampled_values)
             if abs(vmax - vmin) < 1e-6:
                 delta = max(1.0, abs(vmax) * 0.05)
                 vmin -= delta
                 vmax += delta
 
-            denom = max(1, len(values) - 1)
+            denom = max(1, len(sampled_values) - 1)
             points: list[float] = []
-            for idx, value in enumerate(values):
+            for idx, value in enumerate(sampled_values):
                 x = pad_x + ((idx / denom) * usable_w)
                 norm = (value - vmin) / (vmax - vmin)
                 y = (height - pad_y) - (norm * usable_h)
@@ -1890,7 +2091,7 @@ class App:
             if len(points) >= 4:
                 canvas.create_line(points, fill=spec["color"], width=2, smooth=True)
 
-            current_value = values[-1]
+            current_value = sampled_values[-1]
             if legend_label is not None:
                 legend_label.configure(
                     text=f"{spec['label']}: {self._format_metric_value(current_value, spec)}{spec['unit']}"
@@ -1905,6 +2106,52 @@ class App:
                 fill="#9fb0ca",
                 font=("Segoe UI", 10),
             )
+
+        self.graph_hover_data[group_key] = {
+            "times": sampled_times,
+            "metrics": metric_keys,
+            "series": hover_series,
+            "pad_x": float(pad_x),
+            "usable_w": float(usable_w),
+        }
+
+    def _on_graph_motion(self, group_key: str, event):
+        hover_label = self.graph_hover_labels.get(group_key)
+        data = self.graph_hover_data.get(group_key) or {}
+        if hover_label is None or not data:
+            return
+
+        times: list[float] = list(data.get("times") or [])
+        if not times:
+            return
+
+        pad_x = float(data.get("pad_x", 0.0))
+        usable_w = max(1.0, float(data.get("usable_w", 1.0)))
+        x = clamp(float(event.x), pad_x, pad_x + usable_w)
+        denom = max(1, len(times) - 1)
+        idx = int(round(((x - pad_x) / usable_w) * denom))
+        idx = int(clamp(float(idx), 0.0, float(len(times) - 1)))
+
+        latest_ts = times[-1]
+        age_text = self._format_age(max(0.0, latest_ts - times[idx]))
+        parts = [age_text]
+
+        series = data.get("series") or {}
+        for key in data.get("metrics") or []:
+            values = series.get(key) or []
+            if idx >= len(values):
+                continue
+            spec = GRAPH_METRICS_BY_KEY.get(key)
+            if spec is None:
+                continue
+            parts.append(f"{spec['label']} {self._format_metric_value(values[idx], spec)}{spec['unit']}")
+
+        hover_label.configure(text=" | ".join(parts))
+
+    def _on_graph_leave(self, group_key: str, _event=None):
+        hover_label = self.graph_hover_labels.get(group_key)
+        if hover_label is not None:
+            hover_label.configure(text="Hover chart for exact values")
 
     @staticmethod
     def _format_metric_value(value: float, spec: dict) -> str:
@@ -1972,6 +2219,118 @@ class App:
         ttk.Button(buttons, text="Save", command=save_and_close).pack(side="left", padx=6)
         ttk.Button(buttons, text="Cancel", command=window.destroy).pack(side="left", padx=6)
 
+    def open_onboarding_window(self):
+        if self.onboarding_window is not None and self.onboarding_window.winfo_exists():
+            self.onboarding_window.lift()
+            self.onboarding_window.focus_force()
+            return
+
+        window = tk.Toplevel(self.root)
+        self.onboarding_window = window
+        window.title("Quick Setup")
+        window.geometry("700x420")
+        window.configure(bg="#0b132b")
+        window.transient(self.root)
+
+        frame = ttk.Frame(window, style="Card.TFrame", padding=14)
+        frame.pack(fill="both", expand=True, padx=12, pady=12)
+        frame.columnconfigure(1, weight=1)
+
+        ttk.Label(frame, text="Initial Setup", style="Title.TLabel").grid(row=0, column=0, columnspan=2, sticky="w", pady=(0, 8))
+        ttk.Label(
+            frame,
+            text="1) Confirm connection settings\n2) Test ESP and Weather API\n3) Save and start live updates",
+            style="Muted.TLabel",
+            justify="left",
+        ).grid(row=1, column=0, columnspan=2, sticky="w", pady=(0, 8))
+
+        fields = [
+            ("City", self.city_var),
+            ("ESP Base URL", self.esp_url_var),
+            ("OpenWeather API Key", self.api_key_var),
+        ]
+        for idx, (label, var) in enumerate(fields, start=2):
+            ttk.Label(frame, text=label, style="Body.TLabel").grid(row=idx, column=0, sticky="w", pady=6, padx=(0, 10))
+            ttk.Entry(frame, textvariable=var).grid(row=idx, column=1, sticky="ew", pady=6)
+
+        setup_status_var = tk.StringVar(value="Run tests before saving settings.")
+        setup_status = tk.Label(
+            frame,
+            textvariable=setup_status_var,
+            bg="#1c2541",
+            fg="#dbeafe",
+            font=("Segoe UI", 10, "bold"),
+            justify="left",
+            anchor="w",
+            padx=8,
+            pady=6,
+        )
+        setup_status.grid(row=5, column=0, columnspan=2, sticky="ew", pady=(10, 8))
+
+        def set_setup_status(text: str, color: str = "#dbeafe"):
+            setup_status_var.set(text)
+            setup_status.configure(fg=color)
+
+        def test_esp():
+            set_setup_status("Testing ESP connection...")
+
+            def worker():
+                config = self._current_config(strict=False)
+                try:
+                    state = self.data_manager.read_esp_state(config.esp_base_url)
+                    self.health_monitor.record_esp_success()
+                    self.last_esp_success_ts = time.time()
+                    speed = safe_int(state.get("speed"), 0)
+                    self.root.after(0, lambda: set_setup_status(f"ESP test passed (speed {speed}%).", "#86efac"))
+                    self._set_system_alert("ESP connection verified from setup wizard.", "success")
+                except Exception as error:
+                    self.health_monitor.record_esp_failure(str(error))
+                    self.root.after(0, lambda e=error: set_setup_status(f"ESP test failed: {e}", "#fca5a5"))
+                    self._set_system_alert("ESP setup test failed.", "warning")
+
+            threading.Thread(target=worker, daemon=True).start()
+
+        def test_weather():
+            set_setup_status("Testing Weather API...")
+
+            def worker():
+                config = self._current_config(strict=False)
+                try:
+                    weather, air = self.data_manager.read_openweather(config.city, config.openweather_api_key)
+                    self.last_weather = weather
+                    self.last_air = air
+                    self.last_weather_success_ts = time.time()
+                    self.last_weather_fetch_ts = self.last_weather_success_ts
+                    self.health_monitor.record_api_success()
+                    self.root.after(0, lambda: set_setup_status("Weather API test passed.", "#86efac"))
+                    self._set_system_alert("Weather API connection verified from setup wizard.", "success")
+                except Exception as error:
+                    self.health_monitor.record_api_failure(str(error))
+                    self.root.after(0, lambda e=error: set_setup_status(f"Weather API test failed: {e}", "#fca5a5"))
+                    self._set_system_alert("Weather API setup test failed.", "warning")
+
+            threading.Thread(target=worker, daemon=True).start()
+
+        def save_and_finish():
+            if self.persist_settings():
+                self._set_status("Setup complete. Starting live refresh.")
+                self.refresh_async()
+                close_window()
+
+        def close_window():
+            if window.winfo_exists():
+                window.destroy()
+            self.onboarding_window = None
+
+        button_row = ttk.Frame(frame, style="Card.TFrame")
+        button_row.grid(row=6, column=0, columnspan=2, sticky="e", pady=(8, 0))
+        ttk.Button(button_row, text="Test ESP", command=test_esp).pack(side="left", padx=6)
+        ttk.Button(button_row, text="Test Weather API", command=test_weather).pack(side="left", padx=6)
+        ttk.Button(button_row, text="Save & Continue", command=save_and_finish).pack(side="left", padx=6)
+        ttk.Button(button_row, text="Close", command=close_window).pack(side="left", padx=6)
+
+        window.protocol("WM_DELETE_WINDOW", close_window)
+
     def persist_settings(self) -> bool:
         try:
             new_config = self._current_config(strict=True)
@@ -2008,26 +2367,132 @@ class App:
 
     def refresh_async(self):
         if self.autotune_in_progress:
+            self._set_status("Refresh skipped while autotune is running")
             return
 
         with self.refresh_lock:
             if self.refresh_in_progress:
+                self._set_status("Refresh already in progress")
                 return
             self.refresh_in_progress = True
 
+        self._update_action_states()
+        self._set_status("Refreshing live sensor data...")
         thread = threading.Thread(target=self._refresh_worker, daemon=True)
         thread.start()
 
     def _set_status(self, text: str):
         self.root.after(0, lambda: self.status_var.set(text))
 
+    def _update_action_states(self):
+        busy = self.refresh_in_progress or self.autotune_in_progress
+
+        if self.settings_menu_button is not None:
+            self.settings_menu_button.state(["!disabled"])
+
+        if self.settings_menu is not None:
+            per_entry_state = {
+                "Refresh Now": "disabled" if busy else "normal",
+                "Automatic Fan Control": "disabled" if busy else "normal",
+                "Run Autotune": "disabled" if busy else "normal",
+                "Open Setup Wizard": "normal",
+                "Open Settings": "disabled" if self.autotune_in_progress else "normal",
+                "Help": "normal",
+            }
+            for entry_label, entry_state in per_entry_state.items():
+                try:
+                    self.settings_menu.entryconfigure(entry_label, state=entry_state)
+                except Exception:
+                    pass
+
+    def _set_system_alert(self, message: str, level: str = "info"):
+        def apply():
+            self.system_alert_message = (message or "").strip()
+            self.system_alert_level = level
+            self._refresh_alert_banner()
+
+        self.root.after(0, apply)
+
+    def _set_filter_alert(self, message: str, level: str = "info"):
+        def apply():
+            self.filter_alert_message = (message or "").strip()
+            self.filter_alert_level = level
+            self._refresh_alert_banner()
+
+        self.root.after(0, apply)
+
+    def _refresh_alert_banner(self):
+        label = self.alert_banner_label
+        if label is None:
+            return
+
+        candidates: list[tuple[str, str]] = []
+        if self.system_alert_message:
+            candidates.append((self.system_alert_level, self.system_alert_message))
+        if self.filter_alert_message:
+            candidates.append((self.filter_alert_level, self.filter_alert_message))
+
+        rank = {"success": 0, "info": 1, "warning": 2, "error": 3}
+        if not candidates:
+            level = "success"
+            message = "All systems normal."
+        else:
+            level, message = max(candidates, key=lambda item: rank.get(item[0], 0))
+
+        palette = {
+            "success": ("#14532d", "#dcfce7", "OK"),
+            "info": ("#1e3a8a", "#dbeafe", "INFO"),
+            "warning": ("#78350f", "#fef3c7", "WARNING"),
+            "error": ("#7f1d1d", "#fecaca", "ALERT"),
+        }
+        bg, fg, prefix = palette.get(level, palette["info"])
+        self.alert_var.set(f"{prefix}: {message}")
+        label.configure(bg=bg, fg=fg)
+
+    @staticmethod
+    def _format_age(seconds: float) -> str:
+        if seconds < 0:
+            seconds = 0
+        if seconds < 60:
+            return f"{int(seconds)}s ago"
+        minutes = int(seconds // 60)
+        if minutes < 60:
+            return f"{minutes}m ago"
+        hours = int(minutes // 60)
+        rem_minutes = minutes % 60
+        return f"{hours}h {rem_minutes}m ago"
+
+    def _start_freshness_ticker(self):
+        self._update_freshness_labels()
+
+    def _update_freshness_labels(self):
+        now = time.time()
+        esp_text = "--"
+        weather_text = "--"
+        if self.last_esp_success_ts > 0:
+            esp_text = self._format_age(now - self.last_esp_success_ts)
+        if self.last_weather_success_ts > 0:
+            weather_text = self._format_age(now - self.last_weather_success_ts)
+
+        self.freshness_var.set(f"Data freshness: ESP {esp_text} | Weather {weather_text}")
+        if not self.shutdown_event.is_set() and self.root.winfo_exists():
+            self.root.after(1000, self._update_freshness_labels)
+
     def start_autotune(self):
         if self.autotune_in_progress:
             self._set_status("Autotune already running")
             return
 
+        with self.refresh_lock:
+            if self.refresh_in_progress:
+                self._set_status("Wait for refresh to finish before starting autotune")
+                return
+
         self.autotune_in_progress = True
-        self.autotune_btn.state(["disabled"])
+        self._update_action_states()
+        self._update_manual_note()
+        self._set_status("Autotune started")
+        self._set_system_alert("Autotune running. Manual controls are temporarily disabled.", "info")
         threading.Thread(target=self._run_autotune, daemon=True).start()
 
     def _run_autotune(self):
@@ -2103,7 +2568,8 @@ class App:
                 self.logger.exception("Failed to restore state after autotune")
 
             self.autotune_in_progress = False
-            self.root.after(0, lambda: self.autotune_btn.state(["!disabled"]))
+            self.root.after(0, self._update_action_states)
+            self.root.after(0, self._update_manual_note)
             self.root.after(0, self._update_calibration_label)
             self.refresh_async()
 
@@ -2118,11 +2584,13 @@ class App:
                 esp = self.data_manager.read_esp_state(config.esp_base_url)
                 self.last_esp = esp
                 self.health_monitor.record_esp_success()
+                self.last_esp_success_ts = time.time()
                 self.root.after(0, lambda: self._set_esp_indicator(True))
             except Exception as error:
                 self.health_monitor.record_esp_failure(str(error))
                 self.root.after(0, lambda: self._set_esp_indicator(False))
                 self._set_status("ESP32 is unreachable. Check power/network.")
+                self._set_system_alert("ESP32 connection failed. Check device power or network.", "error")
                 return
 
             now_ts = time.time()
@@ -2140,6 +2608,7 @@ class App:
                     self.last_weather = weather
                     self.last_air = air
                     self.last_weather_fetch_ts = now_ts
+                    self.last_weather_success_ts = now_ts
                     self.health_monitor.record_api_success()
                     self.fail_safe_mode = False
                 except Exception as error:
@@ -2155,6 +2624,7 @@ class App:
 
             if weather is None or air is None:
                 self._set_status("Weather service unavailable and no cached data yet.")
+                self._set_system_alert("Weather API unavailable and no cached data exists yet.", "error")
                 return
 
             fan_ai_speed = None
@@ -2235,17 +2705,23 @@ class App:
 
             if local_fail_safe and weather_error is not None:
                 self._set_status("Fail-safe mode: using cached weather data")
+                self._set_system_alert("Using cached weather due to API issue (fail-safe mode).", "warning")
             elif used_cached_weather:
                 self._set_status(f"Updated at {time.strftime('%H:%M:%S')} (cached weather)")
+                self._set_system_alert("Updated with cached weather data.", "info")
             else:
                 self._set_status(f"Updated at {time.strftime('%H:%M:%S')}")
+                self._set_system_alert("Live ESP and weather updates healthy.", "success")
+            self.last_refresh_finish_ts = time.time()
         except Exception as error:
             self.logger.exception("Refresh worker failed")
             self._set_status(f"Update error: {error}")
+            self._set_system_alert(f"Refresh failed: {error}", "error")
         finally:
             self.root.after(0, self._update_health_indicator)
             with self.refresh_lock:
                 self.refresh_in_progress = False
+            self.root.after(0, self._update_action_states)
 
     def _ensure_manual_and_set_speed(self, config: AppConfig, esp: dict, speed: int) -> dict:
         if esp.get("auto"):
@@ -2256,9 +2732,9 @@ class App:
 
     def _set_esp_indicator(self, online: bool):
         if online:
-            self.esp_conn_label.configure(text="ESP32: Online", bg="#14532d", fg="#dcfce7")
+            self.esp_conn_label.configure(text="ESP32: ONLINE", bg="#14532d", fg="#dcfce7")
         else:
-            self.esp_conn_label.configure(text="ESP32: Offline", bg="#7f1d1d", fg="#fecaca")
+            self.esp_conn_label.configure(text="ESP32: OFFLINE", bg="#7f1d1d", fg="#fecaca")
 
     def _update_health_indicator(self):
         status = self.health_monitor.status()
@@ -2274,11 +2750,20 @@ class App:
         else:
             self.calibration_label.configure(text="Calibration: not tuned")
 
+    def _update_manual_note(self):
+        if self.autotune_in_progress:
+            self.manual_note.configure(text="Manual speed slider disabled while autotune is running")
+        elif self.ai_auto_var.get():
+            self.manual_note.configure(text="Manual speed slider disabled while Automatic Fan Control is ON")
+        else:
+            self.manual_note.configure(text="Manual speed slider active. ESP should remain in MANUAL mode")
+
     def _manual_speed_changed(self, value):
         try:
             speed = int(clamp(float(value), 0, 100))
             self.current_speed_pct = speed
             self.current_speed_label.configure(text=f"{speed}%")
+            self.summary_speed_label.configure(text=f"{speed}%")
 
             if self.slider_syncing:
                 return
@@ -2323,6 +2808,7 @@ class App:
             confirm = self.data_manager.send_esp_command(config.esp_base_url, f"/set?speed={speed}")
             self.last_esp = confirm
             self.health_monitor.record_esp_success()
+            self.last_esp_success_ts = time.time()
 
             confirmed_speed = int(clamp(safe_int(confirm.get("speed"), speed), 0, 100))
             sequence = confirm.get("cmd_seq", "-")
@@ -2333,9 +2819,11 @@ class App:
 
             self.root.after(0, lambda s=confirmed_speed: self._apply_manual_speed_to_ui(s))
             self._set_status(f"Manual speed set: {confirmed_speed}% (seq {sequence})")
+            self._set_system_alert("Manual speed command applied successfully.", "success")
         except Exception as error:
             self.health_monitor.record_esp_failure(str(error))
             self._set_status("Manual speed update failed. Check ESP32 connection.")
+            self._set_system_alert("Manual speed update failed.", "error")
 
     def _apply_manual_speed_to_ui(self, speed: int):
         if self.ai_auto_var.get():
@@ -2343,6 +2831,7 @@ class App:
         speed = int(clamp(speed, 0, 100))
         self.current_speed_pct = speed
         self.current_speed_label.configure(text=f"{speed}%")
+        self.summary_speed_label.configure(text=f"{speed}%")
         self.slider_syncing = True
         self.slider.set(speed)
         self.slider_syncing = False
@@ -2355,11 +2844,15 @@ class App:
                 self.manual_pending_speed = None
                 self.manual_override_until = 0.0
             self.slider.state(["disabled"])
-            self._set_status("AI auto fan mode enabled")
+            self._update_manual_note()
+            self._set_status("Automatic fan control enabled")
+            self._set_system_alert("Automatic fan control enabled.", "info")
             self.refresh_async()
             return
 
         self.slider.state(["!disabled"])
+        self._update_manual_note()
+        self._set_status("Switching ESP to manual mode...")
         threading.Thread(target=self._force_manual_mode, daemon=True).start()
 
     def _force_manual_mode(self):
@@ -2369,10 +2862,13 @@ class App:
             if esp.get("auto"):
                 self.data_manager.send_esp_command(config.esp_base_url, "/toggle")
             self.health_monitor.record_esp_success()
-            self._set_status("AI mode off: ESP set to MANUAL")
+            self.last_esp_success_ts = time.time()
+            self._set_status("Automatic fan control off: ESP set to MANUAL")
+            self._set_system_alert("Manual control enabled.", "info")
         except Exception as error:
             self.health_monitor.record_esp_failure(str(error))
             self._set_status("Could not switch ESP to manual mode")
+            self._set_system_alert("Could not switch ESP to manual mode.", "warning")
 
     def _update_ui(
         self,
@@ -2391,11 +2887,13 @@ class App:
         components = air_info.get("components") or {}
         air_main = safe_int((air_info.get("main") or {}).get("aqi"), 0)
 
-        mode_text = "AUTO" if bool(esp.get("auto")) else "MANUAL"
+        esp_mode_text = "AUTO" if bool(esp.get("auto")) else "MANUAL"
+        control_mode_text = "AUTO" if self.ai_auto_var.get() else "MANUAL"
         sequence = esp.get("cmd_seq", "-")
 
-        self.mode_label.configure(text=f"Mode: {mode_text} | Profile: {profile_name} | Seq: {sequence}")
+        self.mode_label.configure(text=f"Control: {control_mode_text} | ESP: {esp_mode_text} | Profile: {profile_name} | Seq: {sequence}")
         self.rpm_label.configure(text=f"Fan RPM: {esp.get('rpm', '--')}")
+        self.summary_air_label.configure(text=f"AQI {air_main} ({aqi_label(air_main)})")
 
         current_speed = safe_int(esp.get("speed"), 0)
         display_speed = int(clamp(current_speed, 0, 100))
@@ -2412,15 +2910,24 @@ class App:
 
         self.current_speed_pct = display_speed
         self.current_speed_label.configure(text=f"{display_speed}%")
+        self.summary_speed_label.configure(text=f"{display_speed}%")
 
         self.slider_syncing = True
         self.slider.set(display_speed)
         self.slider_syncing = False
 
-        if self.ai_auto_var.get():
+        if self.ai_auto_var.get() or self.autotune_in_progress:
             self.slider.state(["disabled"])
         else:
             self.slider.state(["!disabled"])
+        self._update_manual_note()
+
+        if self.ai_auto_var.get():
+            self.summary_mode_label.configure(text="AUTO", bg="#14532d", fg="#dcfce7")
+            self.mode_badge_label.configure(text="AUTO", bg="#14532d", fg="#dcfce7")
+        else:
+            self.summary_mode_label.configure(text="MANUAL", bg="#1e3a8a", fg="#dbeafe")
+            self.mode_badge_label.configure(text="MANUAL", bg="#1e3a8a", fg="#dbeafe")
 
         self.aqi_label.configure(text=f"AQI: {air_main} ({aqi_label(air_main)})")
         self.pollutant_label.configure(
@@ -2440,6 +2947,9 @@ class App:
         elif not self.ai_auto_var.get():
             self.ai_fan_label.configure(text="AI fan decision: off")
             self.speed_detail_label.configure(text="Target: manual slider | Source: manual")
+        else:
+            self.ai_fan_label.configure(text="AI fan decision: waiting for refresh")
+            self.speed_detail_label.configure(text="Target: -- | Source: AI")
 
         self.ai_air_footer_label.configure(text=pollution_comment or "--")
         self.ai_advice_footer_label.configure(text=advice or "--")
@@ -2478,19 +2988,34 @@ class App:
 
         if usage_pct >= 100:
             self.filter_warning_label.configure(
-                text="Filter replacement overdue. Install a new filter and reset usage.",
-                fg="#facc15",
+                text="Filter status: replacement overdue.",
+                fg="#fca5a5",
             )
+            if self.filter_cta_label is not None:
+                self.filter_cta_label.configure(text="Action: Replace now, then press reset.", fg="#fca5a5")
+            if self.reset_filter_btn is not None:
+                self.reset_filter_btn.configure(text="Reset After Filter Replacement")
+            self._set_filter_alert("Filter replacement overdue. Replace now.", "error")
         elif usage_pct >= 80:
             self.filter_warning_label.configure(
-                text="Filter is approaching replacement threshold.",
+                text="Filter status: nearing replacement threshold.",
                 fg="#facc15",
             )
+            if self.filter_cta_label is not None:
+                self.filter_cta_label.configure(text="Action: Replace soon to maintain performance.", fg="#facc15")
+            if self.reset_filter_btn is not None:
+                self.reset_filter_btn.configure(text="Reset After Filter Replacement")
+            self._set_filter_alert("Filter is nearing replacement threshold.", "warning")
         else:
             self.filter_warning_label.configure(
-                text="Filter condition is normal.",
+                text="Filter status: healthy.",
                 fg="#86efac",
             )
+            if self.filter_cta_label is not None:
+                self.filter_cta_label.configure(text="Action: No action needed.", fg="#86efac")
+            if self.reset_filter_btn is not None:
+                self.reset_filter_btn.configure(text="Reset After Filter Replacement")
+            self._set_filter_alert("", "success")
 
     def reset_filter_usage(self):
         if not messagebox.askyesno("Reset Filter", "Reset filter usage after installing a new filter?", parent=self.root):
