@@ -23,6 +23,11 @@ except Exception:
     ImageDraw = None
     ImageTk = None
 
+try:
+    import pystray
+except Exception:
+    pystray = None
+
 
 SETTINGS_FILE = "desktop_app_settings.json"
 LOG_FILE = "air_purifier_timeseries.csv"
@@ -30,6 +35,7 @@ DEBUG_LOG_FILE = "app_debug.log"
 CALIBRATION_FILE = "fan_calibration.json"
 FILTER_STATE_FILE = "filter_state.json"
 FAN_ICON_FILE = "fan_icon.png"
+WINDOW_ICON_FILE = "fan_icon.ico"
 FAN_ICON_SIZE_PX = 56
 
 DEFAULT_OPENWEATHER_API_KEY = "56672a7fddd6d20e51a88155f0b4a0f2"
@@ -1291,6 +1297,7 @@ class App:
     def __init__(self, root: tk.Tk):
         self.root = root
         self.logger = LOGGER
+        self.base_title = "Smart Air Purifier Desktop"
 
         self.first_run = not os.path.exists(SETTINGS_FILE)
         self.config_manager = ConfigManager(SETTINGS_FILE, self.logger)
@@ -1345,6 +1352,15 @@ class App:
         self.fan_icon_base = None
         self.fan_icon_frame = None
         self.fan_icon_angle = 0.0
+        self.window_icon_image = None
+        self.tray_icon = None
+        self.tray_thread = None
+        self.tray_enabled = False
+        self.tray_label_room = "Room: -- C"
+        self.tray_label_mode = "--"
+        self.tray_label_air = "AQI --"
+        self.tray_label_fan = "Fan --%"
+        self.tray_label_health = "Health --"
         self.graph_history = {spec["key"]: deque(maxlen=GRAPH_HISTORY_POINTS) for spec in GRAPH_METRICS}
         self.graph_time_history: deque[float] = deque(maxlen=GRAPH_HISTORY_POINTS)
         self.graph_window_var = tk.StringVar(value="1h")
@@ -1369,10 +1385,12 @@ class App:
         self.filter_alert_level = "success"
         self.onboarding_window: tk.Toplevel | None = None
 
-        self.root.title("Smart Air Purifier Desktop")
+        self._set_taskbar_title("Starting...")
         self.root.geometry("1040x650")
         self.root.configure(bg="#0b132b")
         self._init_fan_icon()
+        self._init_window_icon()
+        self._init_system_tray()
 
         self._build_ui()
         self._bind_shortcuts()
@@ -1442,6 +1460,161 @@ class App:
             self.logger.exception("Failed to load fan icon image. Falling back to text spinner.")
             self.fan_icon_base = None
             self.fan_icon_frame = None
+
+    def _init_window_icon(self) -> None:
+        try:
+            # Helps Windows apply a custom taskbar icon per app window.
+            if os.name == "nt":
+                try:
+                    import ctypes
+
+                    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("SmartAirPurifier.Desktop")
+                except Exception:
+                    self.logger.exception("Failed to set AppUserModelID")
+
+            if Image is not None:
+                if not os.path.exists(FAN_ICON_FILE):
+                    self._create_default_fan_icon(FAN_ICON_FILE)
+                image = Image.open(FAN_ICON_FILE).convert("RGBA")
+                sizes = [(16, 16), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)]
+                image.save(WINDOW_ICON_FILE, format="ICO", sizes=sizes)
+
+            if os.path.exists(WINDOW_ICON_FILE):
+                self.root.iconbitmap(default=WINDOW_ICON_FILE)
+
+            self.window_icon_image = tk.PhotoImage(file=FAN_ICON_FILE)
+            self.root.iconphoto(True, self.window_icon_image)
+        except Exception:
+            self.logger.exception("Failed to set window/taskbar icon")
+
+    def _build_tray_image(self):
+        if Image is None:
+            return None
+        try:
+            if os.path.exists(FAN_ICON_FILE):
+                image = Image.open(FAN_ICON_FILE).convert("RGBA")
+            else:
+                image = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
+                draw = ImageDraw.Draw(image)
+                draw.ellipse((8, 8, 56, 56), fill=(28, 37, 65, 255))
+                draw.ellipse((22, 22, 42, 42), fill=(247, 249, 252, 255))
+            return image.resize((64, 64), resample=PIL_BICUBIC)
+        except Exception:
+            self.logger.exception("Failed to build tray icon image")
+            return None
+
+    def _tray_open_window(self, icon=None, item=None):
+        self.root.after(0, self._show_window_from_tray)
+
+    def _tray_refresh_now(self, icon=None, item=None):
+        self.root.after(0, self.refresh_async)
+
+    def _tray_exit_app(self, icon=None, item=None):
+        self.root.after(0, self._on_close)
+
+    def _show_window_from_tray(self):
+        try:
+            self.root.deiconify()
+            self.root.lift()
+            self.root.focus_force()
+        except Exception:
+            self.logger.exception("Failed to restore app window from tray")
+
+    def _init_system_tray(self) -> None:
+        if pystray is None:
+            self.logger.warning("pystray is not installed. System tray stats disabled.")
+            return
+        if Image is None:
+            self.logger.warning("Pillow is required for system tray icon image.")
+            return
+
+        tray_image = self._build_tray_image()
+        if tray_image is None:
+            return
+
+        def mode_text(_item):
+            return f"Mode: {self.tray_label_mode}"
+
+        def room_text(_item):
+            return self.tray_label_room
+
+        def air_text(_item):
+            return self.tray_label_air
+
+        def fan_text(_item):
+            return self.tray_label_fan
+
+        def health_text(_item):
+            return self.tray_label_health
+
+        menu = pystray.Menu(
+            pystray.MenuItem(room_text, lambda icon, item: None, enabled=False),
+            pystray.MenuItem(mode_text, lambda icon, item: None, enabled=False),
+            pystray.MenuItem(air_text, lambda icon, item: None, enabled=False),
+            pystray.MenuItem(fan_text, lambda icon, item: None, enabled=False),
+            pystray.MenuItem(health_text, lambda icon, item: None, enabled=False),
+            pystray.Menu.SEPARATOR,
+            pystray.MenuItem("Open Dashboard", self._tray_open_window),
+            pystray.MenuItem("Refresh Now", self._tray_refresh_now),
+            pystray.MenuItem("Exit", self._tray_exit_app),
+        )
+
+        self.tray_icon = pystray.Icon("smart_air_purifier", tray_image, "Smart Air Purifier", menu)
+        self.tray_enabled = True
+
+        def run_tray():
+            try:
+                self.tray_icon.run()
+            except Exception:
+                self.logger.exception("System tray loop failed")
+
+        self.tray_thread = threading.Thread(target=run_tray, daemon=True, name="tray-icon")
+        self.tray_thread.start()
+
+    def _stop_system_tray(self) -> None:
+        if self.tray_icon is None:
+            return
+        try:
+            self.tray_icon.stop()
+        except Exception:
+            self.logger.exception("Failed to stop system tray icon")
+
+    def _update_system_tray_stats(self, esp: dict, air: dict) -> None:
+        if not self.tray_enabled or self.tray_icon is None:
+            return
+        try:
+            air_info = (air.get("list") or [{}])[0]
+            aqi = safe_int((air_info.get("main") or {}).get("aqi"), 0)
+            speed = int(clamp(safe_int(esp.get("speed"), 0), 0, 100))
+            room_temp = esp.get("temp", "--")
+            mode = "AUTO" if self.ai_auto_var.get() else "MANUAL"
+            health_text = "OK" if self.health_monitor.status().healthy else "ALERT"
+            fs = " (fail-safe)" if self.fail_safe_mode else ""
+
+            self.tray_label_room = f"Room: {room_temp} C"
+            self.tray_label_mode = mode + fs
+            self.tray_label_air = f"AQI: {aqi} ({aqi_label(aqi)})"
+            self.tray_label_fan = f"Fan: {speed}%"
+            self.tray_label_health = f"Health: {health_text}"
+            self.tray_icon.title = (
+                f"{self.tray_label_room} | {self.tray_label_air} | "
+                f"{self.tray_label_fan} | {self.tray_label_mode}"
+            )
+            self.tray_icon.update_menu()
+        except Exception:
+            self.logger.exception("Failed to update tray stats")
+
+    def _set_system_tray_message(self, message: str) -> None:
+        if not self.tray_enabled or self.tray_icon is None:
+            return
+        try:
+            compact = re.sub(r"\s+", " ", (message or "").strip())[:120]
+            if compact:
+                self.tray_label_health = compact
+                self.tray_icon.title = f"{self.tray_label_room} | {compact}"
+                self.tray_icon.update_menu()
+        except Exception:
+            self.logger.exception("Failed to update tray message")
 
     def _build_ui(self) -> None:
         style = ttk.Style()
@@ -1864,6 +2037,7 @@ class App:
 
     def _on_close(self) -> None:
         self.shutdown_event.set()
+        self._stop_system_tray()
         try:
             self.filter_tracker.flush()
         except Exception:
@@ -2384,6 +2558,24 @@ class App:
     def _set_status(self, text: str):
         self.root.after(0, lambda: self.status_var.set(text))
 
+    def _set_taskbar_title(self, summary: str):
+        compact = re.sub(r"\s+", " ", (summary or "").strip())
+        if len(compact) > 90:
+            compact = compact[:87].rstrip() + "..."
+        self.root.title(f"{compact} | {self.base_title}")
+
+    def _queue_taskbar_title(self, summary: str):
+        self.root.after(0, lambda s=summary: self._set_taskbar_title(s))
+
+    def _update_taskbar_title_from_data(self, esp: dict, air: dict):
+        air_info = (air.get("list") or [{}])[0]
+        aqi = safe_int((air_info.get("main") or {}).get("aqi"), 0)
+        speed = int(clamp(safe_int(esp.get("speed"), 0), 0, 100))
+        mode = "AUTO" if self.ai_auto_var.get() else "MANUAL"
+        health = "OK" if self.health_monitor.status().healthy else "ALERT"
+        fail_safe = " FS" if self.fail_safe_mode else ""
+        self._set_taskbar_title(f"AQI {aqi} | Fan {speed}% | {mode}{fail_safe} | {health}")
+
     def _update_action_states(self):
         busy = self.refresh_in_progress or self.autotune_in_progress
 
@@ -2591,6 +2783,8 @@ class App:
                 self.root.after(0, lambda: self._set_esp_indicator(False))
                 self._set_status("ESP32 is unreachable. Check power/network.")
                 self._set_system_alert("ESP32 connection failed. Check device power or network.", "error")
+                self._queue_taskbar_title("ESP offline | Check device/network")
+                self._set_system_tray_message("ESP offline")
                 return
 
             now_ts = time.time()
@@ -2625,6 +2819,8 @@ class App:
             if weather is None or air is None:
                 self._set_status("Weather service unavailable and no cached data yet.")
                 self._set_system_alert("Weather API unavailable and no cached data exists yet.", "error")
+                self._queue_taskbar_title("Weather API unavailable")
+                self._set_system_tray_message("Weather API unavailable")
                 return
 
             fan_ai_speed = None
@@ -2717,6 +2913,8 @@ class App:
             self.logger.exception("Refresh worker failed")
             self._set_status(f"Update error: {error}")
             self._set_system_alert(f"Refresh failed: {error}", "error")
+            self._queue_taskbar_title("Update error")
+            self._set_system_tray_message("Update error")
         finally:
             self.root.after(0, self._update_health_indicator)
             with self.refresh_lock:
@@ -2959,6 +3157,8 @@ class App:
         self.out_temp_label.configure(text=f"{outside.get('temp', '--')} C")
         self.out_hum_label.configure(text=f"Humidity: {outside.get('humidity', '--')} %")
         self.out_desc_label.configure(text=f"Conditions: {weather_desc}")
+        self._update_taskbar_title_from_data(esp, air)
+        self._update_system_tray_stats(esp, air)
 
         self._update_metric_history(esp, weather, air)
         self._draw_metric_graphs()
