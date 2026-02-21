@@ -8445,3 +8445,1746 @@
 2026-02-21 18:44:07,498 DEBUG Thread-4197 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
 2026-02-21 18:44:11,549 INFO Thread-4198 (process_request_thread): Settings loaded successfully
 2026-02-21 18:44:11,578 DEBUG Thread-4198 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:08:19,401 INFO MainThread: Debug logger initialized
+2026-02-21 20:08:19,405 INFO MainThread: Settings loaded successfully
+2026-02-21 20:08:19,416 INFO MainThread: Desktop dashboard server started: http://0.0.0.0:8765
+2026-02-21 20:08:25,114 DEBUG Thread-1 (process_request_thread): web: "GET / HTTP/1.1" 200 -
+2026-02-21 20:08:25,124 INFO Thread-2 (process_request_thread): Settings loaded successfully
+2026-02-21 20:08:25,373 DEBUG Thread-3 (process_request_thread): web: "GET /favicon.ico HTTP/1.1" 404 -
+2026-02-21 20:08:26,012 DEBUG Thread-2 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:08:29,436 INFO Thread-4 (process_request_thread): Settings loaded successfully
+2026-02-21 20:08:30,106 DEBUG Thread-4 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:08:33,130 INFO Thread-5 (process_request_thread): Settings loaded successfully
+2026-02-21 20:08:33,210 DEBUG Thread-5 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:08:37,438 INFO Thread-6 (process_request_thread): Settings loaded successfully
+2026-02-21 20:08:38,107 DEBUG Thread-6 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:08:41,129 INFO Thread-7 (process_request_thread): Settings loaded successfully
+2026-02-21 20:08:41,207 DEBUG Thread-7 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:08:45,443 INFO Thread-8 (process_request_thread): Settings loaded successfully
+2026-02-21 20:08:46,108 DEBUG Thread-8 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:08:49,124 INFO Thread-9 (process_request_thread): Settings loaded successfully
+2026-02-21 20:08:49,181 DEBUG Thread-9 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:08:53,431 INFO Thread-10 (process_request_thread): Settings loaded successfully
+2026-02-21 20:08:54,106 DEBUG Thread-10 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:08:57,136 INFO Thread-11 (process_request_thread): Settings loaded successfully
+2026-02-21 20:08:57,284 DEBUG Thread-11 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:09:01,442 INFO Thread-12 (process_request_thread): Settings loaded successfully
+2026-02-21 20:09:02,105 DEBUG Thread-12 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:09:05,132 INFO Thread-13 (process_request_thread): Settings loaded successfully
+2026-02-21 20:09:05,265 DEBUG Thread-13 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:09:09,436 INFO Thread-14 (process_request_thread): Settings loaded successfully
+2026-02-21 20:09:10,106 DEBUG Thread-14 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:09:13,128 INFO Thread-15 (process_request_thread): Settings loaded successfully
+2026-02-21 20:09:13,278 DEBUG Thread-15 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:09:17,440 INFO Thread-16 (process_request_thread): Settings loaded successfully
+2026-02-21 20:09:18,106 DEBUG Thread-16 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:09:21,133 INFO Thread-17 (process_request_thread): Settings loaded successfully
+2026-02-21 20:09:21,233 DEBUG Thread-17 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:09:25,441 INFO Thread-18 (process_request_thread): Settings loaded successfully
+2026-02-21 20:09:26,106 DEBUG Thread-18 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:09:29,132 INFO Thread-19 (process_request_thread): Settings loaded successfully
+2026-02-21 20:09:30,268 DEBUG Thread-19 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:09:33,439 INFO Thread-20 (process_request_thread): Settings loaded successfully
+2026-02-21 20:09:34,111 DEBUG Thread-20 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:09:37,137 INFO Thread-21 (process_request_thread): Settings loaded successfully
+2026-02-21 20:09:37,206 DEBUG Thread-21 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:09:41,431 INFO Thread-22 (process_request_thread): Settings loaded successfully
+2026-02-21 20:09:42,109 DEBUG Thread-22 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:09:45,125 INFO Thread-23 (process_request_thread): Settings loaded successfully
+2026-02-21 20:09:45,211 DEBUG Thread-23 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:09:49,435 INFO Thread-24 (process_request_thread): Settings loaded successfully
+2026-02-21 20:09:50,105 DEBUG Thread-24 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:09:53,125 INFO Thread-25 (process_request_thread): Settings loaded successfully
+2026-02-21 20:09:53,182 DEBUG Thread-25 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:09:57,432 INFO Thread-26 (process_request_thread): Settings loaded successfully
+2026-02-21 20:09:58,104 DEBUG Thread-26 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:10:01,137 INFO Thread-27 (process_request_thread): Settings loaded successfully
+2026-02-21 20:10:01,269 DEBUG Thread-27 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:10:05,439 INFO Thread-28 (process_request_thread): Settings loaded successfully
+2026-02-21 20:10:06,104 DEBUG Thread-28 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:10:10,008 INFO Thread-29 (process_request_thread): Settings loaded successfully
+2026-02-21 20:10:10,100 DEBUG Thread-29 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:10:14,314 INFO Thread-30 (process_request_thread): Settings loaded successfully
+2026-02-21 20:10:15,109 DEBUG Thread-30 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:10:18,003 INFO Thread-31 (process_request_thread): Settings loaded successfully
+2026-02-21 20:10:18,105 DEBUG Thread-31 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:10:22,310 INFO Thread-32 (process_request_thread): Settings loaded successfully
+2026-02-21 20:10:23,109 DEBUG Thread-32 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:10:26,003 INFO Thread-33 (process_request_thread): Settings loaded successfully
+2026-02-21 20:10:26,103 DEBUG Thread-33 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:10:30,310 INFO Thread-34 (process_request_thread): Settings loaded successfully
+2026-02-21 20:10:31,104 DEBUG Thread-34 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:10:34,008 INFO Thread-35 (process_request_thread): Settings loaded successfully
+2026-02-21 20:10:34,156 DEBUG Thread-35 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:10:38,317 INFO Thread-36 (process_request_thread): Settings loaded successfully
+2026-02-21 20:10:39,109 DEBUG Thread-36 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:10:42,009 INFO Thread-37 (process_request_thread): Settings loaded successfully
+2026-02-21 20:10:42,160 DEBUG Thread-37 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:10:46,316 INFO Thread-38 (process_request_thread): Settings loaded successfully
+2026-02-21 20:10:47,106 DEBUG Thread-38 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:10:49,998 INFO Thread-39 (process_request_thread): Settings loaded successfully
+2026-02-21 20:10:50,129 DEBUG Thread-39 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:10:54,306 INFO Thread-40 (process_request_thread): Settings loaded successfully
+2026-02-21 20:10:55,104 DEBUG Thread-40 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:10:58,012 INFO Thread-41 (process_request_thread): Settings loaded successfully
+2026-02-21 20:10:58,104 DEBUG Thread-41 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:11:02,318 INFO Thread-42 (process_request_thread): Settings loaded successfully
+2026-02-21 20:11:03,106 DEBUG Thread-42 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:11:05,998 INFO Thread-43 (process_request_thread): Settings loaded successfully
+2026-02-21 20:11:06,101 DEBUG Thread-43 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:11:35,314 INFO Thread-44 (process_request_thread): Settings loaded successfully
+2026-02-21 20:11:36,103 DEBUG Thread-44 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:12:34,998 INFO Thread-45 (process_request_thread): Settings loaded successfully
+2026-02-21 20:12:35,444 DEBUG Thread-45 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:12:52,751 INFO Thread-46 (process_request_thread): Settings loaded successfully
+2026-02-21 20:12:53,101 DEBUG Thread-46 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:12:53,136 INFO Thread-47 (process_request_thread): Settings loaded successfully
+2026-02-21 20:12:53,154 DEBUG Thread-47 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:12:57,440 INFO Thread-48 (process_request_thread): Settings loaded successfully
+2026-02-21 20:12:58,105 DEBUG Thread-48 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:13:01,132 INFO Thread-49 (process_request_thread): Settings loaded successfully
+2026-02-21 20:13:01,182 DEBUG Thread-49 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:13:05,435 INFO Thread-50 (process_request_thread): Settings loaded successfully
+2026-02-21 20:13:06,107 DEBUG Thread-50 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:13:09,129 INFO Thread-51 (process_request_thread): Settings loaded successfully
+2026-02-21 20:13:09,170 DEBUG Thread-51 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:13:13,435 INFO Thread-52 (process_request_thread): Settings loaded successfully
+2026-02-21 20:13:14,100 DEBUG Thread-52 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:13:17,123 INFO Thread-53 (process_request_thread): Settings loaded successfully
+2026-02-21 20:13:17,162 DEBUG Thread-53 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:13:21,445 INFO Thread-54 (process_request_thread): Settings loaded successfully
+2026-02-21 20:13:22,102 DEBUG Thread-54 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:13:25,125 INFO Thread-55 (process_request_thread): Settings loaded successfully
+2026-02-21 20:13:25,246 DEBUG Thread-55 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:13:29,432 INFO Thread-56 (process_request_thread): Settings loaded successfully
+2026-02-21 20:13:31,102 DEBUG Thread-56 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:13:33,126 INFO Thread-57 (process_request_thread): Settings loaded successfully
+2026-02-21 20:13:33,238 DEBUG Thread-57 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:13:37,434 INFO Thread-58 (process_request_thread): Settings loaded successfully
+2026-02-21 20:13:38,100 DEBUG Thread-58 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:13:41,138 INFO Thread-59 (process_request_thread): Settings loaded successfully
+2026-02-21 20:13:42,251 DEBUG Thread-59 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:13:45,443 INFO Thread-60 (process_request_thread): Settings loaded successfully
+2026-02-21 20:13:46,102 DEBUG Thread-60 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:13:49,124 INFO Thread-61 (process_request_thread): Settings loaded successfully
+2026-02-21 20:13:49,212 DEBUG Thread-61 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:13:53,446 INFO Thread-62 (process_request_thread): Settings loaded successfully
+2026-02-21 20:13:54,107 DEBUG Thread-62 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:13:57,135 INFO Thread-63 (process_request_thread): Settings loaded successfully
+2026-02-21 20:13:57,211 DEBUG Thread-63 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:14:01,440 INFO Thread-64 (process_request_thread): Settings loaded successfully
+2026-02-21 20:14:02,103 DEBUG Thread-64 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:14:05,133 INFO Thread-65 (process_request_thread): Settings loaded successfully
+2026-02-21 20:14:05,187 DEBUG Thread-65 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:14:09,443 INFO Thread-66 (process_request_thread): Settings loaded successfully
+2026-02-21 20:14:10,101 DEBUG Thread-66 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:14:13,135 INFO Thread-67 (process_request_thread): Settings loaded successfully
+2026-02-21 20:14:13,167 DEBUG Thread-67 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:14:17,440 INFO Thread-68 (process_request_thread): Settings loaded successfully
+2026-02-21 20:14:18,100 DEBUG Thread-68 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:14:21,134 INFO Thread-69 (process_request_thread): Settings loaded successfully
+2026-02-21 20:14:21,256 DEBUG Thread-69 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:14:25,438 INFO Thread-70 (process_request_thread): Settings loaded successfully
+2026-02-21 20:14:26,101 DEBUG Thread-70 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:14:29,135 INFO Thread-71 (process_request_thread): Settings loaded successfully
+2026-02-21 20:14:29,243 DEBUG Thread-71 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:14:33,431 INFO Thread-72 (process_request_thread): Settings loaded successfully
+2026-02-21 20:14:34,101 DEBUG Thread-72 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:14:37,124 INFO Thread-73 (process_request_thread): Settings loaded successfully
+2026-02-21 20:14:37,261 DEBUG Thread-73 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:14:41,442 INFO Thread-74 (process_request_thread): Settings loaded successfully
+2026-02-21 20:14:42,099 DEBUG Thread-74 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:14:45,136 INFO Thread-75 (process_request_thread): Settings loaded successfully
+2026-02-21 20:14:45,248 DEBUG Thread-75 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:14:49,431 INFO Thread-76 (process_request_thread): Settings loaded successfully
+2026-02-21 20:14:50,108 DEBUG Thread-76 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:14:53,127 INFO Thread-77 (process_request_thread): Settings loaded successfully
+2026-02-21 20:14:53,204 DEBUG Thread-77 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:14:57,432 INFO Thread-78 (process_request_thread): Settings loaded successfully
+2026-02-21 20:14:58,105 DEBUG Thread-78 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:15:01,124 INFO Thread-79 (process_request_thread): Settings loaded successfully
+2026-02-21 20:15:01,212 DEBUG Thread-79 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:15:05,438 INFO Thread-80 (process_request_thread): Settings loaded successfully
+2026-02-21 20:15:06,100 DEBUG Thread-80 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:15:09,127 INFO Thread-81 (process_request_thread): Settings loaded successfully
+2026-02-21 20:15:09,186 DEBUG Thread-81 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:15:13,447 INFO Thread-82 (process_request_thread): Settings loaded successfully
+2026-02-21 20:15:14,102 DEBUG Thread-82 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:15:17,123 INFO Thread-83 (process_request_thread): Settings loaded successfully
+2026-02-21 20:15:17,167 DEBUG Thread-83 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:15:21,441 INFO Thread-84 (process_request_thread): Settings loaded successfully
+2026-02-21 20:15:22,098 DEBUG Thread-84 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:15:25,128 INFO Thread-85 (process_request_thread): Settings loaded successfully
+2026-02-21 20:15:25,257 DEBUG Thread-85 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:15:29,431 INFO Thread-86 (process_request_thread): Settings loaded successfully
+2026-02-21 20:15:30,099 DEBUG Thread-86 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:15:33,127 INFO Thread-87 (process_request_thread): Settings loaded successfully
+2026-02-21 20:15:33,243 DEBUG Thread-87 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:15:37,434 INFO Thread-88 (process_request_thread): Settings loaded successfully
+2026-02-21 20:15:38,101 DEBUG Thread-88 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:15:41,136 INFO Thread-89 (process_request_thread): Settings loaded successfully
+2026-02-21 20:15:41,254 DEBUG Thread-89 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:15:45,442 INFO Thread-90 (process_request_thread): Settings loaded successfully
+2026-02-21 20:15:46,098 DEBUG Thread-90 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:15:49,133 INFO Thread-91 (process_request_thread): Settings loaded successfully
+2026-02-21 20:15:49,216 DEBUG Thread-91 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:15:53,441 INFO Thread-92 (process_request_thread): Settings loaded successfully
+2026-02-21 20:15:54,097 DEBUG Thread-92 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:15:57,128 INFO Thread-93 (process_request_thread): Settings loaded successfully
+2026-02-21 20:15:57,207 DEBUG Thread-93 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:16:01,443 INFO Thread-94 (process_request_thread): Settings loaded successfully
+2026-02-21 20:16:02,101 DEBUG Thread-94 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:16:05,127 INFO Thread-95 (process_request_thread): Settings loaded successfully
+2026-02-21 20:16:05,216 DEBUG Thread-95 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:16:09,435 INFO Thread-96 (process_request_thread): Settings loaded successfully
+2026-02-21 20:16:10,098 DEBUG Thread-96 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:16:14,002 INFO Thread-97 (process_request_thread): Settings loaded successfully
+2026-02-21 20:16:14,100 DEBUG Thread-97 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:16:18,318 INFO Thread-98 (process_request_thread): Settings loaded successfully
+2026-02-21 20:16:19,098 DEBUG Thread-98 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:16:22,006 INFO Thread-99 (process_request_thread): Settings loaded successfully
+2026-02-21 20:16:22,095 DEBUG Thread-99 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:16:26,315 INFO Thread-100 (process_request_thread): Settings loaded successfully
+2026-02-21 20:16:27,100 DEBUG Thread-100 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:16:30,005 INFO Thread-101 (process_request_thread): Settings loaded successfully
+2026-02-21 20:16:30,093 DEBUG Thread-101 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:16:34,312 INFO Thread-102 (process_request_thread): Settings loaded successfully
+2026-02-21 20:16:35,514 DEBUG Thread-102 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:16:38,003 INFO Thread-103 (process_request_thread): Settings loaded successfully
+2026-02-21 20:16:38,098 DEBUG Thread-103 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:16:42,313 INFO Thread-104 (process_request_thread): Settings loaded successfully
+2026-02-21 20:16:43,096 DEBUG Thread-104 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:16:46,011 INFO Thread-105 (process_request_thread): Settings loaded successfully
+2026-02-21 20:16:46,116 DEBUG Thread-105 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:16:50,307 INFO Thread-106 (process_request_thread): Settings loaded successfully
+2026-02-21 20:16:51,100 DEBUG Thread-106 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:16:53,998 INFO Thread-107 (process_request_thread): Settings loaded successfully
+2026-02-21 20:16:54,097 DEBUG Thread-107 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:16:58,316 INFO Thread-108 (process_request_thread): Settings loaded successfully
+2026-02-21 20:16:59,098 DEBUG Thread-108 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:17:02,006 INFO Thread-109 (process_request_thread): Settings loaded successfully
+2026-02-21 20:17:02,126 DEBUG Thread-109 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:17:06,317 INFO Thread-110 (process_request_thread): Settings loaded successfully
+2026-02-21 20:17:07,099 DEBUG Thread-110 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:17:35,002 INFO Thread-111 (process_request_thread): Settings loaded successfully
+2026-02-21 20:17:35,101 DEBUG Thread-111 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:18:35,312 INFO Thread-112 (process_request_thread): Settings loaded successfully
+2026-02-21 20:18:36,099 DEBUG Thread-112 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:19:35,004 INFO Thread-113 (process_request_thread): Settings loaded successfully
+2026-02-21 20:19:35,111 DEBUG Thread-113 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:20:35,315 INFO Thread-114 (process_request_thread): Settings loaded successfully
+2026-02-21 20:20:36,612 DEBUG Thread-114 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:21:35,008 INFO Thread-115 (process_request_thread): Settings loaded successfully
+2026-02-21 20:21:35,120 DEBUG Thread-115 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:22:35,306 INFO Thread-116 (process_request_thread): Settings loaded successfully
+2026-02-21 20:22:36,094 DEBUG Thread-116 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:23:35,011 INFO Thread-117 (process_request_thread): Settings loaded successfully
+2026-02-21 20:23:35,140 DEBUG Thread-117 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:24:35,312 INFO Thread-118 (process_request_thread): Settings loaded successfully
+2026-02-21 20:24:36,090 DEBUG Thread-118 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:25:35,004 INFO Thread-119 (process_request_thread): Settings loaded successfully
+2026-02-21 20:25:35,424 DEBUG Thread-119 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:26:35,315 INFO Thread-120 (process_request_thread): Settings loaded successfully
+2026-02-21 20:26:36,086 DEBUG Thread-120 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:27:35,011 INFO Thread-121 (process_request_thread): Settings loaded successfully
+2026-02-21 20:27:35,082 DEBUG Thread-121 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:28:35,311 INFO Thread-122 (process_request_thread): Settings loaded successfully
+2026-02-21 20:28:36,085 DEBUG Thread-122 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:29:35,008 INFO Thread-123 (process_request_thread): Settings loaded successfully
+2026-02-21 20:29:35,081 DEBUG Thread-123 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:30:35,307 INFO Thread-124 (process_request_thread): Settings loaded successfully
+2026-02-21 20:30:36,379 DEBUG Thread-124 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:31:35,010 INFO Thread-125 (process_request_thread): Settings loaded successfully
+2026-02-21 20:31:35,078 DEBUG Thread-125 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:31:58,372 INFO Thread-126 (process_request_thread): Settings loaded successfully
+2026-02-21 20:31:59,080 DEBUG Thread-126 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:32:01,124 INFO Thread-127 (process_request_thread): Settings loaded successfully
+2026-02-21 20:32:01,189 DEBUG Thread-127 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:32:05,431 INFO Thread-128 (process_request_thread): Settings loaded successfully
+2026-02-21 20:32:06,084 DEBUG Thread-128 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:32:09,137 INFO Thread-129 (process_request_thread): Settings loaded successfully
+2026-02-21 20:32:09,177 DEBUG Thread-129 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:32:13,442 INFO Thread-130 (process_request_thread): Settings loaded successfully
+2026-02-21 20:32:14,085 DEBUG Thread-130 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:32:17,131 INFO Thread-131 (process_request_thread): Settings loaded successfully
+2026-02-21 20:32:17,164 DEBUG Thread-131 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:32:21,435 INFO Thread-132 (process_request_thread): Settings loaded successfully
+2026-02-21 20:32:22,081 DEBUG Thread-132 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:32:25,124 INFO Thread-133 (process_request_thread): Settings loaded successfully
+2026-02-21 20:32:25,255 DEBUG Thread-133 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:32:29,434 INFO Thread-134 (process_request_thread): Settings loaded successfully
+2026-02-21 20:32:30,080 DEBUG Thread-134 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:32:33,137 INFO Thread-135 (process_request_thread): Settings loaded successfully
+2026-02-21 20:32:33,240 DEBUG Thread-135 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:32:37,435 INFO Thread-136 (process_request_thread): Settings loaded successfully
+2026-02-21 20:32:38,080 DEBUG Thread-136 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:32:41,132 INFO Thread-137 (process_request_thread): Settings loaded successfully
+2026-02-21 20:32:41,234 DEBUG Thread-137 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:32:45,431 INFO Thread-138 (process_request_thread): Settings loaded successfully
+2026-02-21 20:32:46,081 DEBUG Thread-138 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:32:49,137 INFO Thread-139 (process_request_thread): Settings loaded successfully
+2026-02-21 20:32:49,214 DEBUG Thread-139 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:32:53,445 INFO Thread-140 (process_request_thread): Settings loaded successfully
+2026-02-21 20:32:54,079 DEBUG Thread-140 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:32:57,134 INFO Thread-141 (process_request_thread): Settings loaded successfully
+2026-02-21 20:32:58,235 DEBUG Thread-141 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:33:01,439 INFO Thread-142 (process_request_thread): Settings loaded successfully
+2026-02-21 20:33:02,079 DEBUG Thread-142 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:33:05,131 INFO Thread-143 (process_request_thread): Settings loaded successfully
+2026-02-21 20:33:05,190 DEBUG Thread-143 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:33:09,434 INFO Thread-144 (process_request_thread): Settings loaded successfully
+2026-02-21 20:33:10,084 DEBUG Thread-144 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:33:13,135 INFO Thread-145 (process_request_thread): Settings loaded successfully
+2026-02-21 20:33:13,174 DEBUG Thread-145 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:33:17,437 INFO Thread-146 (process_request_thread): Settings loaded successfully
+2026-02-21 20:33:18,080 DEBUG Thread-146 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:33:21,127 INFO Thread-147 (process_request_thread): Settings loaded successfully
+2026-02-21 20:33:21,165 DEBUG Thread-147 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:33:25,432 INFO Thread-148 (process_request_thread): Settings loaded successfully
+2026-02-21 20:33:26,083 DEBUG Thread-148 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:33:29,134 INFO Thread-149 (process_request_thread): Settings loaded successfully
+2026-02-21 20:33:29,254 DEBUG Thread-149 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:33:33,437 INFO Thread-150 (process_request_thread): Settings loaded successfully
+2026-02-21 20:33:34,086 DEBUG Thread-150 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:33:38,000 INFO Thread-151 (process_request_thread): Settings loaded successfully
+2026-02-21 20:33:38,079 DEBUG Thread-151 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:33:42,316 INFO Thread-152 (process_request_thread): Settings loaded successfully
+2026-02-21 20:33:43,080 DEBUG Thread-152 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:33:46,005 INFO Thread-153 (process_request_thread): Settings loaded successfully
+2026-02-21 20:33:46,181 DEBUG Thread-153 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:33:50,307 INFO Thread-154 (process_request_thread): Settings loaded successfully
+2026-02-21 20:33:51,084 DEBUG Thread-154 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:33:54,000 INFO Thread-155 (process_request_thread): Settings loaded successfully
+2026-02-21 20:33:54,074 DEBUG Thread-155 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:33:58,308 INFO Thread-156 (process_request_thread): Settings loaded successfully
+2026-02-21 20:33:59,082 DEBUG Thread-156 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:34:01,998 INFO Thread-157 (process_request_thread): Settings loaded successfully
+2026-02-21 20:34:02,123 DEBUG Thread-157 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:34:06,304 INFO Thread-158 (process_request_thread): Settings loaded successfully
+2026-02-21 20:34:07,084 DEBUG Thread-158 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:34:10,009 INFO Thread-159 (process_request_thread): Settings loaded successfully
+2026-02-21 20:34:10,111 DEBUG Thread-159 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:34:14,306 INFO Thread-160 (process_request_thread): Settings loaded successfully
+2026-02-21 20:34:15,078 DEBUG Thread-160 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:34:18,012 INFO Thread-161 (process_request_thread): Settings loaded successfully
+2026-02-21 20:34:18,098 DEBUG Thread-161 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:34:22,306 INFO Thread-162 (process_request_thread): Settings loaded successfully
+2026-02-21 20:34:23,084 DEBUG Thread-162 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:34:26,002 INFO Thread-163 (process_request_thread): Settings loaded successfully
+2026-02-21 20:34:26,085 DEBUG Thread-163 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:34:30,307 INFO Thread-164 (process_request_thread): Settings loaded successfully
+2026-02-21 20:34:31,083 DEBUG Thread-164 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:34:33,998 INFO Thread-165 (process_request_thread): Settings loaded successfully
+2026-02-21 20:34:34,074 DEBUG Thread-165 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:35:35,317 INFO Thread-166 (process_request_thread): Settings loaded successfully
+2026-02-21 20:35:36,588 DEBUG Thread-166 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:36:34,997 INFO Thread-167 (process_request_thread): Settings loaded successfully
+2026-02-21 20:36:35,108 DEBUG Thread-167 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:37:35,334 INFO Thread-168 (process_request_thread): Settings loaded successfully
+2026-02-21 20:37:36,079 DEBUG Thread-168 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:38:35,002 INFO Thread-169 (process_request_thread): Settings loaded successfully
+2026-02-21 20:38:35,117 DEBUG Thread-169 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:39:35,311 INFO Thread-170 (process_request_thread): Settings loaded successfully
+2026-02-21 20:39:36,076 DEBUG Thread-170 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:40:35,002 INFO Thread-171 (process_request_thread): Settings loaded successfully
+2026-02-21 20:40:35,668 DEBUG Thread-171 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:41:35,313 INFO Thread-172 (process_request_thread): Settings loaded successfully
+2026-02-21 20:41:36,078 DEBUG Thread-172 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:42:21,929 INFO Thread-173 (process_request_thread): Settings loaded successfully
+2026-02-21 20:42:22,067 DEBUG Thread-173 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:42:25,438 INFO Thread-174 (process_request_thread): Settings loaded successfully
+2026-02-21 20:42:26,068 DEBUG Thread-174 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:42:29,129 INFO Thread-175 (process_request_thread): Settings loaded successfully
+2026-02-21 20:42:29,200 DEBUG Thread-175 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:42:33,439 INFO Thread-176 (process_request_thread): Settings loaded successfully
+2026-02-21 20:42:34,069 DEBUG Thread-176 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:42:37,125 INFO Thread-177 (process_request_thread): Settings loaded successfully
+2026-02-21 20:42:37,198 DEBUG Thread-177 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:42:41,432 INFO Thread-178 (process_request_thread): Settings loaded successfully
+2026-02-21 20:42:42,068 DEBUG Thread-178 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:42:45,136 INFO Thread-179 (process_request_thread): Settings loaded successfully
+2026-02-21 20:42:45,175 DEBUG Thread-179 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:42:49,438 INFO Thread-180 (process_request_thread): Settings loaded successfully
+2026-02-21 20:42:50,072 DEBUG Thread-180 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:42:53,130 INFO Thread-181 (process_request_thread): Settings loaded successfully
+2026-02-21 20:42:53,163 DEBUG Thread-181 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:42:57,436 INFO Thread-182 (process_request_thread): Settings loaded successfully
+2026-02-21 20:42:58,073 DEBUG Thread-182 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:43:01,132 INFO Thread-183 (process_request_thread): Settings loaded successfully
+2026-02-21 20:43:01,253 DEBUG Thread-183 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:43:05,440 INFO Thread-184 (process_request_thread): Settings loaded successfully
+2026-02-21 20:43:06,070 DEBUG Thread-184 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:43:09,126 INFO Thread-185 (process_request_thread): Settings loaded successfully
+2026-02-21 20:43:09,247 DEBUG Thread-185 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:43:13,434 INFO Thread-186 (process_request_thread): Settings loaded successfully
+2026-02-21 20:43:14,069 DEBUG Thread-186 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:43:17,124 INFO Thread-187 (process_request_thread): Settings loaded successfully
+2026-02-21 20:43:17,230 DEBUG Thread-187 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:43:21,443 INFO Thread-188 (process_request_thread): Settings loaded successfully
+2026-02-21 20:43:22,085 DEBUG Thread-188 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:43:25,129 INFO Thread-189 (process_request_thread): Settings loaded successfully
+2026-02-21 20:43:25,217 DEBUG Thread-189 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:43:29,438 INFO Thread-190 (process_request_thread): Settings loaded successfully
+2026-02-21 20:43:30,068 DEBUG Thread-190 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:43:33,129 INFO Thread-191 (process_request_thread): Settings loaded successfully
+2026-02-21 20:43:33,201 DEBUG Thread-191 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:43:37,434 INFO Thread-192 (process_request_thread): Settings loaded successfully
+2026-02-21 20:43:38,067 DEBUG Thread-192 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:43:41,127 INFO Thread-193 (process_request_thread): Settings loaded successfully
+2026-02-21 20:43:41,187 DEBUG Thread-193 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:43:45,442 INFO Thread-194 (process_request_thread): Settings loaded successfully
+2026-02-21 20:43:47,070 DEBUG Thread-194 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:43:49,129 INFO Thread-195 (process_request_thread): Settings loaded successfully
+2026-02-21 20:43:49,189 DEBUG Thread-195 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:43:53,434 INFO Thread-196 (process_request_thread): Settings loaded successfully
+2026-02-21 20:43:54,075 DEBUG Thread-196 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:43:57,136 INFO Thread-197 (process_request_thread): Settings loaded successfully
+2026-02-21 20:43:58,187 DEBUG Thread-197 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:44:01,436 INFO Thread-198 (process_request_thread): Settings loaded successfully
+2026-02-21 20:44:02,068 DEBUG Thread-198 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:44:05,123 INFO Thread-199 (process_request_thread): Settings loaded successfully
+2026-02-21 20:44:05,251 DEBUG Thread-199 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:44:09,440 INFO Thread-200 (process_request_thread): Settings loaded successfully
+2026-02-21 20:44:10,068 DEBUG Thread-200 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:44:13,128 INFO Thread-201 (process_request_thread): Settings loaded successfully
+2026-02-21 20:44:13,238 DEBUG Thread-201 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:44:17,432 INFO Thread-202 (process_request_thread): Settings loaded successfully
+2026-02-21 20:44:18,074 DEBUG Thread-202 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:44:21,138 INFO Thread-203 (process_request_thread): Settings loaded successfully
+2026-02-21 20:44:21,243 DEBUG Thread-203 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:44:25,440 INFO Thread-204 (process_request_thread): Settings loaded successfully
+2026-02-21 20:44:27,086 DEBUG Thread-204 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:44:29,125 INFO Thread-205 (process_request_thread): Settings loaded successfully
+2026-02-21 20:44:29,216 DEBUG Thread-205 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:44:33,438 INFO Thread-206 (process_request_thread): Settings loaded successfully
+2026-02-21 20:44:34,066 DEBUG Thread-206 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:44:37,132 INFO Thread-207 (process_request_thread): Settings loaded successfully
+2026-02-21 20:44:37,453 DEBUG Thread-207 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:44:41,435 INFO Thread-208 (process_request_thread): Settings loaded successfully
+2026-02-21 20:44:42,065 DEBUG Thread-208 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:44:45,123 INFO Thread-209 (process_request_thread): Settings loaded successfully
+2026-02-21 20:44:45,194 DEBUG Thread-209 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:44:49,446 INFO Thread-210 (process_request_thread): Settings loaded successfully
+2026-02-21 20:44:50,066 DEBUG Thread-210 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:44:53,125 INFO Thread-211 (process_request_thread): Settings loaded successfully
+2026-02-21 20:44:53,177 DEBUG Thread-211 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:44:57,441 INFO Thread-212 (process_request_thread): Settings loaded successfully
+2026-02-21 20:44:58,066 DEBUG Thread-212 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:45:01,130 INFO Thread-213 (process_request_thread): Settings loaded successfully
+2026-02-21 20:45:01,160 DEBUG Thread-213 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:45:05,443 INFO Thread-214 (process_request_thread): Settings loaded successfully
+2026-02-21 20:45:06,068 DEBUG Thread-214 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:45:09,133 INFO Thread-215 (process_request_thread): Settings loaded successfully
+2026-02-21 20:45:09,159 DEBUG Thread-215 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:45:13,433 INFO Thread-216 (process_request_thread): Settings loaded successfully
+2026-02-21 20:45:14,066 DEBUG Thread-216 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:45:17,137 INFO Thread-217 (process_request_thread): Settings loaded successfully
+2026-02-21 20:45:17,240 DEBUG Thread-217 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:45:21,440 INFO Thread-218 (process_request_thread): Settings loaded successfully
+2026-02-21 20:45:22,074 DEBUG Thread-218 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:45:25,129 INFO Thread-219 (process_request_thread): Settings loaded successfully
+2026-02-21 20:45:25,233 DEBUG Thread-219 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:45:29,445 INFO Thread-220 (process_request_thread): Settings loaded successfully
+2026-02-21 20:45:30,068 DEBUG Thread-220 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:45:33,129 INFO Thread-221 (process_request_thread): Settings loaded successfully
+2026-02-21 20:45:33,218 DEBUG Thread-221 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:45:37,443 INFO Thread-222 (process_request_thread): Settings loaded successfully
+2026-02-21 20:45:38,100 DEBUG Thread-222 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:45:41,137 INFO Thread-223 (process_request_thread): Settings loaded successfully
+2026-02-21 20:45:41,203 DEBUG Thread-223 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:45:45,440 INFO Thread-224 (process_request_thread): Settings loaded successfully
+2026-02-21 20:45:46,068 DEBUG Thread-224 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:45:49,133 INFO Thread-225 (process_request_thread): Settings loaded successfully
+2026-02-21 20:45:50,212 DEBUG Thread-225 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:45:53,439 INFO Thread-226 (process_request_thread): Settings loaded successfully
+2026-02-21 20:45:54,064 DEBUG Thread-226 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:45:57,127 INFO Thread-227 (process_request_thread): Settings loaded successfully
+2026-02-21 20:45:57,174 DEBUG Thread-227 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:46:01,447 INFO Thread-228 (process_request_thread): Settings loaded successfully
+2026-02-21 20:46:02,070 DEBUG Thread-228 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:46:05,132 INFO Thread-229 (process_request_thread): Settings loaded successfully
+2026-02-21 20:46:05,262 DEBUG Thread-229 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:46:09,437 INFO Thread-230 (process_request_thread): Settings loaded successfully
+2026-02-21 20:46:10,068 DEBUG Thread-230 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:46:13,125 INFO Thread-231 (process_request_thread): Settings loaded successfully
+2026-02-21 20:46:13,252 DEBUG Thread-231 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:46:17,431 INFO Thread-232 (process_request_thread): Settings loaded successfully
+2026-02-21 20:46:18,068 DEBUG Thread-232 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:46:21,131 INFO Thread-233 (process_request_thread): Settings loaded successfully
+2026-02-21 20:46:21,244 DEBUG Thread-233 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:46:25,432 INFO Thread-234 (process_request_thread): Settings loaded successfully
+2026-02-21 20:46:26,072 DEBUG Thread-234 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:46:29,132 INFO Thread-235 (process_request_thread): Settings loaded successfully
+2026-02-21 20:46:29,222 DEBUG Thread-235 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:46:33,434 INFO Thread-236 (process_request_thread): Settings loaded successfully
+2026-02-21 20:46:34,068 DEBUG Thread-236 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:46:37,135 INFO Thread-237 (process_request_thread): Settings loaded successfully
+2026-02-21 20:46:37,210 DEBUG Thread-237 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:46:41,440 INFO Thread-238 (process_request_thread): Settings loaded successfully
+2026-02-21 20:46:42,071 DEBUG Thread-238 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:46:45,129 INFO Thread-239 (process_request_thread): Settings loaded successfully
+2026-02-21 20:46:45,201 DEBUG Thread-239 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:46:49,432 INFO Thread-240 (process_request_thread): Settings loaded successfully
+2026-02-21 20:46:50,074 DEBUG Thread-240 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:46:53,122 INFO Thread-241 (process_request_thread): Settings loaded successfully
+2026-02-21 20:46:53,188 DEBUG Thread-241 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:46:57,442 INFO Thread-242 (process_request_thread): Settings loaded successfully
+2026-02-21 20:46:58,072 DEBUG Thread-242 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:47:00,304 INFO Thread-243 (process_request_thread): Settings loaded successfully
+2026-02-21 20:47:01,071 INFO Thread-243 (process_request_thread): Settings loaded successfully
+2026-02-21 20:47:01,072 INFO Thread-243 (process_request_thread): Settings saved to C:\GitHub\SmartAirPurifier\desktop_app\desktop_app_settings.json
+2026-02-21 20:47:01,072 DEBUG Thread-243 (process_request_thread): web: "POST /api/control/profile HTTP/1.1" 200 -
+2026-02-21 20:47:01,380 INFO Thread-244 (process_request_thread): Settings loaded successfully
+2026-02-21 20:47:01,441 INFO Thread-245 (process_request_thread): Settings loaded successfully
+2026-02-21 20:47:02,074 DEBUG Thread-244 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:47:02,092 DEBUG Thread-245 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:47:05,130 INFO Thread-246 (process_request_thread): Settings loaded successfully
+2026-02-21 20:47:05,164 DEBUG Thread-246 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:47:09,434 INFO Thread-247 (process_request_thread): Settings loaded successfully
+2026-02-21 20:47:10,071 DEBUG Thread-247 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:47:13,123 INFO Thread-248 (process_request_thread): Settings loaded successfully
+2026-02-21 20:47:13,261 DEBUG Thread-248 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:47:17,445 INFO Thread-249 (process_request_thread): Settings loaded successfully
+2026-02-21 20:47:18,068 DEBUG Thread-249 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:47:21,134 INFO Thread-250 (process_request_thread): Settings loaded successfully
+2026-02-21 20:47:21,248 DEBUG Thread-250 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:47:25,437 INFO Thread-251 (process_request_thread): Settings loaded successfully
+2026-02-21 20:47:26,071 DEBUG Thread-251 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:47:29,132 INFO Thread-252 (process_request_thread): Settings loaded successfully
+2026-02-21 20:47:29,229 DEBUG Thread-252 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:47:33,433 INFO Thread-253 (process_request_thread): Settings loaded successfully
+2026-02-21 20:47:34,068 DEBUG Thread-253 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:47:37,132 INFO Thread-254 (process_request_thread): Settings loaded successfully
+2026-02-21 20:47:37,224 DEBUG Thread-254 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:47:41,443 INFO Thread-255 (process_request_thread): Settings loaded successfully
+2026-02-21 20:47:42,078 DEBUG Thread-255 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:47:45,127 INFO Thread-256 (process_request_thread): Settings loaded successfully
+2026-02-21 20:47:45,210 DEBUG Thread-256 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:47:49,438 INFO Thread-257 (process_request_thread): Settings loaded successfully
+2026-02-21 20:47:50,072 DEBUG Thread-257 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:47:53,135 INFO Thread-258 (process_request_thread): Settings loaded successfully
+2026-02-21 20:47:53,201 DEBUG Thread-258 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:47:57,435 INFO Thread-259 (process_request_thread): Settings loaded successfully
+2026-02-21 20:47:58,074 DEBUG Thread-259 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:48:01,127 INFO Thread-260 (process_request_thread): Settings loaded successfully
+2026-02-21 20:48:01,182 DEBUG Thread-260 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:48:05,444 INFO Thread-261 (process_request_thread): Settings loaded successfully
+2026-02-21 20:48:06,075 DEBUG Thread-261 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:48:09,130 INFO Thread-262 (process_request_thread): Settings loaded successfully
+2026-02-21 20:48:09,166 DEBUG Thread-262 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:48:13,436 INFO Thread-263 (process_request_thread): Settings loaded successfully
+2026-02-21 20:48:14,074 DEBUG Thread-263 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:48:17,132 INFO Thread-264 (process_request_thread): Settings loaded successfully
+2026-02-21 20:48:17,256 DEBUG Thread-264 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:48:21,441 INFO Thread-265 (process_request_thread): Settings loaded successfully
+2026-02-21 20:48:22,074 DEBUG Thread-265 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:48:25,133 INFO Thread-266 (process_request_thread): Settings loaded successfully
+2026-02-21 20:48:25,246 DEBUG Thread-266 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:48:29,446 INFO Thread-267 (process_request_thread): Settings loaded successfully
+2026-02-21 20:48:30,071 DEBUG Thread-267 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:48:33,125 INFO Thread-268 (process_request_thread): Settings loaded successfully
+2026-02-21 20:48:33,229 DEBUG Thread-268 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:48:37,443 INFO Thread-269 (process_request_thread): Settings loaded successfully
+2026-02-21 20:48:38,382 DEBUG Thread-269 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:48:41,135 INFO Thread-270 (process_request_thread): Settings loaded successfully
+2026-02-21 20:48:41,218 DEBUG Thread-270 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:48:45,439 INFO Thread-271 (process_request_thread): Settings loaded successfully
+2026-02-21 20:48:46,075 DEBUG Thread-271 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:48:49,125 INFO Thread-272 (process_request_thread): Settings loaded successfully
+2026-02-21 20:48:49,207 DEBUG Thread-272 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:48:53,442 INFO Thread-273 (process_request_thread): Settings loaded successfully
+2026-02-21 20:48:54,071 DEBUG Thread-273 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:48:57,128 INFO Thread-274 (process_request_thread): Settings loaded successfully
+2026-02-21 20:48:57,191 DEBUG Thread-274 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:49:01,433 INFO Thread-275 (process_request_thread): Settings loaded successfully
+2026-02-21 20:49:02,070 DEBUG Thread-275 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:49:05,129 INFO Thread-276 (process_request_thread): Settings loaded successfully
+2026-02-21 20:49:05,177 DEBUG Thread-276 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:49:09,436 INFO Thread-277 (process_request_thread): Settings loaded successfully
+2026-02-21 20:49:11,069 DEBUG Thread-277 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:49:13,133 INFO Thread-278 (process_request_thread): Settings loaded successfully
+2026-02-21 20:49:14,196 DEBUG Thread-278 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:49:17,436 INFO Thread-279 (process_request_thread): Settings loaded successfully
+2026-02-21 20:49:18,070 DEBUG Thread-279 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:49:21,134 INFO Thread-280 (process_request_thread): Settings loaded successfully
+2026-02-21 20:49:21,253 DEBUG Thread-280 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:49:25,437 INFO Thread-281 (process_request_thread): Settings loaded successfully
+2026-02-21 20:49:26,069 DEBUG Thread-281 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:49:29,125 INFO Thread-282 (process_request_thread): Settings loaded successfully
+2026-02-21 20:49:29,245 DEBUG Thread-282 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:49:33,432 INFO Thread-283 (process_request_thread): Settings loaded successfully
+2026-02-21 20:49:34,070 DEBUG Thread-283 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:49:37,126 INFO Thread-284 (process_request_thread): Settings loaded successfully
+2026-02-21 20:49:37,229 DEBUG Thread-284 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:49:41,435 INFO Thread-285 (process_request_thread): Settings loaded successfully
+2026-02-21 20:49:42,071 DEBUG Thread-285 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:49:45,134 INFO Thread-286 (process_request_thread): Settings loaded successfully
+2026-02-21 20:49:45,222 DEBUG Thread-286 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:49:49,444 INFO Thread-287 (process_request_thread): Settings loaded successfully
+2026-02-21 20:49:51,808 DEBUG Thread-287 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:49:53,125 INFO Thread-288 (process_request_thread): Settings loaded successfully
+2026-02-21 20:49:53,205 DEBUG Thread-288 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:49:57,436 INFO Thread-289 (process_request_thread): Settings loaded successfully
+2026-02-21 20:49:58,068 DEBUG Thread-289 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:50:01,129 INFO Thread-290 (process_request_thread): Settings loaded successfully
+2026-02-21 20:50:01,193 DEBUG Thread-290 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:50:05,431 INFO Thread-291 (process_request_thread): Settings loaded successfully
+2026-02-21 20:50:06,068 DEBUG Thread-291 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:50:09,127 INFO Thread-292 (process_request_thread): Settings loaded successfully
+2026-02-21 20:50:09,178 DEBUG Thread-292 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:50:13,436 INFO Thread-293 (process_request_thread): Settings loaded successfully
+2026-02-21 20:50:14,069 DEBUG Thread-293 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:50:17,127 INFO Thread-294 (process_request_thread): Settings loaded successfully
+2026-02-21 20:50:17,164 DEBUG Thread-294 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:50:21,427 INFO Thread-295 (process_request_thread): Settings loaded successfully
+2026-02-21 20:50:22,093 DEBUG Thread-295 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:50:25,135 INFO Thread-296 (process_request_thread): Settings loaded successfully
+2026-02-21 20:50:25,254 DEBUG Thread-296 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:50:29,437 INFO Thread-297 (process_request_thread): Settings loaded successfully
+2026-02-21 20:50:30,068 DEBUG Thread-297 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:50:33,123 INFO Thread-298 (process_request_thread): Settings loaded successfully
+2026-02-21 20:50:33,272 DEBUG Thread-298 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:50:37,435 INFO Thread-299 (process_request_thread): Settings loaded successfully
+2026-02-21 20:50:39,077 DEBUG Thread-299 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:50:41,133 INFO Thread-300 (process_request_thread): Settings loaded successfully
+2026-02-21 20:50:41,155 DEBUG Thread-300 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:50:45,435 INFO Thread-301 (process_request_thread): Settings loaded successfully
+2026-02-21 20:50:46,077 DEBUG Thread-301 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:50:49,131 INFO Thread-302 (process_request_thread): Settings loaded successfully
+2026-02-21 20:50:52,190 DEBUG Thread-302 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:50:53,444 INFO Thread-303 (process_request_thread): Settings loaded successfully
+2026-02-21 20:50:54,076 DEBUG Thread-303 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:50:57,127 INFO Thread-304 (process_request_thread): Settings loaded successfully
+2026-02-21 20:50:58,231 DEBUG Thread-304 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:51:01,444 INFO Thread-305 (process_request_thread): Settings loaded successfully
+2026-02-21 20:51:02,076 DEBUG Thread-305 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:51:05,126 INFO Thread-306 (process_request_thread): Settings loaded successfully
+2026-02-21 20:51:05,189 DEBUG Thread-306 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:51:09,446 INFO Thread-307 (process_request_thread): Settings loaded successfully
+2026-02-21 20:51:10,076 DEBUG Thread-307 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:51:13,126 INFO Thread-308 (process_request_thread): Settings loaded successfully
+2026-02-21 20:51:13,181 DEBUG Thread-308 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:51:17,445 INFO Thread-309 (process_request_thread): Settings loaded successfully
+2026-02-21 20:51:18,083 DEBUG Thread-309 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:51:21,128 INFO Thread-310 (process_request_thread): Settings loaded successfully
+2026-02-21 20:51:21,163 DEBUG Thread-310 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:51:25,443 INFO Thread-311 (process_request_thread): Settings loaded successfully
+2026-02-21 20:51:26,076 DEBUG Thread-311 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:51:29,130 INFO Thread-312 (process_request_thread): Settings loaded successfully
+2026-02-21 20:51:29,253 DEBUG Thread-312 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:51:33,429 INFO Thread-313 (process_request_thread): Settings loaded successfully
+2026-02-21 20:51:34,078 DEBUG Thread-313 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:51:37,127 INFO Thread-314 (process_request_thread): Settings loaded successfully
+2026-02-21 20:51:37,239 DEBUG Thread-314 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:51:41,439 INFO Thread-315 (process_request_thread): Settings loaded successfully
+2026-02-21 20:51:42,076 DEBUG Thread-315 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:51:45,136 INFO Thread-316 (process_request_thread): Settings loaded successfully
+2026-02-21 20:51:45,233 DEBUG Thread-316 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:51:49,437 INFO Thread-317 (process_request_thread): Settings loaded successfully
+2026-02-21 20:51:50,076 DEBUG Thread-317 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:51:53,134 INFO Thread-318 (process_request_thread): Settings loaded successfully
+2026-02-21 20:51:53,214 DEBUG Thread-318 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:51:57,444 INFO Thread-319 (process_request_thread): Settings loaded successfully
+2026-02-21 20:51:58,075 DEBUG Thread-319 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:52:01,136 INFO Thread-320 (process_request_thread): Settings loaded successfully
+2026-02-21 20:52:01,205 DEBUG Thread-320 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:52:05,430 INFO Thread-321 (process_request_thread): Settings loaded successfully
+2026-02-21 20:52:06,082 DEBUG Thread-321 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:52:09,137 INFO Thread-322 (process_request_thread): Settings loaded successfully
+2026-02-21 20:52:09,188 DEBUG Thread-322 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:52:13,431 INFO Thread-323 (process_request_thread): Settings loaded successfully
+2026-02-21 20:52:14,075 DEBUG Thread-323 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:52:17,129 INFO Thread-324 (process_request_thread): Settings loaded successfully
+2026-02-21 20:52:17,175 DEBUG Thread-324 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:52:21,433 INFO Thread-325 (process_request_thread): Settings loaded successfully
+2026-02-21 20:52:22,078 DEBUG Thread-325 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:52:25,137 INFO Thread-326 (process_request_thread): Settings loaded successfully
+2026-02-21 20:52:25,269 DEBUG Thread-326 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:52:29,431 INFO Thread-327 (process_request_thread): Settings loaded successfully
+2026-02-21 20:52:30,078 DEBUG Thread-327 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:52:33,126 INFO Thread-328 (process_request_thread): Settings loaded successfully
+2026-02-21 20:52:33,255 DEBUG Thread-328 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:52:37,444 INFO Thread-329 (process_request_thread): Settings loaded successfully
+2026-02-21 20:52:38,573 DEBUG Thread-329 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:52:41,125 INFO Thread-330 (process_request_thread): Settings loaded successfully
+2026-02-21 20:52:41,242 DEBUG Thread-330 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:52:45,441 INFO Thread-331 (process_request_thread): Settings loaded successfully
+2026-02-21 20:52:46,075 DEBUG Thread-331 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:52:49,122 INFO Thread-332 (process_request_thread): Settings loaded successfully
+2026-02-21 20:52:49,225 DEBUG Thread-332 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:52:53,434 INFO Thread-333 (process_request_thread): Settings loaded successfully
+2026-02-21 20:52:54,075 DEBUG Thread-333 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:52:57,131 INFO Thread-334 (process_request_thread): Settings loaded successfully
+2026-02-21 20:52:57,213 DEBUG Thread-334 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:53:01,443 INFO Thread-335 (process_request_thread): Settings loaded successfully
+2026-02-21 20:53:02,078 DEBUG Thread-335 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:53:05,130 INFO Thread-336 (process_request_thread): Settings loaded successfully
+2026-02-21 20:53:05,201 DEBUG Thread-336 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:53:09,443 INFO Thread-337 (process_request_thread): Settings loaded successfully
+2026-02-21 20:53:10,076 DEBUG Thread-337 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:53:13,124 INFO Thread-338 (process_request_thread): Settings loaded successfully
+2026-02-21 20:53:13,187 DEBUG Thread-338 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:53:17,439 INFO Thread-339 (process_request_thread): Settings loaded successfully
+2026-02-21 20:53:18,080 DEBUG Thread-339 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:53:21,136 INFO Thread-340 (process_request_thread): Settings loaded successfully
+2026-02-21 20:53:21,174 DEBUG Thread-340 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:53:25,437 INFO Thread-341 (process_request_thread): Settings loaded successfully
+2026-02-21 20:53:26,076 DEBUG Thread-341 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:53:29,134 INFO Thread-342 (process_request_thread): Settings loaded successfully
+2026-02-21 20:53:29,269 DEBUG Thread-342 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:53:33,433 INFO Thread-343 (process_request_thread): Settings loaded successfully
+2026-02-21 20:53:34,078 DEBUG Thread-343 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:53:37,129 INFO Thread-344 (process_request_thread): Settings loaded successfully
+2026-02-21 20:53:37,265 DEBUG Thread-344 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:53:41,434 INFO Thread-345 (process_request_thread): Settings loaded successfully
+2026-02-21 20:53:42,080 DEBUG Thread-345 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:53:45,122 INFO Thread-346 (process_request_thread): Settings loaded successfully
+2026-02-21 20:53:45,239 DEBUG Thread-346 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:53:49,432 INFO Thread-347 (process_request_thread): Settings loaded successfully
+2026-02-21 20:53:50,081 DEBUG Thread-347 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:53:53,128 INFO Thread-348 (process_request_thread): Settings loaded successfully
+2026-02-21 20:53:53,230 DEBUG Thread-348 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:53:57,437 INFO Thread-349 (process_request_thread): Settings loaded successfully
+2026-02-21 20:53:58,081 DEBUG Thread-349 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:54:01,132 INFO Thread-350 (process_request_thread): Settings loaded successfully
+2026-02-21 20:54:01,217 DEBUG Thread-350 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:54:05,433 INFO Thread-351 (process_request_thread): Settings loaded successfully
+2026-02-21 20:54:06,078 DEBUG Thread-351 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:54:09,131 INFO Thread-352 (process_request_thread): Settings loaded successfully
+2026-02-21 20:54:09,200 DEBUG Thread-352 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:54:13,436 INFO Thread-353 (process_request_thread): Settings loaded successfully
+2026-02-21 20:54:14,078 DEBUG Thread-353 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:54:17,123 INFO Thread-354 (process_request_thread): Settings loaded successfully
+2026-02-21 20:54:17,187 DEBUG Thread-354 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:54:21,436 INFO Thread-355 (process_request_thread): Settings loaded successfully
+2026-02-21 20:54:22,081 DEBUG Thread-355 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:54:25,132 INFO Thread-356 (process_request_thread): Settings loaded successfully
+2026-02-21 20:54:25,229 DEBUG Thread-356 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:54:29,433 INFO Thread-357 (process_request_thread): Settings loaded successfully
+2026-02-21 20:54:30,079 DEBUG Thread-357 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:54:33,129 INFO Thread-358 (process_request_thread): Settings loaded successfully
+2026-02-21 20:54:33,162 DEBUG Thread-358 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:54:37,436 INFO Thread-359 (process_request_thread): Settings loaded successfully
+2026-02-21 20:54:38,077 DEBUG Thread-359 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:54:41,136 INFO Thread-360 (process_request_thread): Settings loaded successfully
+2026-02-21 20:54:41,257 DEBUG Thread-360 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:54:45,436 INFO Thread-361 (process_request_thread): Settings loaded successfully
+2026-02-21 20:54:46,077 DEBUG Thread-361 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:54:49,134 INFO Thread-362 (process_request_thread): Settings loaded successfully
+2026-02-21 20:54:49,245 DEBUG Thread-362 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:54:53,433 INFO Thread-363 (process_request_thread): Settings loaded successfully
+2026-02-21 20:54:54,079 DEBUG Thread-363 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:54:57,129 INFO Thread-364 (process_request_thread): Settings loaded successfully
+2026-02-21 20:54:57,224 DEBUG Thread-364 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:55:01,445 INFO Thread-365 (process_request_thread): Settings loaded successfully
+2026-02-21 20:55:02,084 DEBUG Thread-365 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:55:05,127 INFO Thread-366 (process_request_thread): Settings loaded successfully
+2026-02-21 20:55:06,238 DEBUG Thread-366 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:55:09,437 INFO Thread-367 (process_request_thread): Settings loaded successfully
+2026-02-21 20:55:10,077 DEBUG Thread-367 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:55:13,134 INFO Thread-368 (process_request_thread): Settings loaded successfully
+2026-02-21 20:55:13,202 DEBUG Thread-368 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:55:17,432 INFO Thread-369 (process_request_thread): Settings loaded successfully
+2026-02-21 20:55:18,077 DEBUG Thread-369 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:55:21,130 INFO Thread-370 (process_request_thread): Settings loaded successfully
+2026-02-21 20:55:21,204 DEBUG Thread-370 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:55:25,430 INFO Thread-371 (process_request_thread): Settings loaded successfully
+2026-02-21 20:55:26,077 DEBUG Thread-371 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:55:29,124 INFO Thread-372 (process_request_thread): Settings loaded successfully
+2026-02-21 20:55:29,186 DEBUG Thread-372 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:55:33,434 INFO Thread-373 (process_request_thread): Settings loaded successfully
+2026-02-21 20:55:34,082 DEBUG Thread-373 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:55:37,135 INFO Thread-374 (process_request_thread): Settings loaded successfully
+2026-02-21 20:55:37,273 DEBUG Thread-374 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:55:41,448 INFO Thread-375 (process_request_thread): Settings loaded successfully
+2026-02-21 20:55:42,078 DEBUG Thread-375 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:55:45,125 INFO Thread-376 (process_request_thread): Settings loaded successfully
+2026-02-21 20:55:45,253 DEBUG Thread-376 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:55:49,439 INFO Thread-377 (process_request_thread): Settings loaded successfully
+2026-02-21 20:55:50,075 DEBUG Thread-377 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:55:53,125 INFO Thread-378 (process_request_thread): Settings loaded successfully
+2026-02-21 20:55:53,237 DEBUG Thread-378 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:55:57,441 INFO Thread-379 (process_request_thread): Settings loaded successfully
+2026-02-21 20:55:58,080 DEBUG Thread-379 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:56:01,132 INFO Thread-380 (process_request_thread): Settings loaded successfully
+2026-02-21 20:56:01,227 DEBUG Thread-380 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:56:05,440 INFO Thread-381 (process_request_thread): Settings loaded successfully
+2026-02-21 20:56:08,025 DEBUG Thread-381 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:56:09,138 INFO Thread-382 (process_request_thread): Settings loaded successfully
+2026-02-21 20:56:09,253 DEBUG Thread-382 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:56:13,432 INFO Thread-383 (process_request_thread): Settings loaded successfully
+2026-02-21 20:56:14,082 DEBUG Thread-383 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:56:17,123 INFO Thread-384 (process_request_thread): Settings loaded successfully
+2026-02-21 20:56:17,209 DEBUG Thread-384 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:56:21,426 INFO Thread-385 (process_request_thread): Settings loaded successfully
+2026-02-21 20:56:22,076 DEBUG Thread-385 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:56:25,131 INFO Thread-386 (process_request_thread): Settings loaded successfully
+2026-02-21 20:56:25,191 DEBUG Thread-386 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:56:29,444 INFO Thread-387 (process_request_thread): Settings loaded successfully
+2026-02-21 20:56:30,078 DEBUG Thread-387 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:56:33,124 INFO Thread-388 (process_request_thread): Settings loaded successfully
+2026-02-21 20:56:33,184 DEBUG Thread-388 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:56:37,429 INFO Thread-389 (process_request_thread): Settings loaded successfully
+2026-02-21 20:56:38,567 DEBUG Thread-389 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:56:41,132 INFO Thread-390 (process_request_thread): Settings loaded successfully
+2026-02-21 20:56:41,266 DEBUG Thread-390 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:56:45,436 INFO Thread-391 (process_request_thread): Settings loaded successfully
+2026-02-21 20:56:46,077 DEBUG Thread-391 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:56:49,128 INFO Thread-392 (process_request_thread): Settings loaded successfully
+2026-02-21 20:56:49,259 DEBUG Thread-392 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:56:53,432 INFO Thread-393 (process_request_thread): Settings loaded successfully
+2026-02-21 20:56:54,077 DEBUG Thread-393 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:56:57,123 INFO Thread-394 (process_request_thread): Settings loaded successfully
+2026-02-21 20:56:57,236 DEBUG Thread-394 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:57:01,432 INFO Thread-395 (process_request_thread): Settings loaded successfully
+2026-02-21 20:57:02,079 DEBUG Thread-395 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:57:05,134 INFO Thread-396 (process_request_thread): Settings loaded successfully
+2026-02-21 20:57:05,223 DEBUG Thread-396 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:57:09,439 INFO Thread-397 (process_request_thread): Settings loaded successfully
+2026-02-21 20:57:10,074 DEBUG Thread-397 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:57:13,132 INFO Thread-398 (process_request_thread): Settings loaded successfully
+2026-02-21 20:57:14,244 DEBUG Thread-398 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:57:17,446 INFO Thread-399 (process_request_thread): Settings loaded successfully
+2026-02-21 20:57:18,076 DEBUG Thread-399 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:57:21,126 INFO Thread-400 (process_request_thread): Settings loaded successfully
+2026-02-21 20:57:21,233 DEBUG Thread-400 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:57:25,441 INFO Thread-401 (process_request_thread): Settings loaded successfully
+2026-02-21 20:57:26,080 DEBUG Thread-401 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:57:29,124 INFO Thread-402 (process_request_thread): Settings loaded successfully
+2026-02-21 20:57:29,185 DEBUG Thread-402 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:57:33,441 INFO Thread-403 (process_request_thread): Settings loaded successfully
+2026-02-21 20:57:34,075 DEBUG Thread-403 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:57:37,127 INFO Thread-404 (process_request_thread): Settings loaded successfully
+2026-02-21 20:57:37,175 DEBUG Thread-404 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:57:41,437 INFO Thread-405 (process_request_thread): Settings loaded successfully
+2026-02-21 20:57:42,077 DEBUG Thread-405 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:57:45,135 INFO Thread-406 (process_request_thread): Settings loaded successfully
+2026-02-21 20:57:45,261 DEBUG Thread-406 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:57:49,437 INFO Thread-407 (process_request_thread): Settings loaded successfully
+2026-02-21 20:57:50,079 DEBUG Thread-407 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:57:53,125 INFO Thread-408 (process_request_thread): Settings loaded successfully
+2026-02-21 20:57:53,250 DEBUG Thread-408 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:57:57,439 INFO Thread-409 (process_request_thread): Settings loaded successfully
+2026-02-21 20:57:58,075 DEBUG Thread-409 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:58:01,123 INFO Thread-410 (process_request_thread): Settings loaded successfully
+2026-02-21 20:58:01,246 DEBUG Thread-410 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:58:05,437 INFO Thread-411 (process_request_thread): Settings loaded successfully
+2026-02-21 20:58:07,075 DEBUG Thread-411 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:58:09,130 INFO Thread-412 (process_request_thread): Settings loaded successfully
+2026-02-21 20:58:09,223 DEBUG Thread-412 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:58:13,440 INFO Thread-413 (process_request_thread): Settings loaded successfully
+2026-02-21 20:58:14,076 DEBUG Thread-413 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:58:17,135 INFO Thread-414 (process_request_thread): Settings loaded successfully
+2026-02-21 20:58:17,215 DEBUG Thread-414 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:58:21,444 INFO Thread-415 (process_request_thread): Settings loaded successfully
+2026-02-21 20:58:22,076 DEBUG Thread-415 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:58:25,125 INFO Thread-416 (process_request_thread): Settings loaded successfully
+2026-02-21 20:58:25,196 DEBUG Thread-416 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:58:29,434 INFO Thread-417 (process_request_thread): Settings loaded successfully
+2026-02-21 20:58:30,075 DEBUG Thread-417 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:58:33,137 INFO Thread-418 (process_request_thread): Settings loaded successfully
+2026-02-21 20:58:33,189 DEBUG Thread-418 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:58:37,439 INFO Thread-419 (process_request_thread): Settings loaded successfully
+2026-02-21 20:58:38,077 DEBUG Thread-419 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:58:41,131 INFO Thread-420 (process_request_thread): Settings loaded successfully
+2026-02-21 20:58:41,173 DEBUG Thread-420 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:58:45,431 INFO Thread-421 (process_request_thread): Settings loaded successfully
+2026-02-21 20:58:46,076 DEBUG Thread-421 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:58:49,123 INFO Thread-422 (process_request_thread): Settings loaded successfully
+2026-02-21 20:58:49,164 DEBUG Thread-422 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:58:53,436 INFO Thread-423 (process_request_thread): Settings loaded successfully
+2026-02-21 20:58:54,074 DEBUG Thread-423 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:58:57,126 INFO Thread-424 (process_request_thread): Settings loaded successfully
+2026-02-21 20:58:57,251 DEBUG Thread-424 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:59:01,438 INFO Thread-425 (process_request_thread): Settings loaded successfully
+2026-02-21 20:59:02,077 DEBUG Thread-425 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:59:05,137 INFO Thread-426 (process_request_thread): Settings loaded successfully
+2026-02-21 20:59:05,240 DEBUG Thread-426 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:59:09,434 INFO Thread-427 (process_request_thread): Settings loaded successfully
+2026-02-21 20:59:11,075 DEBUG Thread-427 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:59:13,127 INFO Thread-428 (process_request_thread): Settings loaded successfully
+2026-02-21 20:59:14,159 DEBUG Thread-428 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:59:17,437 INFO Thread-429 (process_request_thread): Settings loaded successfully
+2026-02-21 20:59:19,088 DEBUG Thread-429 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:59:21,131 INFO Thread-430 (process_request_thread): Settings loaded successfully
+2026-02-21 20:59:21,210 DEBUG Thread-430 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:59:25,438 INFO Thread-431 (process_request_thread): Settings loaded successfully
+2026-02-21 20:59:26,076 DEBUG Thread-431 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:59:29,132 INFO Thread-432 (process_request_thread): Settings loaded successfully
+2026-02-21 20:59:29,205 DEBUG Thread-432 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:59:33,439 INFO Thread-433 (process_request_thread): Settings loaded successfully
+2026-02-21 20:59:34,073 DEBUG Thread-433 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:59:37,123 INFO Thread-434 (process_request_thread): Settings loaded successfully
+2026-02-21 20:59:37,183 DEBUG Thread-434 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:59:41,432 INFO Thread-435 (process_request_thread): Settings loaded successfully
+2026-02-21 20:59:43,076 DEBUG Thread-435 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:59:45,128 INFO Thread-436 (process_request_thread): Settings loaded successfully
+2026-02-21 20:59:45,171 DEBUG Thread-436 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:59:49,435 INFO Thread-437 (process_request_thread): Settings loaded successfully
+2026-02-21 20:59:50,076 DEBUG Thread-437 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:59:53,133 INFO Thread-438 (process_request_thread): Settings loaded successfully
+2026-02-21 20:59:53,262 DEBUG Thread-438 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 20:59:57,443 INFO Thread-439 (process_request_thread): Settings loaded successfully
+2026-02-21 20:59:58,074 DEBUG Thread-439 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:00:01,131 INFO Thread-440 (process_request_thread): Settings loaded successfully
+2026-02-21 21:00:01,256 DEBUG Thread-440 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:00:05,433 INFO Thread-441 (process_request_thread): Settings loaded successfully
+2026-02-21 21:00:06,074 DEBUG Thread-441 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:00:09,134 INFO Thread-442 (process_request_thread): Settings loaded successfully
+2026-02-21 21:00:09,237 DEBUG Thread-442 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:00:13,435 INFO Thread-443 (process_request_thread): Settings loaded successfully
+2026-02-21 21:00:14,078 DEBUG Thread-443 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:00:17,125 INFO Thread-444 (process_request_thread): Settings loaded successfully
+2026-02-21 21:00:17,226 DEBUG Thread-444 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:00:21,443 INFO Thread-445 (process_request_thread): Settings loaded successfully
+2026-02-21 21:00:22,075 DEBUG Thread-445 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:00:25,130 INFO Thread-446 (process_request_thread): Settings loaded successfully
+2026-02-21 21:00:25,210 DEBUG Thread-446 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:00:29,436 INFO Thread-447 (process_request_thread): Settings loaded successfully
+2026-02-21 21:00:30,073 DEBUG Thread-447 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:00:33,131 INFO Thread-448 (process_request_thread): Settings loaded successfully
+2026-02-21 21:00:33,195 DEBUG Thread-448 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:00:37,443 INFO Thread-449 (process_request_thread): Settings loaded successfully
+2026-02-21 21:00:38,074 DEBUG Thread-449 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:00:41,135 INFO Thread-450 (process_request_thread): Settings loaded successfully
+2026-02-21 21:00:41,481 DEBUG Thread-450 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:00:45,443 INFO Thread-451 (process_request_thread): Settings loaded successfully
+2026-02-21 21:00:46,071 DEBUG Thread-451 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:00:49,137 INFO Thread-452 (process_request_thread): Settings loaded successfully
+2026-02-21 21:00:49,181 DEBUG Thread-452 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:00:53,441 INFO Thread-453 (process_request_thread): Settings loaded successfully
+2026-02-21 21:00:55,072 DEBUG Thread-453 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:00:57,130 INFO Thread-454 (process_request_thread): Settings loaded successfully
+2026-02-21 21:00:57,263 DEBUG Thread-454 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:01:01,432 INFO Thread-455 (process_request_thread): Settings loaded successfully
+2026-02-21 21:01:02,073 DEBUG Thread-455 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:01:05,134 INFO Thread-456 (process_request_thread): Settings loaded successfully
+2026-02-21 21:01:05,250 DEBUG Thread-456 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:01:09,435 INFO Thread-457 (process_request_thread): Settings loaded successfully
+2026-02-21 21:01:10,070 DEBUG Thread-457 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:01:13,124 INFO Thread-458 (process_request_thread): Settings loaded successfully
+2026-02-21 21:01:13,238 DEBUG Thread-458 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:01:17,442 INFO Thread-459 (process_request_thread): Settings loaded successfully
+2026-02-21 21:01:18,076 DEBUG Thread-459 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:01:21,129 INFO Thread-460 (process_request_thread): Settings loaded successfully
+2026-02-21 21:01:21,228 DEBUG Thread-460 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:01:25,439 INFO Thread-461 (process_request_thread): Settings loaded successfully
+2026-02-21 21:01:26,074 DEBUG Thread-461 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:01:30,007 INFO Thread-462 (process_request_thread): Settings loaded successfully
+2026-02-21 21:01:30,134 DEBUG Thread-462 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:01:33,436 INFO Thread-463 (process_request_thread): Settings loaded successfully
+2026-02-21 21:01:34,070 DEBUG Thread-463 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:01:37,126 INFO Thread-464 (process_request_thread): Settings loaded successfully
+2026-02-21 21:01:37,195 DEBUG Thread-464 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:01:41,442 INFO Thread-465 (process_request_thread): Settings loaded successfully
+2026-02-21 21:01:42,072 DEBUG Thread-465 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:01:45,134 INFO Thread-466 (process_request_thread): Settings loaded successfully
+2026-02-21 21:01:45,230 DEBUG Thread-466 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:01:49,435 INFO Thread-467 (process_request_thread): Settings loaded successfully
+2026-02-21 21:01:50,072 DEBUG Thread-467 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:01:53,134 INFO Thread-468 (process_request_thread): Settings loaded successfully
+2026-02-21 21:01:54,196 DEBUG Thread-468 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:01:57,434 INFO Thread-469 (process_request_thread): Settings loaded successfully
+2026-02-21 21:01:58,077 DEBUG Thread-469 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:02:01,128 INFO Thread-470 (process_request_thread): Settings loaded successfully
+2026-02-21 21:02:01,261 DEBUG Thread-470 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:02:05,434 INFO Thread-471 (process_request_thread): Settings loaded successfully
+2026-02-21 21:02:06,073 DEBUG Thread-471 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:02:09,137 INFO Thread-472 (process_request_thread): Settings loaded successfully
+2026-02-21 21:02:09,250 DEBUG Thread-472 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:02:13,440 INFO Thread-473 (process_request_thread): Settings loaded successfully
+2026-02-21 21:02:14,072 DEBUG Thread-473 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:02:17,130 INFO Thread-474 (process_request_thread): Settings loaded successfully
+2026-02-21 21:02:17,244 DEBUG Thread-474 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:02:21,430 INFO Thread-475 (process_request_thread): Settings loaded successfully
+2026-02-21 21:02:22,070 DEBUG Thread-475 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:02:25,132 INFO Thread-476 (process_request_thread): Settings loaded successfully
+2026-02-21 21:02:25,229 DEBUG Thread-476 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:02:29,436 INFO Thread-477 (process_request_thread): Settings loaded successfully
+2026-02-21 21:02:30,071 DEBUG Thread-477 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:02:33,125 INFO Thread-478 (process_request_thread): Settings loaded successfully
+2026-02-21 21:02:33,215 DEBUG Thread-478 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:02:37,441 INFO Thread-479 (process_request_thread): Settings loaded successfully
+2026-02-21 21:02:38,072 DEBUG Thread-479 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:02:41,127 INFO Thread-480 (process_request_thread): Settings loaded successfully
+2026-02-21 21:02:41,202 DEBUG Thread-480 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:02:45,431 INFO Thread-481 (process_request_thread): Settings loaded successfully
+2026-02-21 21:02:46,071 DEBUG Thread-481 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:02:49,124 INFO Thread-482 (process_request_thread): Settings loaded successfully
+2026-02-21 21:02:49,189 DEBUG Thread-482 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:02:53,442 INFO Thread-483 (process_request_thread): Settings loaded successfully
+2026-02-21 21:02:54,072 DEBUG Thread-483 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:02:57,130 INFO Thread-484 (process_request_thread): Settings loaded successfully
+2026-02-21 21:02:57,172 DEBUG Thread-484 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:03:01,435 INFO Thread-485 (process_request_thread): Settings loaded successfully
+2026-02-21 21:03:03,072 DEBUG Thread-485 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:03:05,137 INFO Thread-486 (process_request_thread): Settings loaded successfully
+2026-02-21 21:03:06,183 DEBUG Thread-486 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:03:09,436 INFO Thread-487 (process_request_thread): Settings loaded successfully
+2026-02-21 21:03:10,074 DEBUG Thread-487 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:03:13,127 INFO Thread-488 (process_request_thread): Settings loaded successfully
+2026-02-21 21:03:13,247 DEBUG Thread-488 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:03:17,430 INFO Thread-489 (process_request_thread): Settings loaded successfully
+2026-02-21 21:03:18,079 DEBUG Thread-489 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:03:21,131 INFO Thread-490 (process_request_thread): Settings loaded successfully
+2026-02-21 21:03:21,241 DEBUG Thread-490 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:03:25,433 INFO Thread-491 (process_request_thread): Settings loaded successfully
+2026-02-21 21:03:26,075 DEBUG Thread-491 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:03:29,136 INFO Thread-492 (process_request_thread): Settings loaded successfully
+2026-02-21 21:03:29,227 DEBUG Thread-492 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:03:33,440 INFO Thread-493 (process_request_thread): Settings loaded successfully
+2026-02-21 21:03:34,068 DEBUG Thread-493 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:03:37,132 INFO Thread-494 (process_request_thread): Settings loaded successfully
+2026-02-21 21:03:37,215 DEBUG Thread-494 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:03:41,435 INFO Thread-495 (process_request_thread): Settings loaded successfully
+2026-02-21 21:03:42,071 DEBUG Thread-495 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:03:45,123 INFO Thread-496 (process_request_thread): Settings loaded successfully
+2026-02-21 21:03:45,202 DEBUG Thread-496 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:03:49,439 INFO Thread-497 (process_request_thread): Settings loaded successfully
+2026-02-21 21:03:50,071 DEBUG Thread-497 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:03:53,129 INFO Thread-498 (process_request_thread): Settings loaded successfully
+2026-02-21 21:03:53,185 DEBUG Thread-498 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:03:57,434 INFO Thread-499 (process_request_thread): Settings loaded successfully
+2026-02-21 21:03:58,077 DEBUG Thread-499 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:04:01,126 INFO Thread-500 (process_request_thread): Settings loaded successfully
+2026-02-21 21:04:01,174 DEBUG Thread-500 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:04:05,441 INFO Thread-501 (process_request_thread): Settings loaded successfully
+2026-02-21 21:04:06,073 DEBUG Thread-501 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:04:09,129 INFO Thread-502 (process_request_thread): Settings loaded successfully
+2026-02-21 21:04:09,266 DEBUG Thread-502 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:04:13,435 INFO Thread-503 (process_request_thread): Settings loaded successfully
+2026-02-21 21:04:14,077 DEBUG Thread-503 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:04:17,137 INFO Thread-504 (process_request_thread): Settings loaded successfully
+2026-02-21 21:04:17,253 DEBUG Thread-504 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:04:21,440 INFO Thread-505 (process_request_thread): Settings loaded successfully
+2026-02-21 21:04:22,070 DEBUG Thread-505 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:04:25,128 INFO Thread-506 (process_request_thread): Settings loaded successfully
+2026-02-21 21:04:25,247 DEBUG Thread-506 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:04:29,440 INFO Thread-507 (process_request_thread): Settings loaded successfully
+2026-02-21 21:04:30,081 DEBUG Thread-507 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:04:33,127 INFO Thread-508 (process_request_thread): Settings loaded successfully
+2026-02-21 21:04:33,225 DEBUG Thread-508 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:04:37,442 INFO Thread-509 (process_request_thread): Settings loaded successfully
+2026-02-21 21:04:38,085 DEBUG Thread-509 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:04:41,132 INFO Thread-510 (process_request_thread): Settings loaded successfully
+2026-02-21 21:04:41,541 DEBUG Thread-510 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:04:45,432 INFO Thread-511 (process_request_thread): Settings loaded successfully
+2026-02-21 21:04:46,070 DEBUG Thread-511 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:04:49,134 INFO Thread-512 (process_request_thread): Settings loaded successfully
+2026-02-21 21:04:49,200 DEBUG Thread-512 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:04:53,436 INFO Thread-513 (process_request_thread): Settings loaded successfully
+2026-02-21 21:04:54,074 DEBUG Thread-513 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:04:57,137 INFO Thread-514 (process_request_thread): Settings loaded successfully
+2026-02-21 21:04:57,187 DEBUG Thread-514 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:05:01,444 INFO Thread-515 (process_request_thread): Settings loaded successfully
+2026-02-21 21:05:02,077 DEBUG Thread-515 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:05:05,133 INFO Thread-516 (process_request_thread): Settings loaded successfully
+2026-02-21 21:05:06,192 DEBUG Thread-516 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:05:09,431 INFO Thread-517 (process_request_thread): Settings loaded successfully
+2026-02-21 21:05:10,078 DEBUG Thread-517 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:05:13,134 INFO Thread-518 (process_request_thread): Settings loaded successfully
+2026-02-21 21:05:13,267 DEBUG Thread-518 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:05:17,436 INFO Thread-519 (process_request_thread): Settings loaded successfully
+2026-02-21 21:05:18,076 DEBUG Thread-519 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:05:21,137 INFO Thread-520 (process_request_thread): Settings loaded successfully
+2026-02-21 21:05:21,249 DEBUG Thread-520 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:05:25,444 INFO Thread-521 (process_request_thread): Settings loaded successfully
+2026-02-21 21:05:26,074 DEBUG Thread-521 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:05:29,135 INFO Thread-522 (process_request_thread): Settings loaded successfully
+2026-02-21 21:05:30,263 DEBUG Thread-522 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:05:33,441 INFO Thread-523 (process_request_thread): Settings loaded successfully
+2026-02-21 21:05:34,072 DEBUG Thread-523 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:05:37,134 INFO Thread-524 (process_request_thread): Settings loaded successfully
+2026-02-21 21:05:37,218 DEBUG Thread-524 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:05:41,438 INFO Thread-525 (process_request_thread): Settings loaded successfully
+2026-02-21 21:05:43,074 DEBUG Thread-525 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:05:45,129 INFO Thread-526 (process_request_thread): Settings loaded successfully
+2026-02-21 21:05:45,213 DEBUG Thread-526 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:05:49,431 INFO Thread-527 (process_request_thread): Settings loaded successfully
+2026-02-21 21:05:50,073 DEBUG Thread-527 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:05:53,125 INFO Thread-528 (process_request_thread): Settings loaded successfully
+2026-02-21 21:05:53,200 DEBUG Thread-528 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:05:57,432 INFO Thread-529 (process_request_thread): Settings loaded successfully
+2026-02-21 21:05:58,077 DEBUG Thread-529 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:06:01,128 INFO Thread-530 (process_request_thread): Settings loaded successfully
+2026-02-21 21:06:02,213 DEBUG Thread-530 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:06:05,441 INFO Thread-531 (process_request_thread): Settings loaded successfully
+2026-02-21 21:06:06,075 DEBUG Thread-531 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:06:09,138 INFO Thread-532 (process_request_thread): Settings loaded successfully
+2026-02-21 21:06:09,274 DEBUG Thread-532 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:06:13,435 INFO Thread-533 (process_request_thread): Settings loaded successfully
+2026-02-21 21:06:14,077 DEBUG Thread-533 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:06:17,130 INFO Thread-534 (process_request_thread): Settings loaded successfully
+2026-02-21 21:06:17,257 DEBUG Thread-534 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:06:21,442 INFO Thread-535 (process_request_thread): Settings loaded successfully
+2026-02-21 21:06:22,075 DEBUG Thread-535 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:06:25,123 INFO Thread-536 (process_request_thread): Settings loaded successfully
+2026-02-21 21:06:25,250 DEBUG Thread-536 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:06:29,436 INFO Thread-537 (process_request_thread): Settings loaded successfully
+2026-02-21 21:06:31,076 DEBUG Thread-537 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:06:33,138 INFO Thread-538 (process_request_thread): Settings loaded successfully
+2026-02-21 21:06:33,230 DEBUG Thread-538 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:06:37,444 INFO Thread-539 (process_request_thread): Settings loaded successfully
+2026-02-21 21:06:38,079 DEBUG Thread-539 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:06:41,122 INFO Thread-540 (process_request_thread): Settings loaded successfully
+2026-02-21 21:06:41,230 DEBUG Thread-540 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:06:45,446 INFO Thread-541 (process_request_thread): Settings loaded successfully
+2026-02-21 21:06:47,075 DEBUG Thread-541 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:06:49,123 INFO Thread-542 (process_request_thread): Settings loaded successfully
+2026-02-21 21:06:49,211 DEBUG Thread-542 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:06:53,433 INFO Thread-543 (process_request_thread): Settings loaded successfully
+2026-02-21 21:06:54,079 DEBUG Thread-543 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:06:57,126 INFO Thread-544 (process_request_thread): Settings loaded successfully
+2026-02-21 21:06:57,203 DEBUG Thread-544 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:07:01,441 INFO Thread-545 (process_request_thread): Settings loaded successfully
+2026-02-21 21:07:02,077 DEBUG Thread-545 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:07:05,136 INFO Thread-546 (process_request_thread): Settings loaded successfully
+2026-02-21 21:07:05,216 DEBUG Thread-546 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:07:09,434 INFO Thread-547 (process_request_thread): Settings loaded successfully
+2026-02-21 21:07:10,078 DEBUG Thread-547 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:07:13,131 INFO Thread-548 (process_request_thread): Settings loaded successfully
+2026-02-21 21:07:13,192 DEBUG Thread-548 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:07:17,441 INFO Thread-549 (process_request_thread): Settings loaded successfully
+2026-02-21 21:07:18,078 DEBUG Thread-549 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:07:21,127 INFO Thread-550 (process_request_thread): Settings loaded successfully
+2026-02-21 21:07:21,256 DEBUG Thread-550 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:07:25,443 INFO Thread-551 (process_request_thread): Settings loaded successfully
+2026-02-21 21:07:26,079 DEBUG Thread-551 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:07:29,131 INFO Thread-552 (process_request_thread): Settings loaded successfully
+2026-02-21 21:07:29,247 DEBUG Thread-552 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:07:33,430 INFO Thread-553 (process_request_thread): Settings loaded successfully
+2026-02-21 21:07:34,072 DEBUG Thread-553 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:07:37,137 INFO Thread-554 (process_request_thread): Settings loaded successfully
+2026-02-21 21:07:37,249 DEBUG Thread-554 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:07:41,441 INFO Thread-555 (process_request_thread): Settings loaded successfully
+2026-02-21 21:07:42,077 DEBUG Thread-555 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:07:45,138 INFO Thread-556 (process_request_thread): Settings loaded successfully
+2026-02-21 21:07:46,177 DEBUG Thread-556 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:07:49,440 INFO Thread-557 (process_request_thread): Settings loaded successfully
+2026-02-21 21:07:50,074 DEBUG Thread-557 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:07:53,133 INFO Thread-558 (process_request_thread): Settings loaded successfully
+2026-02-21 21:07:53,151 DEBUG Thread-558 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:07:57,430 INFO Thread-559 (process_request_thread): Settings loaded successfully
+2026-02-21 21:07:58,076 DEBUG Thread-559 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:08:01,129 INFO Thread-560 (process_request_thread): Settings loaded successfully
+2026-02-21 21:08:01,201 DEBUG Thread-560 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:08:05,443 INFO Thread-561 (process_request_thread): Settings loaded successfully
+2026-02-21 21:08:06,078 DEBUG Thread-561 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:08:09,124 INFO Thread-562 (process_request_thread): Settings loaded successfully
+2026-02-21 21:08:10,077 DEBUG Thread-562 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:08:13,436 INFO Thread-563 (process_request_thread): Settings loaded successfully
+2026-02-21 21:08:14,082 DEBUG Thread-563 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:08:17,129 INFO Thread-564 (process_request_thread): Settings loaded successfully
+2026-02-21 21:08:18,191 DEBUG Thread-564 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:08:21,441 INFO Thread-565 (process_request_thread): Settings loaded successfully
+2026-02-21 21:08:22,074 DEBUG Thread-565 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:08:25,138 INFO Thread-566 (process_request_thread): Settings loaded successfully
+2026-02-21 21:08:25,256 DEBUG Thread-566 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:08:29,436 INFO Thread-567 (process_request_thread): Settings loaded successfully
+2026-02-21 21:08:30,076 DEBUG Thread-567 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:08:33,135 INFO Thread-568 (process_request_thread): Settings loaded successfully
+2026-02-21 21:08:33,176 DEBUG Thread-568 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:08:37,434 INFO Thread-569 (process_request_thread): Settings loaded successfully
+2026-02-21 21:08:38,081 DEBUG Thread-569 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:08:41,135 INFO Thread-570 (process_request_thread): Settings loaded successfully
+2026-02-21 21:08:41,175 DEBUG Thread-570 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:08:45,432 INFO Thread-571 (process_request_thread): Settings loaded successfully
+2026-02-21 21:08:46,558 DEBUG Thread-571 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:08:49,131 INFO Thread-572 (process_request_thread): Settings loaded successfully
+2026-02-21 21:08:49,173 DEBUG Thread-572 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:08:53,433 INFO Thread-573 (process_request_thread): Settings loaded successfully
+2026-02-21 21:08:54,079 DEBUG Thread-573 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:08:57,134 INFO Thread-574 (process_request_thread): Settings loaded successfully
+2026-02-21 21:08:57,173 DEBUG Thread-574 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:09:01,432 INFO Thread-575 (process_request_thread): Settings loaded successfully
+2026-02-21 21:09:02,077 DEBUG Thread-575 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:09:05,130 INFO Thread-576 (process_request_thread): Settings loaded successfully
+2026-02-21 21:09:06,215 DEBUG Thread-576 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:09:09,432 INFO Thread-577 (process_request_thread): Settings loaded successfully
+2026-02-21 21:09:10,111 DEBUG Thread-577 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:09:13,129 INFO Thread-578 (process_request_thread): Settings loaded successfully
+2026-02-21 21:09:13,178 DEBUG Thread-578 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:09:17,438 INFO Thread-579 (process_request_thread): Settings loaded successfully
+2026-02-21 21:09:18,076 DEBUG Thread-579 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:09:21,136 INFO Thread-580 (process_request_thread): Settings loaded successfully
+2026-02-21 21:09:21,171 DEBUG Thread-580 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:09:25,444 INFO Thread-581 (process_request_thread): Settings loaded successfully
+2026-02-21 21:09:26,074 DEBUG Thread-581 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:09:29,125 INFO Thread-582 (process_request_thread): Settings loaded successfully
+2026-02-21 21:09:29,159 DEBUG Thread-582 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:09:33,440 INFO Thread-583 (process_request_thread): Settings loaded successfully
+2026-02-21 21:09:34,075 DEBUG Thread-583 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:09:37,136 INFO Thread-584 (process_request_thread): Settings loaded successfully
+2026-02-21 21:09:37,180 DEBUG Thread-584 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:09:41,434 INFO Thread-585 (process_request_thread): Settings loaded successfully
+2026-02-21 21:09:42,073 DEBUG Thread-585 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:09:45,136 INFO Thread-586 (process_request_thread): Settings loaded successfully
+2026-02-21 21:09:45,155 DEBUG Thread-586 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:09:49,437 INFO Thread-587 (process_request_thread): Settings loaded successfully
+2026-02-21 21:09:50,076 DEBUG Thread-587 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:09:53,133 INFO Thread-588 (process_request_thread): Settings loaded successfully
+2026-02-21 21:09:53,223 DEBUG Thread-588 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:09:57,446 INFO Thread-589 (process_request_thread): Settings loaded successfully
+2026-02-21 21:09:58,069 DEBUG Thread-589 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:10:01,136 INFO Thread-590 (process_request_thread): Settings loaded successfully
+2026-02-21 21:10:01,207 DEBUG Thread-590 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:10:05,434 INFO Thread-591 (process_request_thread): Settings loaded successfully
+2026-02-21 21:10:06,073 DEBUG Thread-591 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:10:09,133 INFO Thread-592 (process_request_thread): Settings loaded successfully
+2026-02-21 21:10:09,196 DEBUG Thread-592 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:10:13,433 INFO Thread-593 (process_request_thread): Settings loaded successfully
+2026-02-21 21:10:14,073 DEBUG Thread-593 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:10:17,133 INFO Thread-594 (process_request_thread): Settings loaded successfully
+2026-02-21 21:10:17,184 DEBUG Thread-594 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:10:21,447 INFO Thread-595 (process_request_thread): Settings loaded successfully
+2026-02-21 21:10:22,079 DEBUG Thread-595 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:10:25,131 INFO Thread-596 (process_request_thread): Settings loaded successfully
+2026-02-21 21:10:25,170 DEBUG Thread-596 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:10:29,433 INFO Thread-597 (process_request_thread): Settings loaded successfully
+2026-02-21 21:10:30,073 DEBUG Thread-597 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:10:33,134 INFO Thread-598 (process_request_thread): Settings loaded successfully
+2026-02-21 21:10:33,159 DEBUG Thread-598 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:10:37,437 INFO Thread-599 (process_request_thread): Settings loaded successfully
+2026-02-21 21:10:38,075 DEBUG Thread-599 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:10:41,134 INFO Thread-600 (process_request_thread): Settings loaded successfully
+2026-02-21 21:10:41,249 DEBUG Thread-600 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:10:45,431 INFO Thread-601 (process_request_thread): Settings loaded successfully
+2026-02-21 21:10:46,073 DEBUG Thread-601 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:10:49,131 INFO Thread-602 (process_request_thread): Settings loaded successfully
+2026-02-21 21:10:49,235 DEBUG Thread-602 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:10:54,614 INFO Thread-603 (process_request_thread): Settings loaded successfully
+2026-02-21 21:10:55,074 DEBUG Thread-603 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:10:58,003 INFO Thread-604 (process_request_thread): Settings loaded successfully
+2026-02-21 21:10:58,072 DEBUG Thread-604 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:11:02,317 INFO Thread-605 (process_request_thread): Settings loaded successfully
+2026-02-21 21:11:03,071 DEBUG Thread-605 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:11:05,998 INFO Thread-606 (process_request_thread): Settings loaded successfully
+2026-02-21 21:11:07,070 DEBUG Thread-606 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:11:10,316 INFO Thread-607 (process_request_thread): Settings loaded successfully
+2026-02-21 21:11:11,074 DEBUG Thread-607 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:11:14,006 INFO Thread-608 (process_request_thread): Settings loaded successfully
+2026-02-21 21:11:14,116 DEBUG Thread-608 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:11:18,308 INFO Thread-609 (process_request_thread): Settings loaded successfully
+2026-02-21 21:11:19,074 DEBUG Thread-609 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:11:22,010 INFO Thread-610 (process_request_thread): Settings loaded successfully
+2026-02-21 21:11:23,124 DEBUG Thread-610 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:11:26,308 INFO Thread-611 (process_request_thread): Settings loaded successfully
+2026-02-21 21:11:27,071 DEBUG Thread-611 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:11:29,130 INFO Thread-612 (process_request_thread): Settings loaded successfully
+2026-02-21 21:11:29,170 DEBUG Thread-612 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:11:33,435 INFO Thread-613 (process_request_thread): Settings loaded successfully
+2026-02-21 21:11:34,076 DEBUG Thread-613 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:11:38,000 INFO Thread-614 (process_request_thread): Settings loaded successfully
+2026-02-21 21:11:38,078 DEBUG Thread-614 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:11:42,316 INFO Thread-615 (process_request_thread): Settings loaded successfully
+2026-02-21 21:11:43,074 DEBUG Thread-615 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:11:46,001 INFO Thread-616 (process_request_thread): Settings loaded successfully
+2026-02-21 21:11:47,088 DEBUG Thread-616 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:11:49,443 INFO Thread-617 (process_request_thread): Settings loaded successfully
+2026-02-21 21:11:50,072 DEBUG Thread-617 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:11:53,125 INFO Thread-618 (process_request_thread): Settings loaded successfully
+2026-02-21 21:11:53,239 DEBUG Thread-618 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:11:57,439 INFO Thread-619 (process_request_thread): Settings loaded successfully
+2026-02-21 21:11:58,072 DEBUG Thread-619 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:12:01,134 INFO Thread-620 (process_request_thread): Settings loaded successfully
+2026-02-21 21:12:01,217 DEBUG Thread-620 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:12:05,442 INFO Thread-621 (process_request_thread): Settings loaded successfully
+2026-02-21 21:12:06,071 DEBUG Thread-621 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:12:09,125 INFO Thread-622 (process_request_thread): Settings loaded successfully
+2026-02-21 21:12:09,207 DEBUG Thread-622 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:12:13,438 INFO Thread-623 (process_request_thread): Settings loaded successfully
+2026-02-21 21:12:14,071 DEBUG Thread-623 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:12:17,133 INFO Thread-624 (process_request_thread): Settings loaded successfully
+2026-02-21 21:12:17,202 DEBUG Thread-624 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:12:21,436 INFO Thread-625 (process_request_thread): Settings loaded successfully
+2026-02-21 21:12:22,071 DEBUG Thread-625 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:12:25,136 INFO Thread-626 (process_request_thread): Settings loaded successfully
+2026-02-21 21:12:25,191 DEBUG Thread-626 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:12:29,430 INFO Thread-627 (process_request_thread): Settings loaded successfully
+2026-02-21 21:12:30,079 DEBUG Thread-627 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:12:33,128 INFO Thread-628 (process_request_thread): Settings loaded successfully
+2026-02-21 21:12:33,169 DEBUG Thread-628 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:12:37,445 INFO Thread-629 (process_request_thread): Settings loaded successfully
+2026-02-21 21:12:38,071 DEBUG Thread-629 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:12:41,135 INFO Thread-630 (process_request_thread): Settings loaded successfully
+2026-02-21 21:12:41,258 DEBUG Thread-630 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:12:45,433 INFO Thread-631 (process_request_thread): Settings loaded successfully
+2026-02-21 21:12:46,073 DEBUG Thread-631 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:12:49,126 INFO Thread-632 (process_request_thread): Settings loaded successfully
+2026-02-21 21:12:49,444 DEBUG Thread-632 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:12:53,445 INFO Thread-633 (process_request_thread): Settings loaded successfully
+2026-02-21 21:12:54,078 DEBUG Thread-633 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:12:57,127 INFO Thread-634 (process_request_thread): Settings loaded successfully
+2026-02-21 21:12:57,229 DEBUG Thread-634 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:13:01,441 INFO Thread-635 (process_request_thread): Settings loaded successfully
+2026-02-21 21:13:02,070 DEBUG Thread-635 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:13:05,135 INFO Thread-636 (process_request_thread): Settings loaded successfully
+2026-02-21 21:13:05,216 DEBUG Thread-636 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:13:09,434 INFO Thread-637 (process_request_thread): Settings loaded successfully
+2026-02-21 21:13:10,069 DEBUG Thread-637 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:13:13,127 INFO Thread-638 (process_request_thread): Settings loaded successfully
+2026-02-21 21:13:13,208 DEBUG Thread-638 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:13:17,435 INFO Thread-639 (process_request_thread): Settings loaded successfully
+2026-02-21 21:13:18,072 DEBUG Thread-639 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:13:21,129 INFO Thread-640 (process_request_thread): Settings loaded successfully
+2026-02-21 21:13:21,191 DEBUG Thread-640 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:13:25,441 INFO Thread-641 (process_request_thread): Settings loaded successfully
+2026-02-21 21:13:26,071 DEBUG Thread-641 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:13:29,122 INFO Thread-642 (process_request_thread): Settings loaded successfully
+2026-02-21 21:13:29,183 DEBUG Thread-642 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:13:33,433 INFO Thread-643 (process_request_thread): Settings loaded successfully
+2026-02-21 21:13:34,070 DEBUG Thread-643 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:13:37,129 INFO Thread-644 (process_request_thread): Settings loaded successfully
+2026-02-21 21:13:37,164 DEBUG Thread-644 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:13:41,443 INFO Thread-645 (process_request_thread): Settings loaded successfully
+2026-02-21 21:13:42,089 DEBUG Thread-645 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:13:45,137 INFO Thread-646 (process_request_thread): Settings loaded successfully
+2026-02-21 21:13:46,182 DEBUG Thread-646 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:13:49,443 INFO Thread-647 (process_request_thread): Settings loaded successfully
+2026-02-21 21:13:50,074 DEBUG Thread-647 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:13:53,138 INFO Thread-648 (process_request_thread): Settings loaded successfully
+2026-02-21 21:13:53,246 DEBUG Thread-648 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:13:57,435 INFO Thread-649 (process_request_thread): Settings loaded successfully
+2026-02-21 21:13:58,072 DEBUG Thread-649 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:14:01,130 INFO Thread-650 (process_request_thread): Settings loaded successfully
+2026-02-21 21:14:01,229 DEBUG Thread-650 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:14:05,442 INFO Thread-651 (process_request_thread): Settings loaded successfully
+2026-02-21 21:14:06,069 DEBUG Thread-651 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:14:09,135 INFO Thread-652 (process_request_thread): Settings loaded successfully
+2026-02-21 21:14:09,215 DEBUG Thread-652 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:14:13,436 INFO Thread-653 (process_request_thread): Settings loaded successfully
+2026-02-21 21:14:14,069 DEBUG Thread-653 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:14:17,129 INFO Thread-654 (process_request_thread): Settings loaded successfully
+2026-02-21 21:14:17,202 DEBUG Thread-654 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:14:21,445 INFO Thread-655 (process_request_thread): Settings loaded successfully
+2026-02-21 21:14:22,071 DEBUG Thread-655 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:14:25,123 INFO Thread-656 (process_request_thread): Settings loaded successfully
+2026-02-21 21:14:25,193 DEBUG Thread-656 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:14:29,437 INFO Thread-657 (process_request_thread): Settings loaded successfully
+2026-02-21 21:14:30,069 DEBUG Thread-657 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:14:33,134 INFO Thread-658 (process_request_thread): Settings loaded successfully
+2026-02-21 21:14:33,178 DEBUG Thread-658 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:14:37,435 INFO Thread-659 (process_request_thread): Settings loaded successfully
+2026-02-21 21:14:38,071 DEBUG Thread-659 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:14:41,133 INFO Thread-660 (process_request_thread): Settings loaded successfully
+2026-02-21 21:14:41,266 DEBUG Thread-660 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:14:45,432 INFO Thread-661 (process_request_thread): Settings loaded successfully
+2026-02-21 21:14:46,077 DEBUG Thread-661 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:14:49,129 INFO Thread-662 (process_request_thread): Settings loaded successfully
+2026-02-21 21:14:49,254 DEBUG Thread-662 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:14:53,441 INFO Thread-663 (process_request_thread): Settings loaded successfully
+2026-02-21 21:14:54,076 DEBUG Thread-663 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:14:57,126 INFO Thread-664 (process_request_thread): Settings loaded successfully
+2026-02-21 21:14:57,239 DEBUG Thread-664 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:15:01,439 INFO Thread-665 (process_request_thread): Settings loaded successfully
+2026-02-21 21:15:02,077 DEBUG Thread-665 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:15:05,129 INFO Thread-666 (process_request_thread): Settings loaded successfully
+2026-02-21 21:15:05,228 DEBUG Thread-666 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:15:09,441 INFO Thread-667 (process_request_thread): Settings loaded successfully
+2026-02-21 21:15:10,081 DEBUG Thread-667 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:15:13,132 INFO Thread-668 (process_request_thread): Settings loaded successfully
+2026-02-21 21:15:13,215 DEBUG Thread-668 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:15:17,444 INFO Thread-669 (process_request_thread): Settings loaded successfully
+2026-02-21 21:15:18,076 DEBUG Thread-669 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:15:21,445 INFO Thread-671 (process_request_thread): Settings loaded successfully
+2026-02-21 21:15:22,075 DEBUG Thread-671 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:15:25,137 INFO Thread-672 (process_request_thread): Settings loaded successfully
+2026-02-21 21:15:25,202 DEBUG Thread-672 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:15:29,432 INFO Thread-673 (process_request_thread): Settings loaded successfully
+2026-02-21 21:15:30,074 DEBUG Thread-673 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:15:33,126 INFO Thread-674 (process_request_thread): Settings loaded successfully
+2026-02-21 21:15:33,183 DEBUG Thread-674 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:15:37,436 INFO Thread-675 (process_request_thread): Settings loaded successfully
+2026-02-21 21:15:38,084 DEBUG Thread-675 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:15:41,130 INFO Thread-676 (process_request_thread): Settings loaded successfully
+2026-02-21 21:15:41,169 DEBUG Thread-676 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:15:45,437 INFO Thread-677 (process_request_thread): Settings loaded successfully
+2026-02-21 21:15:46,076 DEBUG Thread-677 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:15:49,131 INFO Thread-678 (process_request_thread): Settings loaded successfully
+2026-02-21 21:15:49,258 DEBUG Thread-678 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:15:53,438 INFO Thread-679 (process_request_thread): Settings loaded successfully
+2026-02-21 21:15:54,074 DEBUG Thread-679 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:15:57,135 INFO Thread-680 (process_request_thread): Settings loaded successfully
+2026-02-21 21:15:57,245 DEBUG Thread-680 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:16:01,430 INFO Thread-681 (process_request_thread): Settings loaded successfully
+2026-02-21 21:16:02,083 DEBUG Thread-681 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:16:05,125 INFO Thread-682 (process_request_thread): Settings loaded successfully
+2026-02-21 21:16:05,239 DEBUG Thread-682 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:16:09,437 INFO Thread-683 (process_request_thread): Settings loaded successfully
+2026-02-21 21:16:10,074 DEBUG Thread-683 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:16:13,129 INFO Thread-684 (process_request_thread): Settings loaded successfully
+2026-02-21 21:16:13,244 DEBUG Thread-684 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:16:17,439 INFO Thread-685 (process_request_thread): Settings loaded successfully
+2026-02-21 21:16:18,073 DEBUG Thread-685 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:16:21,133 INFO Thread-686 (process_request_thread): Settings loaded successfully
+2026-02-21 21:16:21,206 DEBUG Thread-686 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:16:25,440 INFO Thread-687 (process_request_thread): Settings loaded successfully
+2026-02-21 21:16:26,075 DEBUG Thread-687 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:16:29,136 INFO Thread-688 (process_request_thread): Settings loaded successfully
+2026-02-21 21:16:29,193 DEBUG Thread-688 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:16:33,446 INFO Thread-689 (process_request_thread): Settings loaded successfully
+2026-02-21 21:16:34,072 DEBUG Thread-689 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:16:37,122 INFO Thread-690 (process_request_thread): Settings loaded successfully
+2026-02-21 21:16:37,184 DEBUG Thread-690 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:16:41,445 INFO Thread-691 (process_request_thread): Settings loaded successfully
+2026-02-21 21:16:42,075 DEBUG Thread-691 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:16:45,124 INFO Thread-692 (process_request_thread): Settings loaded successfully
+2026-02-21 21:16:45,169 DEBUG Thread-692 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:16:49,432 INFO Thread-693 (process_request_thread): Settings loaded successfully
+2026-02-21 21:16:50,580 DEBUG Thread-693 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:16:53,137 INFO Thread-694 (process_request_thread): Settings loaded successfully
+2026-02-21 21:16:53,259 DEBUG Thread-694 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:16:57,434 INFO Thread-695 (process_request_thread): Settings loaded successfully
+2026-02-21 21:16:58,075 DEBUG Thread-695 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:17:01,131 INFO Thread-696 (process_request_thread): Settings loaded successfully
+2026-02-21 21:17:01,245 DEBUG Thread-696 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:17:05,441 INFO Thread-697 (process_request_thread): Settings loaded successfully
+2026-02-21 21:17:06,082 DEBUG Thread-697 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:17:09,137 INFO Thread-698 (process_request_thread): Settings loaded successfully
+2026-02-21 21:17:09,231 DEBUG Thread-698 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:17:13,433 INFO Thread-699 (process_request_thread): Settings loaded successfully
+2026-02-21 21:17:14,077 DEBUG Thread-699 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:17:17,138 INFO Thread-700 (process_request_thread): Settings loaded successfully
+2026-02-21 21:17:17,219 DEBUG Thread-700 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:17:21,437 INFO Thread-701 (process_request_thread): Settings loaded successfully
+2026-02-21 21:17:22,074 DEBUG Thread-701 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:17:25,133 INFO Thread-702 (process_request_thread): Settings loaded successfully
+2026-02-21 21:17:25,206 DEBUG Thread-702 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:17:29,444 INFO Thread-703 (process_request_thread): Settings loaded successfully
+2026-02-21 21:17:30,074 DEBUG Thread-703 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:17:33,136 INFO Thread-704 (process_request_thread): Settings loaded successfully
+2026-02-21 21:17:33,196 DEBUG Thread-704 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:17:37,432 INFO Thread-705 (process_request_thread): Settings loaded successfully
+2026-02-21 21:17:38,074 DEBUG Thread-705 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:17:41,126 INFO Thread-706 (process_request_thread): Settings loaded successfully
+2026-02-21 21:17:41,188 DEBUG Thread-706 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:17:45,433 INFO Thread-707 (process_request_thread): Settings loaded successfully
+2026-02-21 21:17:46,077 DEBUG Thread-707 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:17:49,138 INFO Thread-708 (process_request_thread): Settings loaded successfully
+2026-02-21 21:17:49,270 DEBUG Thread-708 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:17:53,435 INFO Thread-709 (process_request_thread): Settings loaded successfully
+2026-02-21 21:17:54,083 DEBUG Thread-709 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:17:57,131 INFO Thread-710 (process_request_thread): Settings loaded successfully
+2026-02-21 21:17:58,183 DEBUG Thread-710 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:18:01,445 INFO Thread-711 (process_request_thread): Settings loaded successfully
+2026-02-21 21:18:02,080 DEBUG Thread-711 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:18:05,125 INFO Thread-712 (process_request_thread): Settings loaded successfully
+2026-02-21 21:18:05,245 DEBUG Thread-712 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:18:09,428 INFO Thread-713 (process_request_thread): Settings loaded successfully
+2026-02-21 21:18:10,082 DEBUG Thread-713 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:18:13,125 INFO Thread-714 (process_request_thread): Settings loaded successfully
+2026-02-21 21:18:13,231 DEBUG Thread-714 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:18:17,424 INFO Thread-715 (process_request_thread): Settings loaded successfully
+2026-02-21 21:18:18,082 DEBUG Thread-715 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:18:21,127 INFO Thread-716 (process_request_thread): Settings loaded successfully
+2026-02-21 21:18:21,219 DEBUG Thread-716 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:18:25,435 INFO Thread-717 (process_request_thread): Settings loaded successfully
+2026-02-21 21:18:26,081 DEBUG Thread-717 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:18:29,127 INFO Thread-718 (process_request_thread): Settings loaded successfully
+2026-02-21 21:18:29,205 DEBUG Thread-718 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:18:33,431 INFO Thread-719 (process_request_thread): Settings loaded successfully
+2026-02-21 21:18:35,080 DEBUG Thread-719 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:18:37,124 INFO Thread-720 (process_request_thread): Settings loaded successfully
+2026-02-21 21:18:37,191 DEBUG Thread-720 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:18:41,431 INFO Thread-721 (process_request_thread): Settings loaded successfully
+2026-02-21 21:18:42,079 DEBUG Thread-721 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:18:45,134 INFO Thread-722 (process_request_thread): Settings loaded successfully
+2026-02-21 21:18:45,179 DEBUG Thread-722 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:18:49,443 INFO Thread-723 (process_request_thread): Settings loaded successfully
+2026-02-21 21:18:51,080 DEBUG Thread-723 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:18:53,133 INFO Thread-724 (process_request_thread): Settings loaded successfully
+2026-02-21 21:18:53,165 DEBUG Thread-724 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:18:57,442 INFO Thread-725 (process_request_thread): Settings loaded successfully
+2026-02-21 21:18:58,079 DEBUG Thread-725 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:19:01,136 INFO Thread-726 (process_request_thread): Settings loaded successfully
+2026-02-21 21:19:01,262 DEBUG Thread-726 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:19:05,433 INFO Thread-727 (process_request_thread): Settings loaded successfully
+2026-02-21 21:19:06,079 DEBUG Thread-727 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:19:09,126 INFO Thread-728 (process_request_thread): Settings loaded successfully
+2026-02-21 21:19:09,243 DEBUG Thread-728 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:19:13,441 INFO Thread-729 (process_request_thread): Settings loaded successfully
+2026-02-21 21:19:14,081 DEBUG Thread-729 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:19:17,133 INFO Thread-730 (process_request_thread): Settings loaded successfully
+2026-02-21 21:19:17,230 DEBUG Thread-730 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:19:21,440 INFO Thread-731 (process_request_thread): Settings loaded successfully
+2026-02-21 21:19:22,085 DEBUG Thread-731 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:19:25,134 INFO Thread-732 (process_request_thread): Settings loaded successfully
+2026-02-21 21:19:25,216 DEBUG Thread-732 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:19:29,441 INFO Thread-733 (process_request_thread): Settings loaded successfully
+2026-02-21 21:19:30,082 DEBUG Thread-733 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:19:33,133 INFO Thread-734 (process_request_thread): Settings loaded successfully
+2026-02-21 21:19:33,203 DEBUG Thread-734 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:19:37,443 INFO Thread-735 (process_request_thread): Settings loaded successfully
+2026-02-21 21:19:38,078 DEBUG Thread-735 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:19:41,138 INFO Thread-736 (process_request_thread): Settings loaded successfully
+2026-02-21 21:19:41,195 DEBUG Thread-736 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:19:45,437 INFO Thread-737 (process_request_thread): Settings loaded successfully
+2026-02-21 21:19:46,077 DEBUG Thread-737 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:19:49,131 INFO Thread-738 (process_request_thread): Settings loaded successfully
+2026-02-21 21:19:49,183 DEBUG Thread-738 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:19:53,441 INFO Thread-739 (process_request_thread): Settings loaded successfully
+2026-02-21 21:19:54,081 DEBUG Thread-739 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:19:57,122 INFO Thread-740 (process_request_thread): Settings loaded successfully
+2026-02-21 21:19:57,165 DEBUG Thread-740 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:20:01,443 INFO Thread-741 (process_request_thread): Settings loaded successfully
+2026-02-21 21:20:02,080 DEBUG Thread-741 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:20:05,136 INFO Thread-742 (process_request_thread): Settings loaded successfully
+2026-02-21 21:20:05,256 DEBUG Thread-742 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:20:09,432 INFO Thread-743 (process_request_thread): Settings loaded successfully
+2026-02-21 21:20:10,078 DEBUG Thread-743 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:20:13,128 INFO Thread-744 (process_request_thread): Settings loaded successfully
+2026-02-21 21:20:13,247 DEBUG Thread-744 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:20:17,435 INFO Thread-745 (process_request_thread): Settings loaded successfully
+2026-02-21 21:20:18,079 DEBUG Thread-745 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:20:21,132 INFO Thread-746 (process_request_thread): Settings loaded successfully
+2026-02-21 21:20:21,228 DEBUG Thread-746 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:20:25,443 INFO Thread-747 (process_request_thread): Settings loaded successfully
+2026-02-21 21:20:26,077 DEBUG Thread-747 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:20:29,135 INFO Thread-748 (process_request_thread): Settings loaded successfully
+2026-02-21 21:20:29,216 DEBUG Thread-748 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:20:33,443 INFO Thread-749 (process_request_thread): Settings loaded successfully
+2026-02-21 21:20:34,077 DEBUG Thread-749 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:20:37,136 INFO Thread-750 (process_request_thread): Settings loaded successfully
+2026-02-21 21:20:37,203 DEBUG Thread-750 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:20:41,443 INFO Thread-751 (process_request_thread): Settings loaded successfully
+2026-02-21 21:20:42,077 DEBUG Thread-751 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:20:45,133 INFO Thread-752 (process_request_thread): Settings loaded successfully
+2026-02-21 21:20:45,192 DEBUG Thread-752 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:20:49,445 INFO Thread-753 (process_request_thread): Settings loaded successfully
+2026-02-21 21:20:50,373 DEBUG Thread-753 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:20:53,127 INFO Thread-754 (process_request_thread): Settings loaded successfully
+2026-02-21 21:20:53,178 DEBUG Thread-754 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:20:57,437 INFO Thread-755 (process_request_thread): Settings loaded successfully
+2026-02-21 21:20:58,080 DEBUG Thread-755 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:21:01,132 INFO Thread-756 (process_request_thread): Settings loaded successfully
+2026-02-21 21:21:01,165 DEBUG Thread-756 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:21:05,443 INFO Thread-757 (process_request_thread): Settings loaded successfully
+2026-02-21 21:21:06,080 DEBUG Thread-757 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:21:09,125 INFO Thread-758 (process_request_thread): Settings loaded successfully
+2026-02-21 21:21:09,257 DEBUG Thread-758 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:21:13,434 INFO Thread-759 (process_request_thread): Settings loaded successfully
+2026-02-21 21:21:14,077 DEBUG Thread-759 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:21:17,127 INFO Thread-760 (process_request_thread): Settings loaded successfully
+2026-02-21 21:21:17,242 DEBUG Thread-760 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:21:21,439 INFO Thread-761 (process_request_thread): Settings loaded successfully
+2026-02-21 21:21:22,078 DEBUG Thread-761 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:21:25,134 INFO Thread-762 (process_request_thread): Settings loaded successfully
+2026-02-21 21:21:25,228 DEBUG Thread-762 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:21:29,434 INFO Thread-763 (process_request_thread): Settings loaded successfully
+2026-02-21 21:21:30,078 DEBUG Thread-763 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:21:33,133 INFO Thread-764 (process_request_thread): Settings loaded successfully
+2026-02-21 21:21:33,221 DEBUG Thread-764 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:21:37,442 INFO Thread-765 (process_request_thread): Settings loaded successfully
+2026-02-21 21:21:38,077 DEBUG Thread-765 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:21:41,123 INFO Thread-766 (process_request_thread): Settings loaded successfully
+2026-02-21 21:21:41,202 DEBUG Thread-766 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:21:45,434 INFO Thread-767 (process_request_thread): Settings loaded successfully
+2026-02-21 21:21:46,076 DEBUG Thread-767 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:21:50,005 INFO Thread-768 (process_request_thread): Settings loaded successfully
+2026-02-21 21:21:50,113 DEBUG Thread-768 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:21:54,305 INFO Thread-769 (process_request_thread): Settings loaded successfully
+2026-02-21 21:21:55,077 DEBUG Thread-769 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:21:57,997 INFO Thread-770 (process_request_thread): Settings loaded successfully
+2026-02-21 21:21:58,099 DEBUG Thread-770 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:22:02,313 INFO Thread-771 (process_request_thread): Settings loaded successfully
+2026-02-21 21:22:03,075 DEBUG Thread-771 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:22:05,998 INFO Thread-772 (process_request_thread): Settings loaded successfully
+2026-02-21 21:22:06,086 DEBUG Thread-772 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:22:10,312 INFO Thread-773 (process_request_thread): Settings loaded successfully
+2026-02-21 21:22:11,158 DEBUG Thread-773 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:22:14,009 INFO Thread-774 (process_request_thread): Settings loaded successfully
+2026-02-21 21:22:14,073 DEBUG Thread-774 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:22:18,307 INFO Thread-775 (process_request_thread): Settings loaded successfully
+2026-02-21 21:22:20,075 DEBUG Thread-775 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:22:22,003 INFO Thread-776 (process_request_thread): Settings loaded successfully
+2026-02-21 21:22:22,071 DEBUG Thread-776 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:22:26,310 INFO Thread-777 (process_request_thread): Settings loaded successfully
+2026-02-21 21:22:27,076 DEBUG Thread-777 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:22:29,997 INFO Thread-778 (process_request_thread): Settings loaded successfully
+2026-02-21 21:22:30,071 DEBUG Thread-778 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:22:34,310 INFO Thread-779 (process_request_thread): Settings loaded successfully
+2026-02-21 21:22:35,072 DEBUG Thread-779 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:22:38,008 INFO Thread-780 (process_request_thread): Settings loaded successfully
+2026-02-21 21:22:38,141 DEBUG Thread-780 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:22:42,304 INFO Thread-781 (process_request_thread): Settings loaded successfully
+2026-02-21 21:22:43,075 DEBUG Thread-781 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:22:45,998 INFO Thread-782 (process_request_thread): Settings loaded successfully
+2026-02-21 21:22:46,124 DEBUG Thread-782 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:23:35,307 INFO Thread-783 (process_request_thread): Settings loaded successfully
+2026-02-21 21:23:36,077 DEBUG Thread-783 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:24:35,003 INFO Thread-784 (process_request_thread): Settings loaded successfully
+2026-02-21 21:24:35,078 DEBUG Thread-784 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:25:35,308 INFO Thread-785 (process_request_thread): Settings loaded successfully
+2026-02-21 21:25:36,390 DEBUG Thread-785 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:26:34,998 INFO Thread-786 (process_request_thread): Settings loaded successfully
+2026-02-21 21:26:35,091 DEBUG Thread-786 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:27:35,316 INFO Thread-787 (process_request_thread): Settings loaded successfully
+2026-02-21 21:27:36,072 DEBUG Thread-787 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:28:35,007 INFO Thread-788 (process_request_thread): Settings loaded successfully
+2026-02-21 21:28:35,106 DEBUG Thread-788 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:29:35,306 INFO Thread-789 (process_request_thread): Settings loaded successfully
+2026-02-21 21:29:36,070 DEBUG Thread-789 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:30:35,011 INFO Thread-790 (process_request_thread): Settings loaded successfully
+2026-02-21 21:30:35,448 DEBUG Thread-790 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:31:35,313 INFO Thread-791 (process_request_thread): Settings loaded successfully
+2026-02-21 21:31:36,066 DEBUG Thread-791 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:32:35,000 INFO Thread-792 (process_request_thread): Settings loaded successfully
+2026-02-21 21:32:35,126 DEBUG Thread-792 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:32:47,562 INFO Thread-793 (process_request_thread): Settings loaded successfully
+2026-02-21 21:32:48,065 DEBUG Thread-793 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:32:49,122 INFO Thread-794 (process_request_thread): Settings loaded successfully
+2026-02-21 21:32:50,065 DEBUG Thread-794 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:32:53,433 INFO Thread-795 (process_request_thread): Settings loaded successfully
+2026-02-21 21:32:54,064 DEBUG Thread-795 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:32:57,128 INFO Thread-796 (process_request_thread): Settings loaded successfully
+2026-02-21 21:32:57,245 DEBUG Thread-796 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:33:01,431 INFO Thread-797 (process_request_thread): Settings loaded successfully
+2026-02-21 21:33:02,063 DEBUG Thread-797 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:33:05,127 INFO Thread-798 (process_request_thread): Settings loaded successfully
+2026-02-21 21:33:05,238 DEBUG Thread-798 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:33:09,437 INFO Thread-799 (process_request_thread): Settings loaded successfully
+2026-02-21 21:33:10,064 DEBUG Thread-799 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:33:13,134 INFO Thread-800 (process_request_thread): Settings loaded successfully
+2026-02-21 21:33:13,220 DEBUG Thread-800 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:33:17,444 INFO Thread-801 (process_request_thread): Settings loaded successfully
+2026-02-21 21:33:18,066 DEBUG Thread-801 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:33:21,128 INFO Thread-802 (process_request_thread): Settings loaded successfully
+2026-02-21 21:33:21,209 DEBUG Thread-802 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:33:25,439 INFO Thread-803 (process_request_thread): Settings loaded successfully
+2026-02-21 21:33:26,066 DEBUG Thread-803 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:33:29,127 INFO Thread-804 (process_request_thread): Settings loaded successfully
+2026-02-21 21:33:29,194 DEBUG Thread-804 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:33:33,441 INFO Thread-805 (process_request_thread): Settings loaded successfully
+2026-02-21 21:33:35,062 DEBUG Thread-805 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:33:37,137 INFO Thread-806 (process_request_thread): Settings loaded successfully
+2026-02-21 21:33:37,181 DEBUG Thread-806 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:33:41,445 INFO Thread-807 (process_request_thread): Settings loaded successfully
+2026-02-21 21:33:42,064 DEBUG Thread-807 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:33:45,138 INFO Thread-808 (process_request_thread): Settings loaded successfully
+2026-02-21 21:33:46,064 DEBUG Thread-808 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:33:49,446 INFO Thread-809 (process_request_thread): Settings loaded successfully
+2026-02-21 21:33:50,066 DEBUG Thread-809 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:33:53,126 INFO Thread-810 (process_request_thread): Settings loaded successfully
+2026-02-21 21:33:53,257 DEBUG Thread-810 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:33:57,439 INFO Thread-811 (process_request_thread): Settings loaded successfully
+2026-02-21 21:33:58,068 DEBUG Thread-811 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:34:01,133 INFO Thread-812 (process_request_thread): Settings loaded successfully
+2026-02-21 21:34:01,244 DEBUG Thread-812 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:34:05,441 INFO Thread-813 (process_request_thread): Settings loaded successfully
+2026-02-21 21:34:06,067 DEBUG Thread-813 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:34:09,123 INFO Thread-814 (process_request_thread): Settings loaded successfully
+2026-02-21 21:34:09,239 DEBUG Thread-814 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:34:13,439 INFO Thread-815 (process_request_thread): Settings loaded successfully
+2026-02-21 21:34:14,066 DEBUG Thread-815 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:34:17,133 INFO Thread-816 (process_request_thread): Settings loaded successfully
+2026-02-21 21:34:17,216 DEBUG Thread-816 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:34:21,442 INFO Thread-817 (process_request_thread): Settings loaded successfully
+2026-02-21 21:34:22,069 DEBUG Thread-817 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:34:25,125 INFO Thread-818 (process_request_thread): Settings loaded successfully
+2026-02-21 21:34:25,204 DEBUG Thread-818 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:34:29,433 INFO Thread-819 (process_request_thread): Settings loaded successfully
+2026-02-21 21:34:30,066 DEBUG Thread-819 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:34:33,127 INFO Thread-820 (process_request_thread): Settings loaded successfully
+2026-02-21 21:34:33,193 DEBUG Thread-820 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:34:37,436 INFO Thread-821 (process_request_thread): Settings loaded successfully
+2026-02-21 21:34:38,353 DEBUG Thread-821 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:34:41,134 INFO Thread-822 (process_request_thread): Settings loaded successfully
+2026-02-21 21:34:41,180 DEBUG Thread-822 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:34:45,441 INFO Thread-823 (process_request_thread): Settings loaded successfully
+2026-02-21 21:34:46,066 DEBUG Thread-823 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:34:49,123 INFO Thread-824 (process_request_thread): Settings loaded successfully
+2026-02-21 21:34:49,171 DEBUG Thread-824 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:34:53,439 INFO Thread-825 (process_request_thread): Settings loaded successfully
+2026-02-21 21:34:54,070 DEBUG Thread-825 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:34:57,135 INFO Thread-826 (process_request_thread): Settings loaded successfully
+2026-02-21 21:34:57,257 DEBUG Thread-826 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:35:01,441 INFO Thread-827 (process_request_thread): Settings loaded successfully
+2026-02-21 21:35:02,068 DEBUG Thread-827 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:35:05,136 INFO Thread-828 (process_request_thread): Settings loaded successfully
+2026-02-21 21:35:05,243 DEBUG Thread-828 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:35:09,436 INFO Thread-829 (process_request_thread): Settings loaded successfully
+2026-02-21 21:35:11,068 DEBUG Thread-829 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:35:13,129 INFO Thread-830 (process_request_thread): Settings loaded successfully
+2026-02-21 21:35:13,237 DEBUG Thread-830 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:35:17,443 INFO Thread-831 (process_request_thread): Settings loaded successfully
+2026-02-21 21:35:19,072 DEBUG Thread-831 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:35:21,130 INFO Thread-832 (process_request_thread): Settings loaded successfully
+2026-02-21 21:35:21,223 DEBUG Thread-832 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:35:25,440 INFO Thread-833 (process_request_thread): Settings loaded successfully
+2026-02-21 21:35:26,067 DEBUG Thread-833 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:35:29,136 INFO Thread-834 (process_request_thread): Settings loaded successfully
+2026-02-21 21:35:29,206 DEBUG Thread-834 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:35:33,437 INFO Thread-835 (process_request_thread): Settings loaded successfully
+2026-02-21 21:35:34,070 DEBUG Thread-835 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:35:37,131 INFO Thread-836 (process_request_thread): Settings loaded successfully
+2026-02-21 21:35:37,185 DEBUG Thread-836 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:35:41,432 INFO Thread-837 (process_request_thread): Settings loaded successfully
+2026-02-21 21:35:42,067 DEBUG Thread-837 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:35:45,136 INFO Thread-838 (process_request_thread): Settings loaded successfully
+2026-02-21 21:35:45,182 DEBUG Thread-838 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:35:49,434 INFO Thread-839 (process_request_thread): Settings loaded successfully
+2026-02-21 21:35:50,069 DEBUG Thread-839 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:35:53,127 INFO Thread-840 (process_request_thread): Settings loaded successfully
+2026-02-21 21:35:53,169 DEBUG Thread-840 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:35:57,431 INFO Thread-841 (process_request_thread): Settings loaded successfully
+2026-02-21 21:35:58,073 DEBUG Thread-841 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:36:01,125 INFO Thread-842 (process_request_thread): Settings loaded successfully
+2026-02-21 21:36:01,257 DEBUG Thread-842 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:36:05,440 INFO Thread-843 (process_request_thread): Settings loaded successfully
+2026-02-21 21:36:06,069 DEBUG Thread-843 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:36:09,131 INFO Thread-844 (process_request_thread): Settings loaded successfully
+2026-02-21 21:36:09,261 DEBUG Thread-844 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:36:13,435 INFO Thread-845 (process_request_thread): Settings loaded successfully
+2026-02-21 21:36:14,079 DEBUG Thread-845 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:36:17,135 INFO Thread-846 (process_request_thread): Settings loaded successfully
+2026-02-21 21:36:17,230 DEBUG Thread-846 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:36:21,431 INFO Thread-847 (process_request_thread): Settings loaded successfully
+2026-02-21 21:36:22,066 DEBUG Thread-847 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:36:25,127 INFO Thread-848 (process_request_thread): Settings loaded successfully
+2026-02-21 21:36:25,220 DEBUG Thread-848 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:36:29,440 INFO Thread-849 (process_request_thread): Settings loaded successfully
+2026-02-21 21:36:30,069 DEBUG Thread-849 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:36:33,129 INFO Thread-850 (process_request_thread): Settings loaded successfully
+2026-02-21 21:36:33,205 DEBUG Thread-850 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:36:37,433 INFO Thread-851 (process_request_thread): Settings loaded successfully
+2026-02-21 21:36:38,066 DEBUG Thread-851 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:36:41,137 INFO Thread-852 (process_request_thread): Settings loaded successfully
+2026-02-21 21:36:41,188 DEBUG Thread-852 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:36:45,444 INFO Thread-853 (process_request_thread): Settings loaded successfully
+2026-02-21 21:36:46,071 DEBUG Thread-853 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:36:49,133 INFO Thread-854 (process_request_thread): Settings loaded successfully
+2026-02-21 21:36:49,179 DEBUG Thread-854 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:36:53,438 INFO Thread-855 (process_request_thread): Settings loaded successfully
+2026-02-21 21:36:54,069 DEBUG Thread-855 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:36:57,128 INFO Thread-856 (process_request_thread): Settings loaded successfully
+2026-02-21 21:36:57,181 DEBUG Thread-856 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:37:01,443 INFO Thread-857 (process_request_thread): Settings loaded successfully
+2026-02-21 21:37:02,068 DEBUG Thread-857 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:37:05,128 INFO Thread-858 (process_request_thread): Settings loaded successfully
+2026-02-21 21:37:05,256 DEBUG Thread-858 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:37:09,445 INFO Thread-859 (process_request_thread): Settings loaded successfully
+2026-02-21 21:37:10,066 DEBUG Thread-859 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:37:13,135 INFO Thread-860 (process_request_thread): Settings loaded successfully
+2026-02-21 21:37:13,243 DEBUG Thread-860 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:37:17,439 INFO Thread-861 (process_request_thread): Settings loaded successfully
+2026-02-21 21:37:18,067 DEBUG Thread-861 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:37:21,127 INFO Thread-862 (process_request_thread): Settings loaded successfully
+2026-02-21 21:37:21,231 DEBUG Thread-862 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:37:25,431 INFO Thread-863 (process_request_thread): Settings loaded successfully
+2026-02-21 21:37:26,065 DEBUG Thread-863 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:37:29,136 INFO Thread-864 (process_request_thread): Settings loaded successfully
+2026-02-21 21:37:29,224 DEBUG Thread-864 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:37:33,430 INFO Thread-865 (process_request_thread): Settings loaded successfully
+2026-02-21 21:37:34,068 DEBUG Thread-865 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:37:37,127 INFO Thread-866 (process_request_thread): Settings loaded successfully
+2026-02-21 21:37:37,207 DEBUG Thread-866 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:37:41,439 INFO Thread-867 (process_request_thread): Settings loaded successfully
+2026-02-21 21:37:42,067 DEBUG Thread-867 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:37:45,124 INFO Thread-868 (process_request_thread): Settings loaded successfully
+2026-02-21 21:37:45,193 DEBUG Thread-868 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:37:49,433 INFO Thread-869 (process_request_thread): Settings loaded successfully
+2026-02-21 21:37:50,070 DEBUG Thread-869 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:37:53,125 INFO Thread-870 (process_request_thread): Settings loaded successfully
+2026-02-21 21:37:53,179 DEBUG Thread-870 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -
+2026-02-21 21:37:57,432 INFO Thread-871 (process_request_thread): Settings loaded successfully
+2026-02-21 21:37:58,068 DEBUG Thread-871 (process_request_thread): web: "GET /api/state HTTP/1.1" 200 -

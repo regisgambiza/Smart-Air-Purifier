@@ -4,7 +4,7 @@
   "openweather_api_key": "052d8dc856579311e1c7093d3e8e8249",
   "ollama_url": "http://127.0.0.1:11434/api/generate",
   "ollama_model": "llama3.1:8b",
-  "control_mode": "ai_assist",
-  "control_profile": "aggressive",
+  "control_mode": "manual",
+  "control_profile": "quiet",
   "filter_replacement_hours": 720.0
 }
