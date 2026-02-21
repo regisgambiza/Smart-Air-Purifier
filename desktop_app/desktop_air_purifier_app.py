@@ -67,6 +67,15 @@ MODEL_ALLOWED_RE = re.compile(r"[^A-Za-z0-9._:-]+")
 API_KEY_ALLOWED_RE = re.compile(r"[^A-Za-z0-9]+")
 
 PROFILE_CONFIG = {
+    "sleep": {
+        "min_speed": 20,
+        "max_speed": 60,
+        "aqi_weight": 0.40,
+        "pm25_weight": 0.40,
+        "pm10_weight": 0.10,
+        "shape": 0.98,
+        "step": 6,
+    },
     "quiet": {
         "min_speed": 40,
         "max_speed": 90,
@@ -85,6 +94,51 @@ PROFILE_CONFIG = {
         "shape": 0.75,
         "step": 14,
     },
+    "allergen": {
+        "min_speed": 55,
+        "max_speed": 98,
+        "aqi_weight": 0.65,
+        "pm25_weight": 0.55,
+        "pm10_weight": 0.05,
+        "shape": 0.50,
+        "step": 20,
+    },
+    "pet": {
+        "min_speed": 50,
+        "max_speed": 98,
+        "aqi_weight": 0.52,
+        "pm25_weight": 0.50,
+        "pm10_weight": 0.12,
+        "shape": 0.65,
+        "step": 16,
+    },
+    "turbo": {
+        "min_speed": 90,
+        "max_speed": 100,
+        "aqi_weight": 0.75,
+        "pm25_weight": 0.60,
+        "pm10_weight": 0.15,
+        "shape": 0.45,
+        "step": 30,
+    },
+    "eco": {
+        "min_speed": 35,
+        "max_speed": 88,
+        "aqi_weight": 0.40,
+        "pm25_weight": 0.30,
+        "pm10_weight": 0.10,
+        "shape": 1.25,
+        "step": 8,
+    },
+    "auto": {
+        "min_speed": 45,
+        "max_speed": 100,
+        "aqi_weight": 0.58,
+        "pm25_weight": 0.38,
+        "pm10_weight": 0.09,
+        "shape": 0.70,
+        "step": 14,
+    },
     "aggressive": {
         "min_speed": 60,
         "max_speed": 100,
@@ -94,6 +148,29 @@ PROFILE_CONFIG = {
         "shape": 0.6,
         "step": 18,
     },
+}
+PROFILE_LABELS = {
+    "sleep": "Sleep (Ultra-Silent)",
+    "quiet": "Quiet",
+    "balanced": "Balanced",
+    "allergen": "Allergen",
+    "pet": "Pet",
+    "turbo": "Turbo (Rapid-Clean)",
+    "eco": "Eco (Energy-Saver)",
+    "auto": "Auto (Adaptive)",
+    "aggressive": "Aggressive",
+}
+
+PROFILE_DESCRIPTIONS = {
+    "sleep": "Very low fan, dim indicators, minimal responsiveness for night.",
+    "quiet": "Lower noise while still maintaining steady cleanup.",
+    "balanced": "Balanced noise and cleaning performance for daily use.",
+    "allergen": "Higher baseline and fast PM2.5 response for pollen/dander.",
+    "pet": "Frequent short boosts and higher intake to capture fur and dander.",
+    "turbo": "Immediate max airflow for fast clearing after events.",
+    "eco": "Minimizes power use with conservative boosts and lower max RPM.",
+    "auto": "Dynamically adjusts fan curve based on recent sensor trends.",
+    "aggressive": "Fast, high-power cleaning with higher noise.",
 }
 
 CONTROL_MODE_MANUAL = "manual"
@@ -2473,19 +2550,30 @@ class App:
             pady=6,
             padx=(0, 10),
         )
-        ttk.Combobox(
+        profile_combo = ttk.Combobox(
             frame,
             textvariable=self.profile_var,
-            values=["quiet", "balanced", "aggressive"],
+            values=list(PROFILE_CONFIG.keys()),
             state="readonly",
-        ).grid(row=profile_row, column=1, sticky="ew", pady=6)
+        )
+        profile_combo.grid(row=profile_row, column=1, sticky="ew", pady=6)
+
+        desc_row = profile_row + 1
+        description_var = tk.StringVar(value=PROFILE_DESCRIPTIONS.get(self.profile_var.get(), ""))
+        desc_label = ttk.Label(frame, textvariable=description_var, style="Muted.TLabel")
+        desc_label.grid(row=desc_row, column=0, columnspan=2, sticky="w", pady=(2, 10))
+
+        def _on_profile_change(*_args: object) -> None:
+            description_var.set(PROFILE_DESCRIPTIONS.get(self.profile_var.get(), ""))
+
+        self.profile_var.trace_add("write", _on_profile_change)
 
         def save_and_close():
             if self.persist_settings():
                 window.destroy()
 
         buttons = ttk.Frame(frame, style="Card.TFrame")
-        buttons.grid(row=profile_row + 1, column=0, columnspan=2, sticky="e", pady=(14, 0))
+        buttons.grid(row=desc_row + 1, column=0, columnspan=2, sticky="e", pady=(14, 0))
         ttk.Button(buttons, text="Save", command=save_and_close).pack(side="left", padx=6)
         ttk.Button(buttons, text="Cancel", command=window.destroy).pack(side="left", padx=6)
 

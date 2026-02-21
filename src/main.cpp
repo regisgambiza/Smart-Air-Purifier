@@ -61,9 +61,15 @@ struct FanProfile {
 };
 
 const FanProfile PROFILE_CONFIG[] = {
-    {"quiet", 40, 90, 0.46f, 0.34f, 0.12f, 0.95f, 10},
-    {"balanced", 50, 96, 0.54f, 0.34f, 0.10f, 0.75f, 14},
-    {"aggressive", 60, 100, 0.60f, 0.34f, 0.10f, 0.60f, 18},
+  {"sleep", 20, 60, 0.40f, 0.40f, 0.10f, 0.98f, 6},
+  {"quiet", 40, 90, 0.46f, 0.34f, 0.12f, 0.95f, 10},
+  {"balanced", 50, 96, 0.54f, 0.34f, 0.10f, 0.75f, 14},
+  {"allergen", 55, 98, 0.65f, 0.55f, 0.05f, 0.50f, 20},
+  {"pet", 50, 98, 0.52f, 0.50f, 0.12f, 0.65f, 16},
+  {"turbo", 90, 100, 0.75f, 0.60f, 0.15f, 0.45f, 30},
+  {"eco", 35, 88, 0.40f, 0.30f, 0.10f, 1.25f, 8},
+  {"auto", 45, 100, 0.58f, 0.38f, 0.09f, 0.70f, 14},
+  {"aggressive", 60, 100, 0.60f, 0.34f, 0.10f, 0.60f, 18},
 };
 const size_t PROFILE_COUNT = sizeof(PROFILE_CONFIG) / sizeof(PROFILE_CONFIG[0]);
 

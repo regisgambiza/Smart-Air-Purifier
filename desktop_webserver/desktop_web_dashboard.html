@@ -19,6 +19,21 @@ linear-gradient(154deg,var(--bg),var(--bg2))}
 .mode-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}.mode{border:1px solid rgba(156,190,243,.33);border-radius:11px;padding:8px;background:rgba(255,255,255,.07);color:var(--text);font-weight:700;cursor:pointer}.mode.active{border-color:rgba(122,242,188,.55);background:rgba(34,197,94,.2)}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}label{display:grid;gap:5px;font-size:.82rem;color:var(--muted)}
 select,input,button{width:100%;border:1px solid rgba(156,190,243,.33);border-radius:11px;padding:9px 10px;background:rgba(255,255,255,.08);color:var(--text);font-size:.92rem;font-weight:600}
+/* Ensure native select dropdowns remain readable on dark theme */
+select, select:focus, select:active {
+  color: var(--text) !important;
+  background: rgba(255,255,255,.06) !important;
+}
+/* Attempt to style option list; note some browsers limit styling of native options */
+select option {
+  background: var(--bg2) !important;
+  color: var(--text) !important;
+}
+/* Improve contrast for the focused/hovered option in supporting browsers */
+select option:focus, select option:hover {
+  background: linear-gradient(90deg,var(--accent-1),var(--accent-2)) !important;
+  color: #071327 !important;
+}
 input[type=range]{padding:0;border:none;background:transparent;appearance:none;-webkit-appearance:none}input[type=range]::-webkit-slider-runnable-track{height:10px;border-radius:999px;background:linear-gradient(90deg,rgba(56,189,248,.72),rgba(52,211,153,.72))}input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;margin-top:-4px;border:2px solid #eaf6ff;background:#102142}
 .speed{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px}.speed .v{font-size:1.95rem;font-weight:800}.row{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:.88rem;margin-top:8px}
 .metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}.m{border:1px solid rgba(156,190,243,.24);border-radius:14px;padding:10px;background:rgba(255,255,255,.05)}.m .c{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}.m .v{margin-top:5px;font-size:1.35rem;font-weight:800}
@@ -51,8 +66,7 @@ input[type=range]{padding:0;border:none;background:transparent;appearance:none;-
           <button id="mAi" class="mode">AI Assist</button>
         </div>
         <div class="grid2">
-          <label>Mode<select id="modeSelect"><option value="manual">Manual</option><option value="classic_auto">Classic Auto</option><option value="ai_assist">AI Assist</option></select></label>
-          <label>Profile<select id="profileSelect"><option value="quiet">Quiet</option><option value="balanced">Balanced</option><option value="aggressive">Aggressive</option></select></label>
+          <label>Profile<select id="profileSelect"><option value="sleep">Sleep (Ultra-Silent)</option><option value="quiet">Quiet</option><option value="balanced">Balanced</option><option value="allergen">Allergen</option><option value="pet">Pet</option><option value="turbo">Turbo (Rapid-Clean)</option><option value="eco">Eco (Energy-Saver)</option><option value="auto">Auto (Adaptive)</option><option value="aggressive">Aggressive</option></select></label>
         </div>
         <div class="speed"><div class="label">Manual Speed</div><div><span id="speedValue" class="v">--</span>%</div></div>
         <input id="speedSlider" type="range" min="0" max="100" value="40" />
@@ -116,7 +130,7 @@ const setModeBtns=m=>{$("mManual").classList.toggle("active",m==="manual");$("mC
 function render(s){const h=s.health||{},c=s.control||{},i=s.indoor||{},o=s.outdoor||{},a=s.air||{},f=s.filter||{},cfg=s.config||{},e=s.esp||{};const mode=String(c.mode||"classic_auto");
 $("health").className="health "+String(h.level||"degraded");$("health").textContent=String(h.summary||"Status unknown");$("stamp").textContent="Updated: "+new Date((s.timestamp||0)*1000).toLocaleTimeString();
 $("heroSub").textContent=i.comfort_score==null?"Comfort score: --":"Comfort score: "+i.comfort_score+"/100";
-if($("modeSelect").value!==mode)$("modeSelect").value=mode; if($("profileSelect").value!==String(c.profile||"aggressive"))$("profileSelect").value=String(c.profile||"aggressive");
+if($("profileSelect").value!==String(c.profile||"aggressive"))$("profileSelect").value=String(c.profile||"aggressive");
 setModeBtns(mode);$("speedSlider").disabled=mode!=="manual";const sp=Number(i.speed_pct);$("speedValue").textContent=Number.isFinite(sp)?Math.round(sp):"--";if(!dragging&&Number.isFinite(sp))$("speedSlider").value=String(Math.round(sp));
 $("controlNote").textContent=mode==="manual"?"Manual mode active. Slider commands are sent to ESP32.":"Auto mode active. Slider locked by firmware policy.";
 $("roomTemp").textContent=fmt(i.temp_c," C",1);$("roomHum").textContent=fmt(i.humidity_pct," %",1);$("outTemp").textContent=fmt(o.temp_c," C",1);$("outHum").textContent=fmt(o.humidity_pct," %",0);
@@ -129,7 +143,7 @@ if(document.activeElement!==$("city"))$("city").value=String(cfg.city||""); if(d
 const refresh=async()=>{try{render((await api("/api/state")).state)}catch(e){$("health").className="health critical";$("health").textContent="Dashboard offline";$("heroSub").textContent=String(e.message||e)}};
 const send=async(path,val)=>{await api(path,"POST",val===undefined?{}:{value:val});await refresh()};
 $("mManual").onclick=()=>send("/api/control/mode","manual");$("mClassic").onclick=()=>send("/api/control/mode","classic_auto");$("mAi").onclick=()=>send("/api/control/mode","ai_assist");
-$("modeSelect").onchange=e=>send("/api/control/mode",e.target.value);$("profileSelect").onchange=e=>send("/api/control/profile",e.target.value);$("toggleBtn").onclick=()=>send("/api/control/toggle");$("refreshBtn").onclick=()=>refresh();
+$("profileSelect").onchange=e=>send("/api/control/profile",e.target.value);$("toggleBtn").onclick=()=>send("/api/control/toggle");$("refreshBtn").onclick=()=>refresh();
 $("speedSlider").addEventListener("pointerdown",()=>dragging=true);window.addEventListener("pointerup",()=>dragging=false);
 $("speedSlider").addEventListener("input",e=>{const s=Math.max(0,Math.min(100,Number(e.target.value)||0));$("speedValue").textContent=Math.round(s);clearTimeout(debounce);debounce=setTimeout(()=>send("/api/control/speed",String(Math.round(s))).catch(()=>{}),120)});
 $("speedSlider").addEventListener("change",e=>{const s=Math.max(0,Math.min(100,Number(e.target.value)||0));send("/api/control/speed",String(Math.round(s))).catch(()=>{})});
