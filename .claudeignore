@@ -1,0 +1,16 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Logs & runtime data
+*.log
+*.csv
+*.json
+
+# PlatformIO
+.pio/
+.build/
+
+# Git
+.git/

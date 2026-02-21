@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Smart Air Purifier Web</title>
+<style>
+:root{--bg:#071327;--bg2:#0e2447;--glass:rgba(10,27,56,.64);--line:rgba(148,187,255,.23);--text:#ecf3ff;--muted:#9eb1d6;--ok:#7af2bc;--warn:#ffd689;--bad:#ff819d}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;color:var(--text);font-family:"Avenir Next","Trebuchet MS",sans-serif;background:
+radial-gradient(1100px 620px at -12% -14%,rgba(56,130,246,.45),transparent 64%),
+radial-gradient(900px 520px at 112% -10%,rgba(16,185,129,.32),transparent 64%),
+radial-gradient(900px 540px at 50% 115%,rgba(245,158,11,.22),transparent 72%),
+linear-gradient(154deg,var(--bg),var(--bg2))}
+.wrap{width:min(1180px,95vw);margin:14px auto 20px;display:grid;gap:12px}
+.card{background:var(--glass);border:1px solid var(--line);border-radius:18px;padding:14px;backdrop-filter:blur(9px);box-shadow:0 20px 44px rgba(3,8,22,.45)}
+.hero{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}.kicker{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.15em}h1{margin:4px 0;font-size:clamp(1.3rem,2.2vw,1.95rem)}.sub{color:var(--muted);font-size:.92rem}
+.health{padding:7px 11px;border-radius:999px;font-size:.77rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;border:1px solid transparent}.healthy{background:rgba(34,197,94,.24);color:#d8ffeb;border-color:rgba(122,242,188,.45)}.degraded{background:rgba(217,119,6,.25);color:#fff2d8;border-color:rgba(255,214,137,.45)}.critical{background:rgba(225,29,72,.28);color:#ffe0e8;border-color:rgba(255,129,157,.52)}
+.layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:12px}.col{display:grid;gap:12px}.label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.11em}
+.mode-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}.mode{border:1px solid rgba(156,190,243,.33);border-radius:11px;padding:8px;background:rgba(255,255,255,.07);color:var(--text);font-weight:700;cursor:pointer}.mode.active{border-color:rgba(122,242,188,.55);background:rgba(34,197,94,.2)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}label{display:grid;gap:5px;font-size:.82rem;color:var(--muted)}
+select,input,button{width:100%;border:1px solid rgba(156,190,243,.33);border-radius:11px;padding:9px 10px;background:rgba(255,255,255,.08);color:var(--text);font-size:.92rem;font-weight:600}
+input[type=range]{padding:0;border:none;background:transparent;appearance:none;-webkit-appearance:none}input[type=range]::-webkit-slider-runnable-track{height:10px;border-radius:999px;background:linear-gradient(90deg,rgba(56,189,248,.72),rgba(52,211,153,.72))}input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;margin-top:-4px;border:2px solid #eaf6ff;background:#102142}
+.speed{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px}.speed .v{font-size:1.95rem;font-weight:800}.row{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:.88rem;margin-top:8px}
+.metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}.m{border:1px solid rgba(156,190,243,.24);border-radius:14px;padding:10px;background:rgba(255,255,255,.05)}.m .c{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}.m .v{margin-top:5px;font-size:1.35rem;font-weight:800}
+.bar{height:13px;border-radius:999px;border:1px solid rgba(156,190,243,.28);background:rgba(255,255,255,.09);overflow:hidden;margin-top:8px}.fill{height:100%;width:100%;background:linear-gradient(90deg,#22c55e,#facc15,#ef4444)}
+.note{margin-top:9px;color:var(--muted);font-size:.85rem}
+@media (max-width:950px){.layout{grid-template-columns:1fr}}@media (max-width:640px){.grid2,.metrics,.mode-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <section class="card hero">
+    <div>
+      <div class="kicker">Smart Air Purifier</div>
+      <h1>PC Web Dashboard</h1>
+      <div id="heroSub" class="sub">Waiting for live data...</div>
+    </div>
+    <div>
+      <div id="health" class="health degraded">Loading</div>
+      <div id="stamp" class="sub" style="margin-top:6px;text-align:right">--</div>
+    </div>
+  </section>
+
+  <section class="layout">
+    <div class="col">
+      <article class="card">
+        <div class="label">Control</div>
+        <div class="mode-row">
+          <button id="mManual" class="mode">Manual</button>
+          <button id="mClassic" class="mode">Classic</button>
+          <button id="mAi" class="mode">AI Assist</button>
+        </div>
+        <div class="grid2">
+          <label>Mode<select id="modeSelect"><option value="manual">Manual</option><option value="classic_auto">Classic Auto</option><option value="ai_assist">AI Assist</option></select></label>
+          <label>Profile<select id="profileSelect"><option value="quiet">Quiet</option><option value="balanced">Balanced</option><option value="aggressive">Aggressive</option></select></label>
+        </div>
+        <div class="speed"><div class="label">Manual Speed</div><div><span id="speedValue" class="v">--</span>%</div></div>
+        <input id="speedSlider" type="range" min="0" max="100" value="40" />
+        <div class="row"><span>0%</span><span>100%</span></div>
+        <div class="grid2" style="margin-top:10px"><button id="toggleBtn">Toggle Manual/Classic</button><button id="refreshBtn">Refresh</button></div>
+        <div id="controlNote" class="note">Manual control active.</div>
+      </article>
+
+      <article class="card">
+        <div class="label">Indoor + Outdoor</div>
+        <div class="metrics">
+          <div class="m"><div class="c">Room Temp</div><div id="roomTemp" class="v">--</div></div>
+          <div class="m"><div class="c">Room Humidity</div><div id="roomHum" class="v">--</div></div>
+          <div class="m"><div class="c">Outside Temp</div><div id="outTemp" class="v">--</div></div>
+          <div class="m"><div class="c">Outside Humidity</div><div id="outHum" class="v">--</div></div>
+        </div>
+        <div id="sensorLine" class="note">--</div>
+      </article>
+    </div>
+
+    <div class="col">
+      <article class="card">
+        <div class="label">Air + Fan Telemetry</div>
+        <div class="metrics">
+          <div class="m"><div class="c">AQI</div><div id="aqi" class="v">--</div></div>
+          <div class="m"><div class="c">PM2.5</div><div id="pm25" class="v">--</div></div>
+          <div class="m"><div class="c">PM10</div><div id="pm10" class="v">--</div></div>
+          <div class="m"><div class="c">Fan RPM</div><div id="rpm" class="v">--</div></div>
+        </div>
+        <div class="row"><span>NO2</span><span id="no2">--</span></div>
+        <div class="row"><span>O3</span><span id="o3">--</span></div>
+        <div class="row"><span>Last Cmd</span><span id="lastCmd">--</span></div>
+        <div class="row"><span>Cmd Seq</span><span id="cmdSeq">--</span></div>
+      </article>
+
+      <article class="card">
+        <div class="label">Filter + Shared Settings</div>
+        <div class="row"><span>Usage</span><span id="filterUsage">--</span></div>
+        <div class="bar"><div id="fill" class="fill"></div></div>
+        <div class="row"><span>Left</span><span id="filterLeft">--</span></div>
+        <button id="resetFilter" style="margin-top:10px">Reset Filter Usage</button>
+
+        <div class="grid2" style="margin-top:12px">
+          <label>City<input id="city" type="text" autocomplete="off"></label>
+          <label>ESP URL<input id="espUrl" type="text" autocomplete="off"></label>
+          <label>OpenWeather Key<input id="apiKey" type="password" autocomplete="off"></label>
+          <label>Filter Hours<input id="filterHours" type="number" min="100" max="5000"></label>
+        </div>
+        <button id="saveSettings" style="margin-top:10px">Save Settings</button>
+        <div id="settingsNote" class="note">Shared with desktop app settings file.</div>
+      </article>
+    </div>
+  </section>
+</main>
+<script>
+const $=id=>document.getElementById(id);let dragging=false,debounce=0;
+const fmt=(v,s="",d=1)=>Number.isFinite(Number(v))?Number(v).toFixed(d)+s:"--";
+const fi=(v,s="")=>Number.isFinite(Number(v))?Math.round(Number(v))+s:"--";
+const api=async(p,m="GET",b=null)=>{const o={method:m,cache:"no-store",headers:{}};if(b){o.headers["Content-Type"]="application/json";o.body=JSON.stringify(b)}const r=await fetch(p,o);const j=await r.json();if(!r.ok||j.ok===false)throw new Error(j.error||("HTTP "+r.status));return j};
+const setModeBtns=m=>{$("mManual").classList.toggle("active",m==="manual");$("mClassic").classList.toggle("active",m==="classic_auto");$("mAi").classList.toggle("active",m==="ai_assist")};
+function render(s){const h=s.health||{},c=s.control||{},i=s.indoor||{},o=s.outdoor||{},a=s.air||{},f=s.filter||{},cfg=s.config||{},e=s.esp||{};const mode=String(c.mode||"classic_auto");
+$("health").className="health "+String(h.level||"degraded");$("health").textContent=String(h.summary||"Status unknown");$("stamp").textContent="Updated: "+new Date((s.timestamp||0)*1000).toLocaleTimeString();
+$("heroSub").textContent=i.comfort_score==null?"Comfort score: --":"Comfort score: "+i.comfort_score+"/100";
+if($("modeSelect").value!==mode)$("modeSelect").value=mode; if($("profileSelect").value!==String(c.profile||"aggressive"))$("profileSelect").value=String(c.profile||"aggressive");
+setModeBtns(mode);$("speedSlider").disabled=mode!=="manual";const sp=Number(i.speed_pct);$("speedValue").textContent=Number.isFinite(sp)?Math.round(sp):"--";if(!dragging&&Number.isFinite(sp))$("speedSlider").value=String(Math.round(sp));
+$("controlNote").textContent=mode==="manual"?"Manual mode active. Slider commands are sent to ESP32.":"Auto mode active. Slider locked by firmware policy.";
+$("roomTemp").textContent=fmt(i.temp_c," C",1);$("roomHum").textContent=fmt(i.humidity_pct," %",1);$("outTemp").textContent=fmt(o.temp_c," C",1);$("outHum").textContent=fmt(o.humidity_pct," %",0);
+$("sensorLine").textContent=(i.sht_ok?"SHT30 online":"SHT30 offline")+" | DS18B20 "+fmt(i.ds_temp_c," C",1)+" | "+String(o.description||"--");
+$("aqi").textContent=a.aqi==null?"--":a.aqi+" ("+String(a.aqi_label||"Unknown")+")";$("pm25").textContent=fmt(a.pm2_5," ug/m3",1);$("pm10").textContent=fmt(a.pm10," ug/m3",1);$("rpm").textContent=fi(i.rpm," rpm");
+$("no2").textContent=fmt(a.no2," ug/m3",1);$("o3").textContent=fmt(a.o3," ug/m3",1);$("lastCmd").textContent=String(e.last_cmd||"--")+" ("+fi(e.cmd_age_ms," ms")+")";$("cmdSeq").textContent=fi(e.cmd_seq);
+$("filterUsage").textContent=fmt(f.usage_percent,"%",0)+" ("+fmt(f.runtime_hours,"h",1)+" / "+fmt(f.replacement_hours,"h",0)+")";$("filterLeft").textContent=fmt(f.left_percent,"%",0)+" ("+fmt(f.left_hours,"h",0)+" left)";$("fill").style.width=(Number.isFinite(Number(f.left_percent))?Number(f.left_percent):0)+"%";
+if(document.activeElement!==$("city"))$("city").value=String(cfg.city||""); if(document.activeElement!==$("espUrl"))$("espUrl").value=String(cfg.esp_base_url||""); if(document.activeElement!==$("apiKey"))$("apiKey").value=String(cfg.openweather_api_key||""); if(document.activeElement!==$("filterHours"))$("filterHours").value=Number.isFinite(Number(cfg.filter_replacement_hours))?String(Math.round(Number(cfg.filter_replacement_hours))):"";
+}
+const refresh=async()=>{try{render((await api("/api/state")).state)}catch(e){$("health").className="health critical";$("health").textContent="Dashboard offline";$("heroSub").textContent=String(e.message||e)}};
+const send=async(path,val)=>{await api(path,"POST",val===undefined?{}:{value:val});await refresh()};
+$("mManual").onclick=()=>send("/api/control/mode","manual");$("mClassic").onclick=()=>send("/api/control/mode","classic_auto");$("mAi").onclick=()=>send("/api/control/mode","ai_assist");
+$("modeSelect").onchange=e=>send("/api/control/mode",e.target.value);$("profileSelect").onchange=e=>send("/api/control/profile",e.target.value);$("toggleBtn").onclick=()=>send("/api/control/toggle");$("refreshBtn").onclick=()=>refresh();
+$("speedSlider").addEventListener("pointerdown",()=>dragging=true);window.addEventListener("pointerup",()=>dragging=false);
+$("speedSlider").addEventListener("input",e=>{const s=Math.max(0,Math.min(100,Number(e.target.value)||0));$("speedValue").textContent=Math.round(s);clearTimeout(debounce);debounce=setTimeout(()=>send("/api/control/speed",String(Math.round(s))).catch(()=>{}),120)});
+$("speedSlider").addEventListener("change",e=>{const s=Math.max(0,Math.min(100,Number(e.target.value)||0));send("/api/control/speed",String(Math.round(s))).catch(()=>{})});
+$("resetFilter").onclick=async()=>{if(!confirm("Reset filter usage after replacement?"))return;try{await api("/api/filter/reset","POST",{});await refresh()}catch(e){$("settingsNote").textContent="Filter reset failed: "+String(e.message||e)}};
+$("saveSettings").onclick=async()=>{const p={city:$("city").value,esp_base_url:$("espUrl").value,openweather_api_key:$("apiKey").value,filter_replacement_hours:$("filterHours").value};try{await api("/api/config","POST",p);$("settingsNote").textContent="Settings saved.";await refresh()}catch(e){$("settingsNote").textContent="Save failed: "+String(e.message||e)}};
+setInterval(refresh,4000);refresh();
+</script>
+</body>
+</html>
