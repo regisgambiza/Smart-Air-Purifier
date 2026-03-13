@@ -1,5 +1,4 @@
-﻿
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import argparse
 import json
@@ -26,7 +25,6 @@ from desktop_air_purifier_app import (
     FILTER_STATE_FILE,
     PROFILE_CONFIG,
     SETTINGS_FILE,
-    WEATHER_REFRESH_INTERVAL_SECONDS,
     AppConfig,
     ConfigManager,
     DataManager,
@@ -88,9 +86,6 @@ class Backend:
         self.config = self.config_manager.load()
         self.filter_tracker = FilterTracker(FILTER_STATE_FILE, self.config.filter_replacement_hours, LOGGER)
         self.last_esp: dict | None = None
-        self.last_weather: dict | None = None
-        self.last_air: dict | None = None
-        self.last_weather_ts = 0.0
 
     def current_config(self) -> AppConfig:
         with self.lock:
@@ -103,11 +98,11 @@ class Backend:
     def update_config(self, payload: dict[str, Any]) -> AppConfig:
         base = self.current_config()
         cfg = self.config_manager.create_config(
-            city=str(payload.get("city", base.city)),
+            city=base.city,
             esp_base_url=str(payload.get("esp_base_url", base.esp_base_url)),
-            openweather_api_key=str(payload.get("openweather_api_key", base.openweather_api_key)),
-            ollama_url=str(payload.get("ollama_url", base.ollama_url)),
-            ollama_model=str(payload.get("ollama_model", base.ollama_model)),
+            openweather_api_key=base.openweather_api_key,
+            ollama_url=base.ollama_url,
+            ollama_model=base.ollama_model,
             control_mode=str(payload.get("control_mode", base.control_mode)),
             control_profile=str(payload.get("control_profile", base.control_profile)),
             filter_replacement_hours=payload.get("filter_replacement_hours", base.filter_replacement_hours),
@@ -167,46 +162,15 @@ class Backend:
             with self.lock:
                 esp = dict(self.last_esp) if self.last_esp else None
 
-        weather, air, weather_error, stale = None, None, None, False
-        now = time.time()
-        with self.lock:
-            if self.last_weather and self.last_air and now - self.last_weather_ts < WEATHER_REFRESH_INTERVAL_SECONDS:
-                weather, air = dict(self.last_weather), dict(self.last_air)
-
-        if weather is None:
-            try:
-                weather, air = self.data_manager.read_openweather(cfg.city, cfg.openweather_api_key)
-                with self.lock:
-                    self.last_weather = dict(weather)
-                    self.last_air = dict(air)
-                    self.last_weather_ts = now
-            except Exception as error:
-                weather_error = str(error)
-                stale = True
-                with self.lock:
-                    if self.last_weather and self.last_air:
-                        weather, air = dict(self.last_weather), dict(self.last_air)
-
         esp_data = esp or {}
         speed = int(clamp(safe_int(esp_data.get("speed"), 0), 0, 100))
         filter_state = self.filter_tracker.update_runtime(speed) if esp is not None else self.filter_tracker.get_state()
         usage = self.filter_tracker.usage_percent(filter_state)
 
-        weather_main = (weather or {}).get("main") or {}
-        weather_desc = "--"
-        weather_list = (weather or {}).get("weather") or []
-        if weather_list and isinstance(weather_list[0], dict):
-            weather_desc = str(weather_list[0].get("description", "--")).title()
-
-        air_info = ((air or {}).get("list") or [{}])[0]
-        air_main = air_info.get("main") or {}
-        comps = air_info.get("components") or {}
-        aqi = safe_int(air_main.get("aqi"), 0)
-
         mode = sanitize_control_mode(str(esp_data.get("control_mode") or cfg.control_mode), CONTROL_MODE_CLASSIC)
-        profile = str(esp_data.get("control_profile") or cfg.control_profile or "aggressive").lower()
+        profile = str(esp_data.get("control_profile") or cfg.control_profile or "auto").lower()
         if profile not in PROFILE_CONFIG:
-            profile = "aggressive"
+            profile = "auto"
 
         temp = finite(esp_data.get("temp"), 1)
         hum = finite(esp_data.get("humidity"), 1)
@@ -214,24 +178,43 @@ class Backend:
         if temp is not None and hum is not None:
             comfort = int(clamp(round(100.0 - abs(temp - 23.0) * 4.5 - abs(hum - 50.0) * 1.4), 0, 100))
 
+        outdoor_temp = finite(esp_data.get("outdoor_temp_c"), 1)
+        if outdoor_temp is None:
+            outdoor_temp = finite(esp_data.get("outdoor_temp"), 1)
+        outdoor_humidity = finite(esp_data.get("outdoor_humidity_pct"), 0)
+        if outdoor_humidity is None:
+            outdoor_humidity = finite(esp_data.get("outdoor_humidity"), 0)
+        weather_desc = str(esp_data.get("outdoor_description", "--")).strip().title() or "--"
+        weather_ok = bool(esp_data.get("weather_ok"))
+        weather_status = str(esp_data.get("weather_status", "--"))
+
+        aqi = safe_int(esp_data.get("aqi"), 0)
+        if aqi <= 0:
+            aqi = safe_int(esp_data.get("outdoor_aqi"), 0)
+        pm2_5 = finite(esp_data.get("pm2_5"), 1)
+        if pm2_5 is None:
+            pm2_5 = finite(esp_data.get("pm25"), 1)
+        pm10 = finite(esp_data.get("pm10"), 1)
+        no2 = finite(esp_data.get("no2"), 1)
+        o3 = finite(esp_data.get("o3"), 1)
+
         level = "healthy"
         summary = "All systems healthy"
-        if esp_error and weather_error:
-            level, summary = "critical", "ESP and weather unavailable"
-        elif esp_error:
+        if esp_error:
             level, summary = "degraded", "ESP unavailable"
-        elif weather_error:
-            level, summary = "degraded", "Weather unavailable"
-        elif stale:
-            level, summary = "degraded", "Using cached weather"
+        elif not weather_ok:
+            level, summary = "degraded", "ESP weather/pollution unavailable"
 
         return {
             "timestamp": int(time.time()),
-            "health": {"level": level, "summary": summary, "esp_error": esp_error, "weather_error": weather_error},
+            "health": {
+                "level": level,
+                "summary": summary,
+                "esp_error": esp_error,
+                "weather_status": weather_status,
+            },
             "config": {
-                "city": cfg.city,
                 "esp_base_url": cfg.esp_base_url,
-                "openweather_api_key": cfg.openweather_api_key,
                 "control_mode": cfg.control_mode,
                 "control_profile": cfg.control_profile,
                 "filter_replacement_hours": round(cfg.filter_replacement_hours, 1),
@@ -252,17 +235,20 @@ class Backend:
                 "comfort_score": comfort,
             },
             "outdoor": {
-                "temp_c": finite(weather_main.get("temp"), 1),
-                "humidity_pct": finite(weather_main.get("humidity"), 0),
+                "temp_c": outdoor_temp,
+                "humidity_pct": outdoor_humidity,
                 "description": weather_desc,
+                "ok": weather_ok,
+                "status": weather_status,
+                "age_ms": safe_int(esp_data.get("weather_age_ms"), 0),
             },
             "air": {
                 "aqi": aqi if aqi > 0 else None,
                 "aqi_label": aqi_label(aqi) if aqi > 0 else "Unknown",
-                "pm2_5": finite(comps.get("pm2_5"), 1),
-                "pm10": finite(comps.get("pm10"), 1),
-                "no2": finite(comps.get("no2"), 1),
-                "o3": finite(comps.get("o3"), 1),
+                "pm2_5": pm2_5,
+                "pm10": pm10,
+                "no2": no2,
+                "o3": o3,
             },
             "filter": {
                 "runtime_hours": round(filter_state.runtime_hours, 1),
@@ -280,6 +266,83 @@ class Backend:
 
     def close(self) -> None:
         self.filter_tracker.flush()
+
+
+class WeatherPusher:
+    """Background thread: fetches weather from OpenWeatherMap and pushes to ESP32 /weather."""
+
+    PUSH_INTERVAL = 300   # seconds between successful pushes
+    RETRY_INTERVAL = 45   # seconds between retries on failure
+
+    def __init__(self, backend: "Backend") -> None:
+        self.backend = backend
+        self._stop_event = threading.Event()
+        self._thread = threading.Thread(target=self._run, name="WeatherPusher", daemon=True)
+
+    def start(self) -> None:
+        self._thread.start()
+
+    def stop(self) -> None:
+        self._stop_event.set()
+
+    def _run(self) -> None:
+        next_run = 0.0
+        while not self._stop_event.is_set():
+            now = time.time()
+            if now < next_run:
+                self._stop_event.wait(timeout=min(5.0, next_run - now))
+                continue
+            cfg = self.backend.current_config()
+            try:
+                weather, air = self.backend.data_manager.read_openweather(
+                    cfg.city, cfg.openweather_api_key
+                )
+                payload = self._flatten(weather, air)
+                self._push(cfg.esp_base_url, payload)
+                LOGGER.info("WeatherPusher: pushed weather to ESP32 OK")
+                next_run = time.time() + self.PUSH_INTERVAL
+            except Exception as exc:
+                LOGGER.warning("WeatherPusher: failed (%s), retrying in %ss", exc, self.RETRY_INTERVAL)
+                next_run = time.time() + self.RETRY_INTERVAL
+
+    @staticmethod
+    def _flatten(weather: dict, air: dict) -> dict:
+        main = weather.get("main") or {}
+        desc_list = weather.get("weather") or [{}]
+        description = str(desc_list[0].get("description", "--")).strip().title() or "--"
+        air_entry = (air.get("list") or [{}])[0]
+        components = air_entry.get("components") or {}
+        aqi = safe_int((air_entry.get("main") or {}).get("aqi"), 0)
+
+        def _f(v: object) -> float | None:
+            try:
+                f = float(v)
+                return f if math.isfinite(f) else None
+            except Exception:
+                return None
+
+        return {
+            "temp_c":       _f(main.get("temp")),
+            "humidity_pct": _f(main.get("humidity")),
+            "description":  description,
+            "aqi":          aqi,
+            "pm2_5":        _f(components.get("pm2_5")),
+            "pm10":         _f(components.get("pm10")),
+            "no2":          _f(components.get("no2")),
+            "o3":           _f(components.get("o3")),
+        }
+
+    def _push(self, esp_base_url: str, payload: dict) -> None:
+        raw = json.dumps(payload, ensure_ascii=True).encode("utf-8")
+        self.backend.data_manager.request_json(
+            url=f"{esp_base_url}/weather",
+            timeout=8,
+            method="POST",
+            payload=raw,
+            headers={"Content-Type": "application/json"},
+            max_attempts=2,
+        )
+
 
 class Handler(BaseHTTPRequestHandler):
     backend: Backend | None = None
@@ -343,9 +406,7 @@ class Handler(BaseHTTPRequestHandler):
                 {
                     "ok": True,
                     "config": {
-                        "city": cfg.city,
                         "esp_base_url": cfg.esp_base_url,
-                        "openweather_api_key": cfg.openweather_api_key,
                         "control_mode": cfg.control_mode,
                         "control_profile": cfg.control_profile,
                         "filter_replacement_hours": cfg.filter_replacement_hours,
@@ -378,9 +439,7 @@ class Handler(BaseHTTPRequestHandler):
             elif route == "/api/config":
                 cfg = backend.update_config(body)
                 result = {
-                    "city": cfg.city,
                     "esp_base_url": cfg.esp_base_url,
-                    "openweather_api_key": cfg.openweather_api_key,
                     "control_mode": cfg.control_mode,
                     "control_profile": cfg.control_profile,
                     "filter_replacement_hours": cfg.filter_replacement_hours,
@@ -404,6 +463,8 @@ def main() -> None:
 
     backend = Backend()
     Handler.backend = backend
+    weather_pusher = WeatherPusher(backend)
+    weather_pusher.start()
     server = ThreadingHTTPServer((args.host, args.port), Handler)
     LOGGER.info("Desktop dashboard server started: http://%s:%s", args.host, args.port)
     urls = startup_urls(args.host, args.port)
@@ -422,6 +483,7 @@ def main() -> None:
         LOGGER.info("Desktop dashboard server stopped")
         print("\nDesktop web dashboard stopped.", flush=True)
     finally:
+        weather_pusher.stop()
         backend.close()
         server.server_close()
 

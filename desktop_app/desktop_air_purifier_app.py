@@ -76,24 +76,6 @@ PROFILE_CONFIG = {
         "shape": 0.98,
         "step": 6,
     },
-    "quiet": {
-        "min_speed": 40,
-        "max_speed": 90,
-        "aqi_weight": 0.46,
-        "pm25_weight": 0.34,
-        "pm10_weight": 0.12,
-        "shape": 0.95,
-        "step": 10,
-    },
-    "balanced": {
-        "min_speed": 50,
-        "max_speed": 96,
-        "aqi_weight": 0.54,
-        "pm25_weight": 0.34,
-        "pm10_weight": 0.10,
-        "shape": 0.75,
-        "step": 14,
-    },
     "allergen": {
         "min_speed": 55,
         "max_speed": 98,
@@ -139,38 +121,23 @@ PROFILE_CONFIG = {
         "shape": 0.70,
         "step": 14,
     },
-    "aggressive": {
-        "min_speed": 60,
-        "max_speed": 100,
-        "aqi_weight": 0.60,
-        "pm25_weight": 0.34,
-        "pm10_weight": 0.10,
-        "shape": 0.6,
-        "step": 18,
-    },
 }
 PROFILE_LABELS = {
     "sleep": "Sleep (Ultra-Silent)",
-    "quiet": "Quiet",
-    "balanced": "Balanced",
     "allergen": "Allergen",
     "pet": "Pet",
     "turbo": "Turbo (Rapid-Clean)",
     "eco": "Eco (Energy-Saver)",
     "auto": "Auto (Adaptive)",
-    "aggressive": "Aggressive",
 }
 
 PROFILE_DESCRIPTIONS = {
     "sleep": "Very low fan, dim indicators, minimal responsiveness for night.",
-    "quiet": "Lower noise while still maintaining steady cleanup.",
-    "balanced": "Balanced noise and cleaning performance for daily use.",
     "allergen": "Higher baseline and fast PM2.5 response for pollen/dander.",
     "pet": "Frequent short boosts and higher intake to capture fur and dander.",
     "turbo": "Immediate max airflow for fast clearing after events.",
     "eco": "Minimizes power use with conservative boosts and lower max RPM.",
-    "auto": "Dynamically adjusts fan curve based on recent sensor trends.",
-    "aggressive": "Fast, high-power cleaning with higher noise.",
+    "auto": "Uses live outdoor pollution and weather to adapt fan speed automatically.",
 }
 
 CONTROL_MODE_MANUAL = "manual"
@@ -179,12 +146,10 @@ CONTROL_MODE_AI = "ai_assist"
 CONTROL_MODE_CHOICES = {
     CONTROL_MODE_MANUAL,
     CONTROL_MODE_CLASSIC,
-    CONTROL_MODE_AI,
 }
 CONTROL_MODE_LABELS = {
     CONTROL_MODE_MANUAL: "Manual",
     CONTROL_MODE_CLASSIC: "Classic Auto",
-    CONTROL_MODE_AI: "AI Assist",
 }
 
 GRAPH_METRICS = [
@@ -341,7 +306,7 @@ class AppConfig:
     ollama_url: str = DEFAULT_OLLAMA_URL
     ollama_model: str = DEFAULT_OLLAMA_MODEL
     control_mode: str = CONTROL_MODE_CLASSIC
-    control_profile: str = "aggressive"
+    control_profile: str = "auto"
     filter_replacement_hours: float = DEFAULT_FILTER_REPLACEMENT_HOURS
 
 
@@ -383,7 +348,7 @@ class ConfigManager:
         clean_city = sanitize_city(city)
         clean_profile = (control_profile or "").strip().lower()
         if clean_profile not in PROFILE_CONFIG:
-            clean_profile = base.control_profile if base.control_profile in PROFILE_CONFIG else "aggressive"
+            clean_profile = base.control_profile if base.control_profile in PROFILE_CONFIG else "auto"
 
         clean_api_key = sanitize_api_key(openweather_api_key)
         clean_model = sanitize_model_name(ollama_model)
@@ -1120,7 +1085,7 @@ class AIController:
         baseline: int,
         force_fail_safe: bool = False,
     ) -> tuple[int, bool]:
-        profile = PROFILE_CONFIG.get(profile_name, PROFILE_CONFIG["aggressive"])
+        profile = PROFILE_CONFIG.get(profile_name, PROFILE_CONFIG["auto"])
         now = time.time()
 
         if force_fail_safe:
@@ -3013,7 +2978,7 @@ class App:
 
             fan_ai_speed = None
             control_mode = self._control_mode()
-            profile_name = config.control_profile if config.control_profile in PROFILE_CONFIG else "aggressive"
+            profile_name = config.control_profile if config.control_profile in PROFILE_CONFIG else "auto"
             profile = PROFILE_CONFIG[profile_name]
 
             if control_mode in {CONTROL_MODE_CLASSIC, CONTROL_MODE_AI}:

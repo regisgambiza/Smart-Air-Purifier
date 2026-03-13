@@ -1,11 +1,15 @@
 #include <WiFi.h>
 #include <WebServer.h>
 #include <ArduinoOTA.h>
+#include <ArduinoJson.h>
+#include <HTTPClient.h>
 #include <math.h>
+#include <ctype.h>
 #include <Wire.h>
 #include <Adafruit_SHT31.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
+#include <WiFiClientSecure.h>
 
 // ===== WIFI =====
 const char* ssid = "Nishcha_2.4G";
@@ -46,7 +50,6 @@ uint8_t fanSpeed[FAN_COUNT] = {40};
 enum ControlMode : uint8_t {
     CONTROL_MODE_MANUAL = 0,
     CONTROL_MODE_CLASSIC_AUTO = 1,
-    CONTROL_MODE_AI_ASSIST = 2,
 };
 
 struct FanProfile {
@@ -62,19 +65,16 @@ struct FanProfile {
 
 const FanProfile PROFILE_CONFIG[] = {
   {"sleep", 20, 60, 0.40f, 0.40f, 0.10f, 0.98f, 6},
-  {"quiet", 40, 90, 0.46f, 0.34f, 0.12f, 0.95f, 10},
-  {"balanced", 50, 96, 0.54f, 0.34f, 0.10f, 0.75f, 14},
   {"allergen", 55, 98, 0.65f, 0.55f, 0.05f, 0.50f, 20},
   {"pet", 50, 98, 0.52f, 0.50f, 0.12f, 0.65f, 16},
   {"turbo", 90, 100, 0.75f, 0.60f, 0.15f, 0.45f, 30},
   {"eco", 35, 88, 0.40f, 0.30f, 0.10f, 1.25f, 8},
   {"auto", 45, 100, 0.58f, 0.38f, 0.09f, 0.70f, 14},
-  {"aggressive", 60, 100, 0.60f, 0.34f, 0.10f, 0.60f, 18},
 };
 const size_t PROFILE_COUNT = sizeof(PROFILE_CONFIG) / sizeof(PROFILE_CONFIG[0]);
 
 ControlMode controlMode = CONTROL_MODE_CLASSIC_AUTO;
-size_t controlProfileIndex = 2;
+size_t controlProfileIndex = PROFILE_COUNT - 1;
 uint8_t autoAppliedSpeed = 60;
 
 float dsTemperatureC = 0;
@@ -84,6 +84,42 @@ bool shtOnline = false;
 uint32_t lastCommandMs = 0;
 uint32_t commandSeq = 0;
 String lastCommand = "boot";
+
+const char* weatherCity = "San Jose";
+const char* openWeatherApiKey = "56672a7fddd6d20e51a88155f0b4a0f2";
+const uint32_t WEATHER_REFRESH_MS = 5UL * 60UL * 1000UL;
+const uint32_t WEATHER_RETRY_MS = 45UL * 1000UL;
+
+struct OutdoorTelemetry {
+    bool available;
+    float tempC;
+    float humidityPct;
+    int aqi;
+    float pm25;
+    float pm10;
+    float no2;
+    float o3;
+    String description;
+    String status;
+    uint32_t lastUpdateMs;
+};
+
+OutdoorTelemetry outdoor = {
+    false,
+    NAN,
+    NAN,
+    0,
+    NAN,
+    NAN,
+    NAN,
+    NAN,
+    "--",
+    "not_fetched",
+    0,
+};
+float weatherLat = NAN;
+float weatherLon = NAN;
+uint32_t lastWeatherAttemptMs = 0;
 
 const FanProfile& activeProfile() {
     if (controlProfileIndex >= PROFILE_COUNT) {
@@ -100,7 +136,6 @@ const char* controlModeKey(ControlMode mode) {
     switch (mode) {
         case CONTROL_MODE_MANUAL: return "manual";
         case CONTROL_MODE_CLASSIC_AUTO: return "classic_auto";
-        case CONTROL_MODE_AI_ASSIST: return "ai_assist";
         default: return "classic_auto";
     }
 }
@@ -109,7 +144,6 @@ const char* controlModeLabel(ControlMode mode) {
     switch (mode) {
         case CONTROL_MODE_MANUAL: return "Manual";
         case CONTROL_MODE_CLASSIC_AUTO: return "Classic Auto";
-        case CONTROL_MODE_AI_ASSIST: return "AI Assist";
         default: return "Classic Auto";
     }
 }
@@ -119,7 +153,6 @@ ControlMode parseControlMode(const String& raw) {
     value.trim();
     value.toLowerCase();
     if (value == "manual") return CONTROL_MODE_MANUAL;
-    if (value == "ai_assist") return CONTROL_MODE_AI_ASSIST;
     return CONTROL_MODE_CLASSIC_AUTO;
 }
 
@@ -158,25 +191,225 @@ void syncAutoAppliedSpeedToCurrent() {
 }
 
 // ===== PROFILE-BASED FAN CURVE =====
-uint8_t calculateAutoTargetSpeed(float roomTemp, float roomHumidity, ControlMode mode, const FanProfile& profile) {
+float clamp01(float value) {
+    return constrain(value, 0.0f, 1.0f);
+}
+
+String urlEncode(const String& value) {
+    static const char* HEX_DIGITS = "0123456789ABCDEF";
+    String encoded;
+    encoded.reserve(value.length() * 3);
+    for (size_t i = 0; i < value.length(); i++) {
+        uint8_t ch = (uint8_t)value[i];
+        if (isalnum(ch) || ch == '-' || ch == '_' || ch == '.' || ch == '~') {
+            encoded += (char)ch;
+        } else if (ch == ' ') {
+            encoded += "%20";
+        } else {
+            encoded += "%";
+            encoded += HEX_DIGITS[(ch >> 4) & 0x0F];
+            encoded += HEX_DIGITS[ch & 0x0F];
+        }
+    }
+    return encoded;
+}
+
+bool fetchHttpBody(const String& url, String& body, String& error) {
+    HTTPClient http;
+    int code = -1;
+
+    if (url.startsWith("https://")) {
+        WiFiClientSecure client;
+        client.setInsecure();
+        if (!http.begin(client, url)) {
+            error = "HTTP begin failed";
+            return false;
+        }
+        code = http.GET();
+    } else {
+        if (!http.begin(url)) {
+            error = "HTTP begin failed";
+            return false;
+        }
+        code = http.GET();
+    }
+
+    if (code <= 0) {
+        error = String("HTTP error: ") + http.errorToString(code);
+        http.end();
+        return false;
+    }
+
+    body = http.getString();
+    http.end();
+
+    if (code != HTTP_CODE_OK) {
+        error = String("HTTP status ") + String(code);
+        return false;
+    }
+    return true;
+}
+
+bool fetchJsonDocument(const String& url, DynamicJsonDocument& doc, String& error) {
+    String body;
+    if (!fetchHttpBody(url, body, error)) {
+        return false;
+    }
+
+    DeserializationError parseError = deserializeJson(doc, body);
+    if (parseError) {
+        error = String("JSON parse error: ") + parseError.c_str();
+        return false;
+    }
+    return true;
+}
+
+bool ensureGeoCoordinates(String& error) {
+    if (!isnan(weatherLat) && !isnan(weatherLon)) {
+        return true;
+    }
+    String endpoint = String("http://api.openweathermap.org/geo/1.0/direct?q=") +
+                      urlEncode(String(weatherCity)) +
+                      "&limit=1&appid=" + String(openWeatherApiKey);
+
+    DynamicJsonDocument geoDoc(4096);
+    if (!fetchJsonDocument(endpoint, geoDoc, error)) {
+        return false;
+    }
+
+    JsonArray cityList = geoDoc.as<JsonArray>();
+    if (cityList.isNull() || cityList.size() == 0) {
+        error = "City lookup empty";
+        return false;
+    }
+
+    float lat = cityList[0]["lat"] | NAN;
+    float lon = cityList[0]["lon"] | NAN;
+    if (isnan(lat) || isnan(lon)) {
+        error = "City lookup missing coordinates";
+        return false;
+    }
+
+    weatherLat = lat;
+    weatherLon = lon;
+    return true;
+}
+
+bool refreshOutdoorTelemetry(bool force = false) {
+    uint32_t nowMs = millis();
+    uint32_t waitWindow = outdoor.available ? WEATHER_REFRESH_MS : WEATHER_RETRY_MS;
+
+    if (!force && lastWeatherAttemptMs > 0 && (uint32_t)(nowMs - lastWeatherAttemptMs) < waitWindow) {
+        return outdoor.available;
+    }
+    lastWeatherAttemptMs = nowMs;
+
+    if (WiFi.status() != WL_CONNECTED) {
+        outdoor.status = "wifi_disconnected";
+        return outdoor.available;
+    }
+    if (strlen(openWeatherApiKey) == 0) {
+        outdoor.status = "missing_api_key";
+        return outdoor.available;
+    }
+
+    String error;
+    if (!ensureGeoCoordinates(error)) {
+        outdoor.status = String("geo_error: ") + error;
+        return outdoor.available;
+    }
+
+    String lat = String(weatherLat, 6);
+    String lon = String(weatherLon, 6);
+    String weatherUrl = String("https://api.openweathermap.org/data/2.5/weather?lat=") +
+                        lat + "&lon=" + lon +
+                        "&appid=" + String(openWeatherApiKey) + "&units=metric";
+    String airUrl = String("https://api.openweathermap.org/data/2.5/air_pollution?lat=") +
+                    lat + "&lon=" + lon +
+                    "&appid=" + String(openWeatherApiKey);
+
+    DynamicJsonDocument weatherDoc(8192);
+    if (!fetchJsonDocument(weatherUrl, weatherDoc, error)) {
+        outdoor.status = String("weather_error: ") + error;
+        return outdoor.available;
+    }
+
+    DynamicJsonDocument airDoc(8192);
+    if (!fetchJsonDocument(airUrl, airDoc, error)) {
+        outdoor.status = String("air_error: ") + error;
+        return outdoor.available;
+    }
+
+    JsonObject weatherMain = weatherDoc["main"];
+    JsonVariant weatherDesc = weatherDoc["weather"][0]["description"];
+    JsonObject airMain = airDoc["list"][0]["main"];
+    JsonObject components = airDoc["list"][0]["components"];
+
+    outdoor.tempC = weatherMain["temp"] | NAN;
+    outdoor.humidityPct = weatherMain["humidity"] | NAN;
+    outdoor.description = String(weatherDesc | "--");
+    outdoor.description.trim();
+    if (outdoor.description.length() == 0) {
+        outdoor.description = "--";
+    }
+
+    outdoor.aqi = airMain["aqi"] | 0;
+    outdoor.pm25 = components["pm2_5"] | NAN;
+    outdoor.pm10 = components["pm10"] | NAN;
+    outdoor.no2 = components["no2"] | NAN;
+    outdoor.o3 = components["o3"] | NAN;
+
+    bool hasWeather = !isnan(outdoor.tempC) || !isnan(outdoor.humidityPct);
+    bool hasAir = (outdoor.aqi > 0) || !isnan(outdoor.pm25) || !isnan(outdoor.pm10);
+    outdoor.available = hasWeather || hasAir;
+    outdoor.status = outdoor.available ? "ok" : "parse_error";
+    outdoor.lastUpdateMs = nowMs;
+    return outdoor.available;
+}
+
+float normalizeAqiRisk(int aqi) {
+    if (aqi <= 1) return 0.0f;
+    return clamp01((aqi - 1.0f) / 4.0f);
+}
+
+float normalizePm25Risk(float pm25) {
+    if (isnan(pm25)) return 0.45f;
+    return clamp01(pm25 / 55.0f);
+}
+
+float normalizePm10Risk(float pm10) {
+    if (isnan(pm10)) return 0.35f;
+    return clamp01(pm10 / 155.0f);
+}
+
+uint8_t calculateAutoTargetSpeed(float roomTemp, float roomHumidity, const FanProfile& profile) {
     float safeTemp = isnan(roomTemp) ? 27.0f : roomTemp;
-    float tempRisk = constrain((safeTemp - 24.0f) / 10.0f, 0.0f, 1.0f);
+    float tempRisk = clamp01((safeTemp - 24.0f) / 10.0f);
 
     float humidityRisk = 0.35f;
     if (!isnan(roomHumidity)) {
-        humidityRisk = constrain((roomHumidity - 45.0f) / 30.0f, 0.0f, 1.0f);
+        humidityRisk = clamp01((roomHumidity - 45.0f) / 30.0f);
     }
 
-    float risk = constrain((tempRisk * 0.75f) + (humidityRisk * 0.25f), 0.0f, 1.0f);
-    if (mode == CONTROL_MODE_AI_ASSIST) {
-        risk = constrain(risk + 0.08f, 0.0f, 1.0f);
+    float aqiRisk = 0.40f;
+    float pm25Risk = 0.45f;
+    float pm10Risk = 0.35f;
+    if (outdoor.available) {
+        aqiRisk = normalizeAqiRisk(outdoor.aqi);
+        pm25Risk = normalizePm25Risk(outdoor.pm25);
+        pm10Risk = normalizePm10Risk(outdoor.pm10);
     }
+
+    float pollutionRisk = clamp01(
+        (aqiRisk * profile.aqiWeight) +
+        (pm25Risk * profile.pm25Weight) +
+        (pm10Risk * profile.pm10Weight)
+    );
+    float comfortRisk = clamp01((tempRisk * 0.65f) + (humidityRisk * 0.35f));
+    float risk = clamp01((pollutionRisk * 0.72f) + (comfortRisk * 0.28f));
 
     float shaped = powf(risk, profile.shape);
     int target = (int)roundf((float)profile.minSpeed + (shaped * (float)(profile.maxSpeed - profile.minSpeed)));
-    if (mode == CONTROL_MODE_AI_ASSIST) {
-        target += 4;
-    }
     target = constrain(target, (int)profile.minSpeed, (int)profile.maxSpeed);
     return (uint8_t)target;
 }
@@ -227,7 +460,18 @@ String getJSON() {
     json += "\"uptime_ms\":" + String(uptimeMs) + ",";
     json += "\"cmd_age_ms\":" + String(cmdAgeMs) + ",";
     json += "\"cmd_seq\":" + String(commandSeq) + ",";
-    json += "\"last_cmd\":\"" + lastCommand + "\"";
+    json += "\"last_cmd\":\"" + lastCommand + "\",";
+    json += "\"weather_ok\":" + String(outdoor.available ? "true" : "false") + ",";
+    json += "\"weather_status\":\"" + outdoor.status + "\",";
+    json += "\"weather_age_ms\":" + String(outdoor.lastUpdateMs > 0 ? (uptimeMs - outdoor.lastUpdateMs) : 0) + ",";
+    json += "\"outdoor_temp_c\":" + jsonTemperatureOrNull(outdoor.tempC) + ",";
+    json += "\"outdoor_humidity_pct\":" + jsonHumidityOrNull(outdoor.humidityPct) + ",";
+    json += "\"outdoor_description\":\"" + outdoor.description + "\",";
+    json += "\"aqi\":" + String(outdoor.aqi) + ",";
+    json += "\"pm2_5\":" + (isnan(outdoor.pm25) ? String("null") : String(outdoor.pm25, 1)) + ",";
+    json += "\"pm10\":" + (isnan(outdoor.pm10) ? String("null") : String(outdoor.pm10, 1)) + ",";
+    json += "\"no2\":" + (isnan(outdoor.no2) ? String("null") : String(outdoor.no2, 1)) + ",";
+    json += "\"o3\":" + (isnan(outdoor.o3) ? String("null") : String(outdoor.o3, 1));
     json += "}";
     return json;
 }
@@ -1066,6 +1310,43 @@ refreshAgeTicker();
 </html>
 )rawliteral";
 
+void handleWeather() {
+    if (server.method() != HTTP_POST) {
+        server.send(405, "application/json", "{\"ok\":false,\"error\":\"POST required\"}");
+        return;
+    }
+    String body = server.arg("plain");
+    if (body.length() == 0) {
+        server.send(400, "application/json", "{\"ok\":false,\"error\":\"Empty body\"}");
+        return;
+    }
+    DynamicJsonDocument doc(2048);
+    DeserializationError err = deserializeJson(doc, body);
+    if (err) {
+        server.send(400, "application/json", "{\"ok\":false,\"error\":\"JSON parse error\"}");
+        return;
+    }
+    outdoor.tempC       = doc["temp_c"]       | NAN;
+    outdoor.humidityPct = doc["humidity_pct"] | NAN;
+    outdoor.aqi         = doc["aqi"]          | 0;
+    outdoor.pm25        = doc["pm2_5"]        | NAN;
+    outdoor.pm10        = doc["pm10"]         | NAN;
+    outdoor.no2         = doc["no2"]          | NAN;
+    outdoor.o3          = doc["o3"]           | NAN;
+    const char* desc    = doc["description"]  | "--";
+    outdoor.description = String(desc);
+    outdoor.description.trim();
+    if (outdoor.description.length() == 0) outdoor.description = "--";
+
+    bool hasWeather = !isnan(outdoor.tempC) || !isnan(outdoor.humidityPct);
+    bool hasAir     = (outdoor.aqi > 0) || !isnan(outdoor.pm25) || !isnan(outdoor.pm10);
+    outdoor.available   = hasWeather || hasAir;
+    outdoor.status      = outdoor.available ? "ok" : "no_data";
+    outdoor.lastUpdateMs = millis();
+
+    server.send(200, "application/json", "{\"ok\":true}");
+}
+
 // ===== ROUTES =====
 void handleRoot() {
     server.send(200, "text/html", webpage);
@@ -1192,6 +1473,7 @@ void setup() {
     server.on("/toggle", handleToggle);
     server.on("/mode", handleMode);
     server.on("/profile", handleProfile);
+    server.on("/weather", HTTP_POST, handleWeather);
     server.begin();
 }
 
@@ -1234,7 +1516,7 @@ void loop() {
             if (modeIsAutomatic(controlMode)) {
                 const FanProfile& profile = activeProfile();
                 float controlTemp = !isnan(shtTemperatureC) ? shtTemperatureC : dsTemperatureC;
-                uint8_t target = calculateAutoTargetSpeed(controlTemp, humidityRH, controlMode, profile);
+                uint8_t target = calculateAutoTargetSpeed(controlTemp, humidityRH, profile);
                 uint8_t applied = applyAutoSlew(target, profile);
                 setFanSpeed(i, applied);
             }
