@@ -1470,6 +1470,7 @@ class App:
             self._on_control_mode_change(trigger_refresh=False)
         self._bind_shortcuts()
         self.root.protocol("WM_DELETE_WINDOW", self._on_close)
+        self.root.bind("<Unmap>", self._on_minimize)
 
         self._update_filter_labels(self.filter_tracker.get_state())
         self._update_calibration_label()
@@ -1613,6 +1614,16 @@ class App:
     def _tray_open_window(self, icon=None, item=None):
         self.root.after(0, self._show_window_from_tray)
 
+    def _tray_toggle_window(self, icon=None, item=None):
+        """Toggle window visibility from system tray."""
+        try:
+            if self.root.winfo_viewable():
+                self.root.withdraw()
+            else:
+                self.root.after(0, self._show_window_from_tray)
+        except Exception:
+            self.logger.exception("Failed to toggle window from tray")
+
     def _tray_refresh_now(self, icon=None, item=None):
         self.root.after(0, self.refresh_async)
 
@@ -1626,6 +1637,14 @@ class App:
             self.root.focus_force()
         except Exception:
             self.logger.exception("Failed to restore app window from tray")
+
+    def _on_minimize(self, event=None):
+        """Hide window from taskbar when minimized, show only in system tray."""
+        try:
+            if event and event.type == "21":  # Unmap event
+                self.root.withdraw()
+        except Exception:
+            self.logger.exception("Failed to handle minimize event")
 
     def _init_system_tray(self) -> None:
         if pystray is None:
@@ -1654,6 +1673,9 @@ class App:
         def health_text(_item):
             return self.tray_label_health
 
+        def show_hide_text(_item):
+            return "Hide Dashboard" if self.root.winfo_viewable() else "Show Dashboard"
+
         menu = pystray.Menu(
             pystray.MenuItem(room_text, lambda icon, item: None, enabled=False),
             pystray.MenuItem(mode_text, lambda icon, item: None, enabled=False),
@@ -1661,12 +1683,14 @@ class App:
             pystray.MenuItem(fan_text, lambda icon, item: None, enabled=False),
             pystray.MenuItem(health_text, lambda icon, item: None, enabled=False),
             pystray.Menu.SEPARATOR,
-            pystray.MenuItem("Open Dashboard", self._tray_open_window),
+            pystray.MenuItem(show_hide_text, self._tray_toggle_window),
             pystray.MenuItem("Refresh Now", self._tray_refresh_now),
+            pystray.Menu.SEPARATOR,
             pystray.MenuItem("Exit", self._tray_exit_app),
         )
 
         self.tray_icon = pystray.Icon("smart_air_purifier", tray_image, "Smart Air Purifier", menu)
+        self.tray_icon.default_action = self._tray_toggle_window
         self.tray_enabled = True
 
         def run_tray():
